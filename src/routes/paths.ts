@@ -43,12 +43,32 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: ROOTS.DASHBOARD,
-    two: `${ROOTS.DASHBOARD}/two`,
-    three: `${ROOTS.DASHBOARD}/three`,
-    group: {
-      root: `${ROOTS.DASHBOARD}/group`,
-      five: `${ROOTS.DASHBOARD}/group/five`,
-      six: `${ROOTS.DASHBOARD}/group/six`,
+    // Trades
+    trades: {
+      root: `${ROOTS.DASHBOARD}/trades`,
+      new: `${ROOTS.DASHBOARD}/trades/new`,
+      details: (id: string) => `${ROOTS.DASHBOARD}/trades/${id}`,
+      edit: (id: string) => `${ROOTS.DASHBOARD}/trades/${id}/edit`,
     },
+    // Coins (Master Data)
+    coins: {
+      root: `${ROOTS.DASHBOARD}/coins`,
+      new: `${ROOTS.DASHBOARD}/coins/new`,
+      details: (id: string) => `${ROOTS.DASHBOARD}/coins/${id}`,
+      edit: (id: string) => `${ROOTS.DASHBOARD}/coins/${id}/edit`,
+    },
+    // Strategies (Master Data)
+    strategies: {
+      root: `${ROOTS.DASHBOARD}/strategies`,
+      new: `${ROOTS.DASHBOARD}/strategies/new`,
+      details: (id: string) => `${ROOTS.DASHBOARD}/strategies/${id}`,
+      edit: (id: string) => `${ROOTS.DASHBOARD}/strategies/${id}/edit`,
+    },
+    // Analytics
+    analytics: `${ROOTS.DASHBOARD}/analytics`,
+    // Settings
+    settings: `${ROOTS.DASHBOARD}/settings`,
+    // Profile
+    profile: `${ROOTS.DASHBOARD}/profile`,
   },
 };

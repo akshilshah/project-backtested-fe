@@ -4,7 +4,6 @@ import { paths } from 'src/routes/paths';
 
 import { CONFIG } from 'src/global-config';
 
-import { Label } from 'src/components/label';
 import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -53,30 +52,75 @@ export const navData: NavSectionProps['data'] = [
     subheader: 'Overview',
     items: [
       {
-        title: 'One',
+        title: 'Dashboard',
         path: paths.dashboard.root,
         icon: ICONS.dashboard,
-        info: <Label>v{CONFIG.appVersion}</Label>,
       },
-      { title: 'Two', path: paths.dashboard.two, icon: ICONS.ecommerce },
-      { title: 'Three', path: paths.dashboard.three, icon: ICONS.analytics },
+      {
+        title: 'Analytics',
+        path: paths.dashboard.analytics,
+        icon: ICONS.analytics,
+      },
     ],
   },
   /**
-   * Management
+   * Trading
    */
   {
-    subheader: 'Management',
+    subheader: 'Trading',
     items: [
       {
-        title: 'Group',
-        path: paths.dashboard.group.root,
-        icon: ICONS.user,
+        title: 'Trades',
+        path: paths.dashboard.trades.root,
+        icon: ICONS.banking,
         children: [
-          { title: 'Four', path: paths.dashboard.group.root },
-          { title: 'Five', path: paths.dashboard.group.five },
-          { title: 'Six', path: paths.dashboard.group.six },
+          { title: 'All Trades', path: paths.dashboard.trades.root },
+          { title: 'New Trade', path: paths.dashboard.trades.new },
         ],
+      },
+    ],
+  },
+  /**
+   * Master Data
+   */
+  {
+    subheader: 'Master Data',
+    items: [
+      {
+        title: 'Coins',
+        path: paths.dashboard.coins.root,
+        icon: ICONS.ecommerce,
+        children: [
+          { title: 'All Coins', path: paths.dashboard.coins.root },
+          { title: 'New Coin', path: paths.dashboard.coins.new },
+        ],
+      },
+      {
+        title: 'Strategies',
+        path: paths.dashboard.strategies.root,
+        icon: ICONS.kanban,
+        children: [
+          { title: 'All Strategies', path: paths.dashboard.strategies.root },
+          { title: 'New Strategy', path: paths.dashboard.strategies.new },
+        ],
+      },
+    ],
+  },
+  /**
+   * Settings
+   */
+  {
+    subheader: 'Account',
+    items: [
+      {
+        title: 'Profile',
+        path: paths.dashboard.profile,
+        icon: ICONS.user,
+      },
+      {
+        title: 'Settings',
+        path: paths.dashboard.settings,
+        icon: ICONS.params,
       },
     ],
   },

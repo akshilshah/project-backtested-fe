@@ -14,12 +14,35 @@ import { usePathname } from '../hooks';
 
 // ----------------------------------------------------------------------
 
-const IndexPage = lazy(() => import('src/pages/dashboard/one'));
-const PageTwo = lazy(() => import('src/pages/dashboard/two'));
-const PageThree = lazy(() => import('src/pages/dashboard/three'));
-const PageFour = lazy(() => import('src/pages/dashboard/four'));
-const PageFive = lazy(() => import('src/pages/dashboard/five'));
-const PageSix = lazy(() => import('src/pages/dashboard/six'));
+// Dashboard
+const DashboardPage = lazy(() => import('src/pages/dashboard/index'));
+
+// Trades
+const TradesListPage = lazy(() => import('src/pages/dashboard/trades/index'));
+const TradeCreatePage = lazy(() => import('src/pages/dashboard/trades/new'));
+const TradeDetailsPage = lazy(() => import('src/pages/dashboard/trades/[id]/index'));
+const TradeEditPage = lazy(() => import('src/pages/dashboard/trades/[id]/edit'));
+
+// Coins
+const CoinsListPage = lazy(() => import('src/pages/dashboard/coins/index'));
+const CoinCreatePage = lazy(() => import('src/pages/dashboard/coins/new'));
+const CoinDetailsPage = lazy(() => import('src/pages/dashboard/coins/[id]/index'));
+const CoinEditPage = lazy(() => import('src/pages/dashboard/coins/[id]/edit'));
+
+// Strategies
+const StrategiesListPage = lazy(() => import('src/pages/dashboard/strategies/index'));
+const StrategyCreatePage = lazy(() => import('src/pages/dashboard/strategies/new'));
+const StrategyDetailsPage = lazy(() => import('src/pages/dashboard/strategies/[id]/index'));
+const StrategyEditPage = lazy(() => import('src/pages/dashboard/strategies/[id]/edit'));
+
+// Analytics
+const AnalyticsPage = lazy(() => import('src/pages/dashboard/analytics/index'));
+
+// Settings
+const SettingsPage = lazy(() => import('src/pages/dashboard/settings/index'));
+
+// Profile
+const ProfilePage = lazy(() => import('src/pages/dashboard/profile/index'));
 
 // ----------------------------------------------------------------------
 
@@ -43,17 +66,43 @@ export const dashboardRoutes: RouteObject[] = [
     path: 'dashboard',
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
-      { element: <IndexPage />, index: true },
-      { path: 'two', element: <PageTwo /> },
-      { path: 'three', element: <PageThree /> },
+      { element: <DashboardPage />, index: true },
+      // Trades
       {
-        path: 'group',
+        path: 'trades',
         children: [
-          { element: <PageFour />, index: true },
-          { path: 'five', element: <PageFive /> },
-          { path: 'six', element: <PageSix /> },
+          { element: <TradesListPage />, index: true },
+          { path: 'new', element: <TradeCreatePage /> },
+          { path: ':id', element: <TradeDetailsPage /> },
+          { path: ':id/edit', element: <TradeEditPage /> },
         ],
       },
+      // Coins
+      {
+        path: 'coins',
+        children: [
+          { element: <CoinsListPage />, index: true },
+          { path: 'new', element: <CoinCreatePage /> },
+          { path: ':id', element: <CoinDetailsPage /> },
+          { path: ':id/edit', element: <CoinEditPage /> },
+        ],
+      },
+      // Strategies
+      {
+        path: 'strategies',
+        children: [
+          { element: <StrategiesListPage />, index: true },
+          { path: 'new', element: <StrategyCreatePage /> },
+          { path: ':id', element: <StrategyDetailsPage /> },
+          { path: ':id/edit', element: <StrategyEditPage /> },
+        ],
+      },
+      // Analytics
+      { path: 'analytics', element: <AnalyticsPage /> },
+      // Settings
+      { path: 'settings', element: <SettingsPage /> },
+      // Profile
+      { path: 'profile', element: <ProfilePage /> },
     ],
   },
 ];
