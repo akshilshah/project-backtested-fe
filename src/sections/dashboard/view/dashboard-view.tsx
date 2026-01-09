@@ -1,6 +1,6 @@
 import type { Trade } from 'src/types/trade';
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { toast } from 'sonner';
 import useSWR from 'swr';
@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 
 import { useAuthUser } from 'src/hooks/use-auth-user';
 
+import { preloadCriticalRoutes } from 'src/lib/preload';
 import { TradesService } from 'src/services/trades.service';
 
 import { PageContainer } from 'src/components/page/page-container';
@@ -26,6 +27,11 @@ export function DashboardView() {
   const user = useAuthUser();
   const [exitTrade, setExitTrade] = useState<Trade | null>(null);
   const [exitLoading, setExitLoading] = useState(false);
+
+  // Preload critical routes after dashboard loads
+  useEffect(() => {
+    preloadCriticalRoutes();
+  }, []);
 
   // Fetch analytics data
   const { data: analyticsData, isLoading: analyticsLoading } = useSWR(

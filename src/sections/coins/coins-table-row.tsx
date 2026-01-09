@@ -1,6 +1,6 @@
 import type { Coin } from 'src/types/coin';
 
-import { useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -26,7 +26,7 @@ type CoinsTableRowProps = {
   deleting?: boolean;
 };
 
-export function CoinsTableRow({ row, onDelete, deleting }: CoinsTableRowProps) {
+export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleting }: CoinsTableRowProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleOpenDelete = useCallback(() => {
@@ -140,4 +140,4 @@ export function CoinsTableRow({ row, onDelete, deleting }: CoinsTableRowProps) {
       />
     </>
   );
-}
+});

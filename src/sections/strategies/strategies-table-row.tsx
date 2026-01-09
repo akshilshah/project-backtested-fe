@@ -1,6 +1,6 @@
 import type { Strategy } from 'src/types/strategy';
 
-import { useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -31,7 +31,7 @@ type StrategiesTableRowProps = {
   onDelete: (strategy: Strategy) => void;
 };
 
-export function StrategiesTableRow({ row, onDelete }: StrategiesTableRowProps) {
+export const StrategiesTableRow = memo(function StrategiesTableRow({ row, onDelete }: StrategiesTableRowProps) {
   const router = useRouter();
   const popover = usePopover();
 
@@ -149,4 +149,4 @@ export function StrategiesTableRow({ row, onDelete }: StrategiesTableRowProps) {
       </CustomPopover>
     </>
   );
-}
+});

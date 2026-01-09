@@ -156,6 +156,9 @@ export function DataTable<T>({
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={handleSelectAllClick}
+              inputProps={{
+                'aria-label': numSelected === rowCount ? 'Deselect all rows' : 'Select all rows',
+              }}
             />
           </TableCell>
         )}
@@ -209,7 +212,13 @@ export function DataTable<T>({
             >
               {selectable && (
                 <TableCell padding="checkbox">
-                  <Checkbox checked={isSelected} onClick={() => onSelectRow?.(id)} />
+                  <Checkbox
+                    checked={isSelected}
+                    onClick={() => onSelectRow?.(id)}
+                    inputProps={{
+                      'aria-label': isSelected ? `Deselect row ${index + 1}` : `Select row ${index + 1}`,
+                    }}
+                  />
                 </TableCell>
               )}
 
@@ -250,7 +259,11 @@ export function DataTable<T>({
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
-            <Table size={dense ? 'small' : 'medium'} sx={{ minWidth: 800 }}>
+            <Table
+              size={dense ? 'small' : 'medium'}
+              sx={{ minWidth: 800 }}
+              aria-label="Data table"
+            >
               {renderHead()}
               {renderBody()}
             </Table>

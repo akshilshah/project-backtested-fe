@@ -1,8 +1,7 @@
 import type { Trade } from 'src/types/trade';
 
-import { useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
@@ -14,7 +13,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { fDate, fTime } from 'src/utils/format-time';
+import { fDate } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
 import { CoinDisplay } from 'src/components/trade/coin-display';
@@ -32,7 +31,7 @@ type TradesTableRowProps = {
   deleting?: boolean;
 };
 
-export function TradesTableRow({ row, onDelete, onExit, deleting }: TradesTableRowProps) {
+export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onExit, deleting }: TradesTableRowProps) {
   const theme = useTheme();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -188,4 +187,4 @@ export function TradesTableRow({ row, onDelete, onExit, deleting }: TradesTableR
       />
     </>
   );
-}
+});
