@@ -1,3 +1,5 @@
+import type { SignupRequest, LoginRequest } from 'src/types/auth';
+
 import axios, { endpoints } from 'src/lib/axios';
 
 import { setSession } from './utils';
@@ -5,17 +7,9 @@ import { JWT_STORAGE_KEY } from './constant';
 
 // ----------------------------------------------------------------------
 
-export type SignInParams = {
-  email: string;
-  password: string;
-};
+export type SignInParams = LoginRequest;
 
-export type SignUpParams = {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-};
+export type SignUpParams = SignupRequest;
 
 /** **************************************
  * Sign in
@@ -24,9 +18,9 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
   try {
     const params = { email, password };
 
-    const res = await axios.post(endpoints.auth.signIn, params);
+    const res = await axios.post(endpoints.auth.login, params);
 
-    const { accessToken } = res.data;
+    const accessToken = res.data.data?.accessToken || res.data.accessToken;
 
     if (!accessToken) {
       throw new Error('Access token not found in response');
@@ -56,9 +50,9 @@ export const signUp = async ({
   };
 
   try {
-    const res = await axios.post(endpoints.auth.signUp, params);
+    const res = await axios.post(endpoints.auth.signup, params);
 
-    const { accessToken } = res.data;
+    const accessToken = res.data.data?.accessToken || res.data.accessToken;
 
     if (!accessToken) {
       throw new Error('Access token not found in response');

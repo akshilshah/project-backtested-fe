@@ -50,10 +50,10 @@ export function JwtSignUpView() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const defaultValues: SignUpSchemaType = {
-    firstName: 'Hello',
-    lastName: 'Friend',
-    email: 'hello@gmail.com',
-    password: '@2Minimal',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
   };
 
   const methods = useForm({
@@ -144,7 +144,7 @@ export function JwtSignUpView() {
           <>
             {`Already have an account? `}
             <Link component={RouterLink} href={paths.auth.jwt.signIn} variant="subtitle2">
-              Get started
+              Sign in
             </Link>
           </>
         }

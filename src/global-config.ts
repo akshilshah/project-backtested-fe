@@ -8,6 +8,7 @@ export type ConfigValue = {
   appName: string;
   appVersion: string;
   serverUrl: string;
+  apiBaseUrl: string;
   assetsDir: string;
   auth: {
     method: 'jwt' | 'amplify' | 'firebase' | 'supabase' | 'auth0';
@@ -31,9 +32,10 @@ export type ConfigValue = {
 // ----------------------------------------------------------------------
 
 export const CONFIG: ConfigValue = {
-  appName: 'Minimal UI',
+  appName: 'Trading Management System',
   appVersion: packageJson.version,
   serverUrl: import.meta.env.VITE_SERVER_URL ?? '',
+  apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000',
   assetsDir: import.meta.env.VITE_ASSETS_DIR ?? '',
   /**
    * Auth

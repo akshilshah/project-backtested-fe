@@ -1,4 +1,4 @@
-import type { AuthState } from '../../types';
+import type { AuthState } from 'src/types/auth';
 
 import { useSetState } from 'minimal-shared/hooks';
 import { useMemo, useEffect, useCallback } from 'react';
@@ -10,12 +10,6 @@ import { AuthContext } from '../auth-context';
 import { setSession, isValidToken } from './utils';
 
 // ----------------------------------------------------------------------
-
-/**
- * NOTE:
- * We only build demo at basic level.
- * Customer will need to do some extra handling yourself if you want to extend the logic and other features...
- */
 
 type Props = {
   children: React.ReactNode;
@@ -31,9 +25,9 @@ export function AuthProvider({ children }: Props) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const res = await axios.get(endpoints.auth.me);
+        const res = await axios.get(endpoints.auth.profile);
 
-        const { user } = res.data;
+        const user = res.data.data || res.data.user || res.data;
 
         setState({ user: { ...user, accessToken }, loading: false });
       } else {

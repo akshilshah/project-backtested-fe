@@ -4,27 +4,25 @@ import axios from 'axios';
 
 import { CONFIG } from 'src/global-config';
 
+import { JWT_STORAGE_KEY } from 'src/auth/context/jwt/constant';
+
 // ----------------------------------------------------------------------
 
 const axiosInstance = axios.create({
-  baseURL: CONFIG.serverUrl,
+  baseURL: CONFIG.apiBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-/**
- * Optional: Add token (if using auth)
- *
- axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+// Add token to requests
+axiosInstance.interceptors.request.use((config) => {
+  const token = sessionStorage.getItem(JWT_STORAGE_KEY);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
-*
-*/
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -57,28 +55,33 @@ export const fetcher = async <T = unknown>(
 // ----------------------------------------------------------------------
 
 export const endpoints = {
-  chat: '/api/chat',
-  kanban: '/api/kanban',
-  calendar: '/api/calendar',
   auth: {
-    me: '/api/auth/me',
-    signIn: '/api/auth/sign-in',
-    signUp: '/api/auth/sign-up',
+    login: '/api/auth/login',
+    signup: '/api/auth/signup',
+    profile: '/api/auth/profile',
+    settings: '/api/auth/settings',
   },
-  mail: {
-    list: '/api/mail/list',
-    details: '/api/mail/details',
-    labels: '/api/mail/labels',
+  coins: {
+    list: '/api/masters/coins',
+    create: '/api/masters/coins',
+    details: (id: string) => `/api/masters/coins/${id}`,
+    update: (id: string) => `/api/masters/coins/${id}`,
+    delete: (id: string) => `/api/masters/coins/${id}`,
   },
-  post: {
-    list: '/api/post/list',
-    details: '/api/post/details',
-    latest: '/api/post/latest',
-    search: '/api/post/search',
+  strategies: {
+    list: '/api/masters/strategies',
+    create: '/api/masters/strategies',
+    details: (id: string) => `/api/masters/strategies/${id}`,
+    update: (id: string) => `/api/masters/strategies/${id}`,
+    delete: (id: string) => `/api/masters/strategies/${id}`,
   },
-  product: {
-    list: '/api/product/list',
-    details: '/api/product/details',
-    search: '/api/product/search',
+  trades: {
+    list: '/api/trades',
+    create: '/api/trades',
+    details: (id: string) => `/api/trades/${id}`,
+    update: (id: string) => `/api/trades/${id}`,
+    delete: (id: string) => `/api/trades/${id}`,
+    exit: (id: string) => `/api/trades/${id}/exit`,
+    analytics: '/api/trades/analytics',
   },
 } as const;
