@@ -1,17 +1,17 @@
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { CoinsCreateView } from 'src/sections/coins/view/coins-create-view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `New Coin | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `New Coin - ${CONFIG.appName}` };
 
 export default function CoinCreatePage() {
   return (
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="New Coin" description="Add a new coin/cryptocurrency" />
+      <CoinsCreateView />
     </>
   );
 }

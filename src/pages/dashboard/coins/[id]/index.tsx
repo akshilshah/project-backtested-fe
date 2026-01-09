@@ -1,21 +1,17 @@
-import { useParams } from 'react-router';
-
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { CoinsDetailsView } from 'src/sections/coins/view/coins-details-view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Coin Details | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Coin Details - ${CONFIG.appName}` };
 
 export default function CoinDetailsPage() {
-  const { id } = useParams();
-
   return (
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Coin Details" description={`Viewing coin: ${id}`} />
+      <CoinsDetailsView />
     </>
   );
 }

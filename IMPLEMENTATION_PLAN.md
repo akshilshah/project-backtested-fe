@@ -122,12 +122,12 @@ Building a premium trading management system frontend using the Minimal UI theme
 **Goal:** Complete CRUD for coins/cryptocurrencies
 
 ### 4.1 Coins List Page
-- [ ] Create `src/pages/dashboard/coins/index.tsx` - Route component
-- [ ] Create `src/sections/coins/view/coins-list-view.tsx` - Main list view
-- [ ] Create `src/sections/coins/coins-table.tsx` - Coins data table
-- [ ] Create `src/sections/coins/coins-table-row.tsx` - Individual row component
-- [ ] Create `src/sections/coins/coins-table-toolbar.tsx` - Search and filters
-- [ ] Implement features:
+- [x] Create `src/pages/dashboard/coins/index.tsx` - Route component
+- [x] Create `src/sections/coins/view/coins-list-view.tsx` - Main list view
+- [x] Create `src/sections/coins/coins-table.tsx` - Coins data table
+- [x] Create `src/sections/coins/coins-table-row.tsx` - Individual row component
+- [x] Create `src/sections/coins/coins-table-toolbar.tsx` - Search and filters
+- [x] Implement features:
   - Search by name/symbol
   - Sort by name, symbol, created date
   - Pagination
@@ -136,26 +136,26 @@ Building a premium trading management system frontend using the Minimal UI theme
   - Empty state
 
 ### 4.2 Create Coin Page
-- [ ] Create `src/pages/dashboard/coins/new.tsx` - Route component
-- [ ] Create `src/sections/coins/view/coins-create-view.tsx` - Create view
-- [ ] Create `src/sections/coins/coins-form.tsx` - Reusable coin form
-- [ ] Implement Zod validation schema
-- [ ] Handle duplicate symbol error (409)
-- [ ] Success toast and redirect to list
+- [x] Create `src/pages/dashboard/coins/new.tsx` - Route component
+- [x] Create `src/sections/coins/view/coins-create-view.tsx` - Create view
+- [x] Create `src/sections/coins/coins-form.tsx` - Reusable coin form
+- [x] Implement Zod validation schema
+- [x] Handle duplicate symbol error (409)
+- [x] Success toast and redirect to list
 
 ### 4.3 Edit Coin Page
-- [ ] Create `src/pages/dashboard/coins/[id]/edit.tsx` - Route component
-- [ ] Create `src/sections/coins/view/coins-edit-view.tsx` - Edit view
-- [ ] Fetch existing coin data
-- [ ] Pre-populate form
-- [ ] Handle not found (404)
-- [ ] Success toast and redirect
+- [x] Create `src/pages/dashboard/coins/[id]/edit.tsx` - Route component
+- [x] Create `src/sections/coins/view/coins-edit-view.tsx` - Edit view
+- [x] Fetch existing coin data
+- [x] Pre-populate form
+- [x] Handle not found (404)
+- [x] Success toast and redirect
 
 ### 4.4 Coin Details Page (Optional)
-- [ ] Create `src/pages/dashboard/coins/[id]/index.tsx` - Route component
-- [ ] Create `src/sections/coins/view/coins-details-view.tsx` - Details view
-- [ ] Show coin info with edit/delete actions
-- [ ] Show trades using this coin
+- [x] Create `src/pages/dashboard/coins/[id]/index.tsx` - Route component
+- [x] Create `src/sections/coins/view/coins-details-view.tsx` - Details view
+- [x] Show coin info with edit/delete actions
+- [ ] Show trades using this coin (deferred to Phase 6)
 
 ---
 
@@ -163,12 +163,12 @@ Building a premium trading management system frontend using the Minimal UI theme
 **Goal:** Complete CRUD for trading strategies
 
 ### 5.1 Strategies List Page
-- [ ] Create `src/pages/dashboard/strategies/index.tsx` - Route component
-- [ ] Create `src/sections/strategies/view/strategies-list-view.tsx` - Main list view
-- [ ] Create `src/sections/strategies/strategies-table.tsx` - Strategies data table
-- [ ] Create `src/sections/strategies/strategies-table-row.tsx` - Individual row
-- [ ] Create `src/sections/strategies/strategies-table-toolbar.tsx` - Search and filters
-- [ ] Implement features:
+- [x] Create `src/pages/dashboard/strategies/index.tsx` - Route component
+- [x] Create `src/sections/strategies/view/strategies-list-view.tsx` - Main list view
+- [x] Create `src/sections/strategies/strategies-table.tsx` - Strategies data table (using DataTable component)
+- [x] Create `src/sections/strategies/strategies-table-row.tsx` - Individual row
+- [x] Create `src/sections/strategies/strategies-table-toolbar.tsx` - Search and filters
+- [x] Implement features:
   - Search by name
   - Sort by name, created date
   - Pagination
@@ -177,25 +177,25 @@ Building a premium trading management system frontend using the Minimal UI theme
   - Empty state
 
 ### 5.2 Create Strategy Page
-- [ ] Create `src/pages/dashboard/strategies/new.tsx` - Route component
-- [ ] Create `src/sections/strategies/view/strategies-create-view.tsx` - Create view
-- [ ] Create `src/sections/strategies/strategies-form.tsx` - Reusable strategy form
-- [ ] Implement Zod validation schema
-- [ ] Rules field as JSON editor or key-value pairs
-- [ ] Success toast and redirect
+- [x] Create `src/pages/dashboard/strategies/new.tsx` - Route component
+- [x] Create `src/sections/strategies/view/strategies-create-view.tsx` - Create view
+- [x] Create `src/sections/strategies/strategies-form.tsx` - Reusable strategy form
+- [x] Implement Zod validation schema
+- [x] Rules field as JSON editor or key-value pairs
+- [x] Success toast and redirect
 
 ### 5.3 Edit Strategy Page
-- [ ] Create `src/pages/dashboard/strategies/[id]/edit.tsx` - Route component
-- [ ] Create `src/sections/strategies/view/strategies-edit-view.tsx` - Edit view
-- [ ] Fetch existing strategy data
-- [ ] Pre-populate form including rules
-- [ ] Handle not found (404)
+- [x] Create `src/pages/dashboard/strategies/[id]/edit.tsx` - Route component
+- [x] Create `src/sections/strategies/view/strategies-edit-view.tsx` - Edit view
+- [x] Fetch existing strategy data
+- [x] Pre-populate form including rules
+- [x] Handle not found (404)
 
 ### 5.4 Strategy Details Page (Optional)
-- [ ] Create `src/pages/dashboard/strategies/[id]/index.tsx` - Route component
-- [ ] Create `src/sections/strategies/view/strategies-details-view.tsx` - Details view
-- [ ] Show strategy info with rules displayed nicely
-- [ ] Show trades using this strategy
+- [x] Create `src/pages/dashboard/strategies/[id]/index.tsx` - Route component
+- [x] Create `src/sections/strategies/view/strategies-details-view.tsx` - Details view
+- [x] Show strategy info with rules displayed nicely
+- [ ] Show trades using this strategy (requires Phase 6)
 
 ---
 
@@ -203,17 +203,17 @@ Building a premium trading management system frontend using the Minimal UI theme
 **Goal:** Complete trade management including create, list, view, edit, and exit
 
 ### 6.1 Trades List Page
-- [ ] Create `src/pages/dashboard/trades/index.tsx` - Route component
-- [ ] Create `src/sections/trades/view/trades-list-view.tsx` - Main list view
-- [ ] Create `src/sections/trades/trades-table.tsx` - Trades data table
-- [ ] Create `src/sections/trades/trades-table-row.tsx` - Individual row with actions
-- [ ] Create `src/sections/trades/trades-table-toolbar.tsx` - Filters toolbar
-- [ ] Create `src/sections/trades/trades-filters.tsx` - Filter panel:
+- [x] Create `src/pages/dashboard/trades/index.tsx` - Route component
+- [x] Create `src/sections/trades/view/trades-list-view.tsx` - Main list view
+- [x] Create `src/sections/trades/trades-table.tsx` - Trades data table
+- [x] Create `src/sections/trades/trades-table-row.tsx` - Individual row with actions
+- [x] Create `src/sections/trades/trades-table-toolbar.tsx` - Filters toolbar
+- [x] Create `src/sections/trades/trades-filters.tsx` - Filter panel:
   - Status filter (All/Open/Closed)
   - Coin filter (dropdown)
   - Strategy filter (dropdown)
   - Date range filter
-- [ ] Implement features:
+- [x] Implement features:
   - Pagination with page size options
   - Sorting by date, P&L, coin, strategy
   - Quick actions (view, edit, exit, delete)
@@ -223,10 +223,10 @@ Building a premium trading management system frontend using the Minimal UI theme
   - Empty state with CTA to create first trade
 
 ### 6.2 Create Trade Page
-- [ ] Create `src/pages/dashboard/trades/new.tsx` - Route component
-- [ ] Create `src/sections/trades/view/trades-create-view.tsx` - Create view
-- [ ] Create `src/sections/trades/trades-form.tsx` - Trade entry form
-- [ ] Form fields:
+- [x] Create `src/pages/dashboard/trades/new.tsx` - Route component
+- [x] Create `src/sections/trades/view/trades-create-view.tsx` - Create view
+- [x] Create `src/sections/trades/trades-form.tsx` - Trade entry form
+- [x] Form fields:
   - Coin (searchable dropdown)
   - Strategy (searchable dropdown)
   - Trade Date (date picker)
@@ -235,16 +235,14 @@ Building a premium trading management system frontend using the Minimal UI theme
   - Stop Loss (number input)
   - Quantity (number input)
   - Notes (textarea)
-- [ ] Implement Zod validation
-- [ ] Calculate risk amount display (entry - stop loss) * quantity
-- [ ] Success toast and redirect options (list or create another)
+- [x] Implement Zod validation
+- [x] Calculate risk amount display (entry - stop loss) * quantity
+- [x] Success toast and redirect options (list or create another)
 
 ### 6.3 Trade Details Page
-- [ ] Create `src/pages/dashboard/trades/[id]/index.tsx` - Route component
-- [ ] Create `src/sections/trades/view/trades-details-view.tsx` - Details view
-- [ ] Create `src/sections/trades/trade-details-card.tsx` - Main info card
-- [ ] Create `src/sections/trades/trade-summary.tsx` - P&L summary for closed trades
-- [ ] Display sections:
+- [x] Create `src/pages/dashboard/trades/[id]/index.tsx` - Route component
+- [x] Create `src/sections/trades/view/trades-details-view.tsx` - Details view
+- [x] Display sections (integrated into trades-details-view.tsx):
   - Trade header (coin, status badge, actions)
   - Entry details (date, time, price, stop loss, quantity)
   - Exit details (if closed: date, time, price)
@@ -252,26 +250,26 @@ Building a premium trading management system frontend using the Minimal UI theme
   - Strategy info
   - Notes
   - Audit info (created by, updated by, timestamps)
-- [ ] Actions: Edit (if open), Exit (if open), Delete
+- [x] Actions: Edit (if open), Exit (if open), Delete
 
 ### 6.4 Edit Trade Page
-- [ ] Create `src/pages/dashboard/trades/[id]/edit.tsx` - Route component
-- [ ] Create `src/sections/trades/view/trades-edit-view.tsx` - Edit view
-- [ ] Reuse trades-form.tsx
-- [ ] Only allow editing OPEN trades
-- [ ] Show warning if trying to edit closed trade
-- [ ] Pre-populate all fields
+- [x] Create `src/pages/dashboard/trades/[id]/edit.tsx` - Route component
+- [x] Create `src/sections/trades/view/trades-edit-view.tsx` - Edit view
+- [x] Reuse trades-form.tsx
+- [x] Only allow editing OPEN trades
+- [x] Show warning if trying to edit closed trade
+- [x] Pre-populate all fields
 
 ### 6.5 Exit Trade Modal/Page
-- [ ] Create `src/sections/trades/trade-exit-dialog.tsx` - Exit trade modal
-- [ ] Form fields:
+- [x] Create `src/sections/trades/trade-exit-dialog.tsx` - Exit trade modal
+- [x] Form fields:
   - Exit Price (number input)
   - Exit Date (date picker, default today)
   - Exit Time (time picker, default now)
   - Notes (textarea)
-- [ ] Show calculated P&L preview before confirming
-- [ ] Success animation/feedback
-- [ ] Update list after exit
+- [x] Show calculated P&L preview before confirming
+- [x] Success animation/feedback
+- [x] Update list after exit
 
 ---
 
@@ -319,25 +317,25 @@ Building a premium trading management system frontend using the Minimal UI theme
 **Goal:** User profile management and application settings
 
 ### 8.1 Profile Page
-- [ ] Create `src/pages/dashboard/profile/index.tsx` - Route component
-- [ ] Create `src/sections/profile/view/profile-view.tsx` - Profile view
-- [ ] Create `src/sections/profile/profile-form.tsx` - Profile edit form:
+- [x] Create `src/pages/dashboard/profile/index.tsx` - Route component
+- [x] Create `src/sections/profile/view/profile-view.tsx` - Profile view
+- [x] Create `src/sections/profile/profile-form.tsx` - Profile edit form:
   - First Name
   - Last Name
   - Email (read-only)
   - Profile Picture (if supported)
-- [ ] Show organization info
-- [ ] Success toast on save
+- [x] Show organization info
+- [x] Success toast on save
 
 ### 8.2 Settings Page
-- [ ] Create `src/pages/dashboard/settings/index.tsx` - Route component
-- [ ] Create `src/sections/settings/view/settings-view.tsx` - Settings view
-- [ ] Create `src/sections/settings/settings-general.tsx` - General settings:
+- [x] Create `src/pages/dashboard/settings/index.tsx` - Route component
+- [x] Create `src/sections/settings/view/settings-view.tsx` - Settings view
+- [x] Create `src/sections/settings/settings-general.tsx` - General settings:
   - Currency preference
   - Timezone
   - Date format preference
-- [ ] Create `src/sections/settings/settings-notifications.tsx` - Notification preferences
-- [ ] Create `src/sections/settings/settings-display.tsx` - Display settings:
+- [x] Create `src/sections/settings/settings-notifications.tsx` - Notification preferences
+- [x] Create `src/sections/settings/settings-display.tsx` - Display settings:
   - Theme mode (integrated with existing theme toggle)
   - Compact mode
   - Table density

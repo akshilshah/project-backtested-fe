@@ -1,21 +1,17 @@
-import { useParams } from 'react-router';
-
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { TradesEditView } from 'src/sections/trades/view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Edit Trade | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Edit Trade - ${CONFIG.appName}` };
 
 export default function TradeEditPage() {
-  const { id } = useParams();
-
   return (
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Edit Trade" description={`Editing trade: ${id}`} />
+      <TradesEditView />
     </>
   );
 }

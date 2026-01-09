@@ -1,21 +1,17 @@
-import { useParams } from 'react-router';
-
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { StrategiesEditView } from 'src/sections/strategies/view/strategies-edit-view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Edit Strategy | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Edit Strategy - ${CONFIG.appName}` };
 
 export default function StrategyEditPage() {
-  const { id } = useParams();
-
   return (
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Edit Strategy" description={`Editing strategy: ${id}`} />
+      <StrategiesEditView />
     </>
   );
 }

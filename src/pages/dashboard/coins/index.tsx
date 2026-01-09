@@ -1,17 +1,17 @@
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { CoinsListView } from 'src/sections/coins/view/coins-list-view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Coins | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Coins - ${CONFIG.appName}` };
 
 export default function CoinsListPage() {
   return (
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Coins" description="Manage your coin/cryptocurrency master data" />
+      <CoinsListView />
     </>
   );
 }

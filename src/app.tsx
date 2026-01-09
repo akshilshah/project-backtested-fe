@@ -2,6 +2,8 @@ import 'src/global.css';
 
 import { useEffect } from 'react';
 
+import { Toaster } from 'sonner';
+
 import { usePathname } from 'src/routes/hooks';
 
 import { themeConfig, ThemeProvider } from 'src/theme';
@@ -31,6 +33,7 @@ export default function App({ children }: AppProps) {
           <MotionLazy>
             <ProgressBar />
             <SettingsDrawer defaultSettings={defaultSettings} />
+            <Toaster position="top-right" richColors closeButton />
             {children}
           </MotionLazy>
         </ThemeProvider>

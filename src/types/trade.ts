@@ -116,4 +116,5 @@ export interface TradeFilters {
   strategyId?: string;
   dateFrom?: string;
   dateTo?: string;
+  search?: string;
 }

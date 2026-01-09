@@ -1,17 +1,17 @@
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { StrategiesListView } from 'src/sections/strategies/view/strategies-list-view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Strategies | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Strategies - ${CONFIG.appName}` };
 
 export default function StrategiesListPage() {
   return (
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Strategies" description="Manage your trading strategies" />
+      <StrategiesListView />
     </>
   );
 }

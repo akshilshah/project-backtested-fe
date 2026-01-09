@@ -1,6 +1,6 @@
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { ProfileView } from 'src/sections/profile';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function ProfilePage() {
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Profile" description="Manage your profile information" />
+      <ProfileView />
     </>
   );
 }
