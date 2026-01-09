@@ -80,7 +80,17 @@ export function StatCard({
   }
 
   return (
-    <Card sx={{ p: 3, ...sx }}>
+    <Card
+      sx={{
+        p: 3,
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: theme.shadows[8],
+        },
+        ...sx,
+      }}
+    >
       <Stack spacing={2}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
@@ -93,6 +103,10 @@ export function StatCard({
                 p: 1,
                 borderRadius: 1.5,
                 bgcolor: alpha(theme.palette.primary.main, 0.08),
+                transition: 'transform 0.2s ease-in-out',
+                '.MuiCard-root:hover &': {
+                  transform: 'scale(1.1)',
+                },
               }}
             >
               <Iconify icon={icon as any} width={24} sx={{ color: iconColor }} />

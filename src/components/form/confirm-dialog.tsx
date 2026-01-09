@@ -1,5 +1,6 @@
 import type { Theme, SxProps } from '@mui/material/styles';
 
+import Zoom from '@mui/material/Zoom';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -38,7 +39,19 @@ export function ConfirmDialog({
   sx,
 }: ConfirmDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth={maxWidth} fullWidth sx={sx}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth={maxWidth}
+      fullWidth
+      TransitionComponent={Zoom}
+      sx={{
+        '& .MuiDialog-paper': {
+          borderRadius: 2,
+        },
+        ...sx,
+      }}
+    >
       <DialogTitle>{title}</DialogTitle>
 
       {content && (

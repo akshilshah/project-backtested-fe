@@ -1,6 +1,6 @@
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { AnalyticsView } from 'src/sections/analytics/view/analytics-view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function AnalyticsPage() {
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Analytics" description="View your trading performance analytics" />
+      <AnalyticsView />
     </>
   );
 }

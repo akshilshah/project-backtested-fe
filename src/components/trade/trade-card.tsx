@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 
 import { fDate, fTime } from 'src/utils/format-time';
 
@@ -35,6 +36,7 @@ export function TradeCard({
   onDelete,
   sx,
 }: TradeCardProps) {
+  const theme = useTheme();
   const {
     coin,
     strategy,
@@ -60,7 +62,19 @@ export function TradeCard({
     }).format(value);
 
   return (
-    <Card sx={{ p: 2.5, ...sx }}>
+    <Card
+      sx={{
+        p: 2.5,
+        cursor: onView ? 'pointer' : 'default',
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: theme.shadows[8],
+        },
+        ...sx,
+      }}
+      onClick={onView}
+    >
       <Stack spacing={2}>
         {/* Header */}
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between">

@@ -1,6 +1,6 @@
 import { CONFIG } from 'src/global-config';
 
-import { BlankView } from 'src/sections/blank/view';
+import { DashboardView } from 'src/sections/dashboard/view/dashboard-view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function DashboardPage() {
     <>
       <title>{metadata.title}</title>
 
-      <BlankView title="Dashboard" description="Welcome to your trading management dashboard" />
+      <DashboardView />
     </>
   );
 }

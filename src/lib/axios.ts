@@ -1,6 +1,7 @@
-import type { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig, AxiosError } from 'axios';
 
 import axios from 'axios';
+import { toast } from 'sonner';
 
 import { CONFIG } from 'src/global-config';
 
@@ -26,10 +27,29 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError<{ message?: string }>) => {
+    const status = error?.response?.status;
     const message = error?.response?.data?.message || error?.message || 'Something went wrong!';
+
+    // Handle 401 Unauthorized - redirect to login
+    if (status === 401) {
+      sessionStorage.removeItem(JWT_STORAGE_KEY);
+      toast.error('Session expired. Please login again.');
+
+      // Redirect to login page
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('/auth/')) {
+        window.location.href = `/auth/jwt/sign-in?returnTo=${encodeURIComponent(currentPath)}`;
+      }
+    }
+
+    // Handle network errors
+    if (!error.response && error.request) {
+      toast.error('Network error. Please check your internet connection.');
+    }
+
     console.error('Axios error:', message);
-    return Promise.reject(new Error(message));
+    return Promise.reject(error);
   }
 );
 
