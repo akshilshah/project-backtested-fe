@@ -28,7 +28,7 @@ export function TradesListView() {
   const [searchValue, setSearchValue] = useState('');
   const [statusFilter, setStatusFilter] = useState<TradeStatus | 'ALL'>('ALL');
   const [filters, setFilters] = useState<TradeFilters>({});
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [exitTrade, setExitTrade] = useState<Trade | null>(null);
   const [exitLoading, setExitLoading] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
@@ -95,7 +95,7 @@ export function TradesListView() {
   }, []);
 
   const handleDelete = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       try {
         setDeletingId(id);
         await TradesService.delete(id);

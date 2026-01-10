@@ -1,15 +1,15 @@
 // Strategy Types
 
 export interface Strategy {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   rules?: Record<string, unknown>;
-  organizationId: string;
+  organizationId: number;
   createdAt: string;
   updatedAt: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: number;
+  updatedBy?: number;
 }
 
 export interface CreateStrategyRequest {

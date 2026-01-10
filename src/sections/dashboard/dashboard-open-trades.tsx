@@ -177,7 +177,7 @@ export function DashboardOpenTrades({ trades, loading, onExit }: DashboardOpenTr
                         <Tooltip title="View">
                           <IconButton
                             component={RouterLink}
-                            href={paths.dashboard.trades.details(trade.id)}
+                            href={paths.dashboard.trades.details(String(trade.id))}
                             size="small"
                           >
                             <Iconify icon="solar:eye-bold" width={18} />

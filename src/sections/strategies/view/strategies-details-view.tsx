@@ -114,7 +114,7 @@ export function StrategiesDetailsView() {
           <Stack direction="row" spacing={1}>
             <Button
               component={RouterLink}
-              href={paths.dashboard.strategies.edit(strategy.id)}
+              href={paths.dashboard.strategies.edit(String(strategy.id))}
               variant="contained"
               startIcon={<Iconify icon="solar:pen-bold" />}
             >

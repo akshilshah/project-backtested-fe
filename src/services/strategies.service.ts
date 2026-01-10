@@ -17,8 +17,8 @@ export class StrategiesService {
     return response.data.data;
   }
 
-  static async getById(id: string): Promise<Strategy> {
-    const response = await axios.get<StrategyResponse>(endpoints.strategies.details(id));
+  static async getById(id: string | number): Promise<Strategy> {
+    const response = await axios.get<StrategyResponse>(endpoints.strategies.details(String(id)));
     return response.data.data;
   }
 
@@ -27,12 +27,12 @@ export class StrategiesService {
     return response.data.data;
   }
 
-  static async update(id: string, data: UpdateStrategyRequest): Promise<Strategy> {
-    const response = await axios.put<StrategyResponse>(endpoints.strategies.update(id), data);
+  static async update(id: string | number, data: UpdateStrategyRequest): Promise<Strategy> {
+    const response = await axios.put<StrategyResponse>(endpoints.strategies.update(String(id)), data);
     return response.data.data;
   }
 
-  static async delete(id: string): Promise<void> {
-    await axios.delete(endpoints.strategies.delete(id));
+  static async delete(id: string | number): Promise<void> {
+    await axios.delete(endpoints.strategies.delete(String(id)));
   }
 }

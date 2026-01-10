@@ -36,11 +36,11 @@ export const StrategiesTableRow = memo(function StrategiesTableRow({ row, onDele
   const popover = usePopover();
 
   const handleViewDetails = useCallback(() => {
-    router.push(paths.dashboard.strategies.details(row.id));
+    router.push(paths.dashboard.strategies.details(String(row.id)));
   }, [router, row.id]);
 
   const handleEdit = useCallback(() => {
-    router.push(paths.dashboard.strategies.edit(row.id));
+    router.push(paths.dashboard.strategies.edit(String(row.id)));
     popover.onClose();
   }, [router, row.id, popover]);
 

@@ -23,7 +23,7 @@ export function CoinsListView() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState('');
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
 
@@ -59,7 +59,7 @@ export function CoinsListView() {
   }, []);
 
   const handleDelete = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       try {
         setDeletingId(id);
         await CoinsService.delete(id);

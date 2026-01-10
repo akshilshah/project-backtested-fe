@@ -22,7 +22,7 @@ import { DeleteDialog } from 'src/components/form/confirm-dialog';
 
 type CoinsTableRowProps = {
   row: Coin;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   deleting?: boolean;
 };
 
@@ -66,7 +66,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
             <Box>
               <Typography
                 component={RouterLink}
-                href={paths.dashboard.coins.details(row.id)}
+                href={paths.dashboard.coins.details(String(row.id))}
                 variant="subtitle2"
                 sx={{
                   color: 'text.primary',
@@ -100,7 +100,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
             <Tooltip title="View">
               <IconButton
                 component={RouterLink}
-                href={paths.dashboard.coins.details(row.id)}
+                href={paths.dashboard.coins.details(String(row.id))}
                 size="small"
               >
                 <Iconify icon={'solar:eye-bold' as any} width={20} />
@@ -110,7 +110,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
             <Tooltip title="Edit">
               <IconButton
                 component={RouterLink}
-                href={paths.dashboard.coins.edit(row.id)}
+                href={paths.dashboard.coins.edit(String(row.id))}
                 size="small"
               >
                 <Iconify icon={'solar:pen-bold' as any} width={20} />

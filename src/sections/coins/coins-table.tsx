@@ -39,9 +39,9 @@ type CoinsTableProps = {
   onSearchChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onAddClick?: () => void;
-  deletingId?: string | null;
+  deletingId?: number | null;
 };
 
 export function CoinsTable({

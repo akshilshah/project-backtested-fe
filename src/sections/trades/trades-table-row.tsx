@@ -26,7 +26,7 @@ import { ProfitLossDisplay } from 'src/components/stats/profit-loss-display';
 
 type TradesTableRowProps = {
   row: Trade;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onExit: (trade: Trade) => void;
   deleting?: boolean;
 };
@@ -141,7 +141,7 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
             <Tooltip title="View">
               <IconButton
                 component={RouterLink}
-                href={paths.dashboard.trades.details(row.id)}
+                href={paths.dashboard.trades.details(String(row.id))}
                 size="small"
               >
                 <Iconify icon={'solar:eye-bold' as any} width={20} />
@@ -153,7 +153,7 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
                 <Tooltip title="Edit">
                   <IconButton
                     component={RouterLink}
-                    href={paths.dashboard.trades.edit(row.id)}
+                    href={paths.dashboard.trades.edit(String(row.id))}
                     size="small"
                   >
                     <Iconify icon={'solar:pen-bold' as any} width={20} />

@@ -1,14 +1,14 @@
 // Coin Types
 
 export interface Coin {
-  id: string;
+  id: number;
   symbol: string;
   name: string;
-  organizationId: string;
+  organizationId: number;
   createdAt: string;
   updatedAt: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: number;
+  updatedBy?: number;
 }
 
 export interface CreateCoinRequest {

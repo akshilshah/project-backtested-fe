@@ -1,11 +1,11 @@
 // Authentication Types
 
 export interface User {
-  id: string;
+  id: number;
   email: string;
   firstName: string;
   lastName: string;
-  organizationId: string;
+  organizationId: number;
   organization?: Organization;
   role: 'admin' | 'user';
   createdAt: string;
@@ -13,15 +13,15 @@ export interface User {
 }
 
 export interface Organization {
-  id: string;
+  id: number;
   name: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UserSettings {
-  id: string;
-  userId: string;
+  id: number;
+  userId: number;
   currency: string;
   timezone: string;
   dateFormat: string;

@@ -95,7 +95,7 @@ function RecentTradeItem({ trade }: RecentTradeItemProps) {
   return (
     <Stack
       component={RouterLink}
-      href={paths.dashboard.trades.details(trade.id)}
+      href={paths.dashboard.trades.details(String(trade.id))}
       direction="row"
       alignItems="center"
       justifyContent="space-between"

@@ -58,9 +58,9 @@ type TradesTableProps = {
   onClearFilters: () => void;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onExit: (trade: Trade) => void;
-  deletingId?: string | null;
+  deletingId?: number | null;
   coins: Coin[];
   strategies: Strategy[];
   coinsLoading?: boolean;

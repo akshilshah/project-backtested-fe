@@ -3,16 +3,16 @@
 export type TradeStatus = 'OPEN' | 'CLOSED';
 
 export interface Trade {
-  id: string;
-  coinId: string;
+  id: number;
+  coinId: number;
   coin?: {
-    id: string;
+    id: number;
     symbol: string;
     name: string;
   };
-  strategyId: string;
+  strategyId: number;
   strategy?: {
-    id: string;
+    id: number;
     name: string;
   };
   status: TradeStatus;
@@ -27,16 +27,16 @@ export interface Trade {
   exitPrice?: number;
   profitLoss?: number;
   profitLossPercentage?: number;
-  organizationId: string;
+  organizationId: number;
   createdAt: string;
   updatedAt: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: number;
+  updatedBy?: number;
 }
 
 export interface CreateTradeRequest {
-  coinId: string;
-  strategyId: string;
+  coinId: number;
+  strategyId: number;
   tradeDate: string;
   tradeTime: string;
   entryPrice: number;
@@ -46,8 +46,8 @@ export interface CreateTradeRequest {
 }
 
 export interface UpdateTradeRequest {
-  coinId?: string;
-  strategyId?: string;
+  coinId?: number;
+  strategyId?: number;
   tradeDate?: string;
   tradeTime?: string;
   entryPrice?: number;
@@ -89,14 +89,14 @@ export interface TradeAnalytics {
   bestTrade: number;
   worstTrade: number;
   byStrategy: {
-    strategyId: string;
+    strategyId: number;
     strategyName: string;
     trades: number;
     winRate: number;
     profitLoss: number;
   }[];
   byCoin: {
-    coinId: string;
+    coinId: number;
     coinSymbol: string;
     coinName: string;
     trades: number;
@@ -112,8 +112,8 @@ export interface TradeAnalyticsResponse {
 
 export interface TradeFilters {
   status?: TradeStatus;
-  coinId?: string;
-  strategyId?: string;
+  coinId?: number;
+  strategyId?: number;
   dateFrom?: string;
   dateTo?: string;
   search?: string;

@@ -23,8 +23,8 @@ export class TradesService {
     return response.data.data;
   }
 
-  static async getById(id: string): Promise<Trade> {
-    const response = await axios.get<TradeResponse>(endpoints.trades.details(id));
+  static async getById(id: string | number): Promise<Trade> {
+    const response = await axios.get<TradeResponse>(endpoints.trades.details(String(id)));
     return response.data.data;
   }
 
@@ -33,17 +33,17 @@ export class TradesService {
     return response.data.data;
   }
 
-  static async update(id: string, data: UpdateTradeRequest): Promise<Trade> {
-    const response = await axios.put<TradeResponse>(endpoints.trades.update(id), data);
+  static async update(id: string | number, data: UpdateTradeRequest): Promise<Trade> {
+    const response = await axios.put<TradeResponse>(endpoints.trades.update(String(id)), data);
     return response.data.data;
   }
 
-  static async delete(id: string): Promise<void> {
-    await axios.delete(endpoints.trades.delete(id));
+  static async delete(id: string | number): Promise<void> {
+    await axios.delete(endpoints.trades.delete(String(id)));
   }
 
-  static async exit(id: string, data: ExitTradeRequest): Promise<Trade> {
-    const response = await axios.post<TradeResponse>(endpoints.trades.exit(id), data);
+  static async exit(id: string | number, data: ExitTradeRequest): Promise<Trade> {
+    const response = await axios.post<TradeResponse>(endpoints.trades.exit(String(id)), data);
     return response.data.data;
   }
 

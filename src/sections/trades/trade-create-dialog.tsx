@@ -28,8 +28,8 @@ import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-
 // ----------------------------------------------------------------------
 
 const TradeSchema = z.object({
-  coinId: z.string().min(1, 'Coin is required'),
-  strategyId: z.string().min(1, 'Strategy is required'),
+  coinId: z.number({ message: 'Coin is required' }).min(1, 'Coin is required'),
+  strategyId: z.number({ message: 'Strategy is required' }).min(1, 'Strategy is required'),
   tradeDate: z.any().refine((val) => val !== null && val !== undefined, 'Trade date is required'),
   tradeTime: z.any().refine((val) => val !== null && val !== undefined, 'Trade time is required'),
   entryPrice: z
@@ -71,8 +71,8 @@ export function TradeCreateDialog({
   loading = false,
 }: TradeCreateDialogProps) {
   const defaultValues: TradeFormValues = {
-    coinId: '',
-    strategyId: '',
+    coinId: 0,
+    strategyId: 0,
     tradeDate: dayjs(),
     tradeTime: dayjs(),
     entryPrice: '',
@@ -107,8 +107,8 @@ export function TradeCreateDialog({
     return Math.abs(entry - sl) * qty;
   }, [entryPriceValue, stopLossValue, quantityValue]);
 
-  const selectedCoin = coins.find((c) => c.id === coinIdValue) ?? null;
-  const selectedStrategy = strategies.find((s) => s.id === strategyIdValue) ?? null;
+  const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
+  const selectedStrategy = strategies.find((s) => s.id === Number(strategyIdValue)) ?? null;
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const tradeDate = dayjs(data.tradeDate).format('YYYY-MM-DD');
@@ -151,7 +151,7 @@ export function TradeCreateDialog({
                   loading={coinsLoading}
                   value={selectedCoin}
                   onChange={(_: any, newValue: Coin | null) => {
-                    setValue('coinId', newValue?.id ?? '', { shouldValidate: true });
+                    setValue('coinId', newValue?.id ?? 0, { shouldValidate: true });
                   }}
                   getOptionLabel={(option: Coin) => `${option.symbol} - ${option.name}`}
                   isOptionEqualToValue={(option: Coin, value: Coin) => option.id === value.id}
@@ -197,7 +197,7 @@ export function TradeCreateDialog({
                   loading={strategiesLoading}
                   value={selectedStrategy}
                   onChange={(_: any, newValue: Strategy | null) => {
-                    setValue('strategyId', newValue?.id ?? '', { shouldValidate: true });
+                    setValue('strategyId', newValue?.id ?? 0, { shouldValidate: true });
                   }}
                   getOptionLabel={(option: Strategy) => option.name}
                   isOptionEqualToValue={(option: Strategy, value: Strategy) => option.id === value.id}

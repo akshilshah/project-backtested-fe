@@ -24,8 +24,8 @@ import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-
 // ----------------------------------------------------------------------
 
 const TradeSchema = z.object({
-  coinId: z.string().min(1, 'Coin is required'),
-  strategyId: z.string().min(1, 'Strategy is required'),
+  coinId: z.number({ message: 'Coin is required' }).min(1, 'Coin is required'),
+  strategyId: z.number({ message: 'Strategy is required' }).min(1, 'Strategy is required'),
   tradeDate: z.any().refine((val) => val !== null && val !== undefined, 'Trade date is required'),
   tradeTime: z.any().refine((val) => val !== null && val !== undefined, 'Trade time is required'),
   entryPrice: z
@@ -70,8 +70,8 @@ export function TradesForm({
 
   const defaultValues: TradeFormValues = useMemo(
     () => ({
-      coinId: currentTrade?.coinId ?? '',
-      strategyId: currentTrade?.strategyId ?? '',
+      coinId: currentTrade?.coinId ?? 0,
+      strategyId: currentTrade?.strategyId ?? 0,
       tradeDate: currentTrade?.tradeDate ? dayjs(currentTrade.tradeDate) : dayjs(),
       tradeTime: currentTrade?.tradeTime
         ? dayjs(`2000-01-01 ${currentTrade.tradeTime}`)
@@ -110,16 +110,16 @@ export function TradesForm({
     return Math.abs(entry - sl) * qty;
   }, [entryPriceValue, stopLossValue, quantityValue]);
 
-  const selectedCoin = coins.find((c) => c.id === coinIdValue) ?? null;
-  const selectedStrategy = strategies.find((s) => s.id === strategyIdValue) ?? null;
+  const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
+  const selectedStrategy = strategies.find((s) => s.id === Number(strategyIdValue)) ?? null;
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const tradeDate = dayjs(data.tradeDate).format('YYYY-MM-DD');
-    const tradeTime = dayjs(data.tradeTime).format('HH:mm');
+    const tradeTime = dayjs(data.tradeTime).format('HH:mm:ss');
 
     await onSubmit({
-      coinId: data.coinId,
-      strategyId: data.strategyId,
+      coinId: Number(data.coinId),
+      strategyId: Number(data.strategyId),
       tradeDate,
       tradeTime,
       entryPrice: Number(data.entryPrice),
@@ -160,7 +160,7 @@ export function TradesForm({
               loading={coinsLoading}
               value={selectedCoin}
               onChange={(_: any, newValue: Coin | null) => {
-                setValue('coinId', newValue?.id ?? '', { shouldValidate: true });
+                setValue('coinId', newValue?.id ?? 0, { shouldValidate: true });
               }}
               getOptionLabel={(option: Coin) => `${option.symbol} - ${option.name}`}
               isOptionEqualToValue={(option: Coin, value: Coin) => option.id === value.id}
@@ -207,7 +207,7 @@ export function TradesForm({
               loading={strategiesLoading}
               value={selectedStrategy}
               onChange={(_: any, newValue: Strategy | null) => {
-                setValue('strategyId', newValue?.id ?? '', { shouldValidate: true });
+                setValue('strategyId', newValue?.id ?? 0, { shouldValidate: true });
               }}
               getOptionLabel={(option: Strategy) => option.name}
               isOptionEqualToValue={(option: Strategy, value: Strategy) => option.id === value.id}

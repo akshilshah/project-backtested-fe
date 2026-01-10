@@ -17,8 +17,8 @@ export class CoinsService {
     return response.data.data;
   }
 
-  static async getById(id: string): Promise<Coin> {
-    const response = await axios.get<CoinResponse>(endpoints.coins.details(id));
+  static async getById(id: string | number): Promise<Coin> {
+    const response = await axios.get<CoinResponse>(endpoints.coins.details(String(id)));
     return response.data.data;
   }
 
@@ -27,12 +27,12 @@ export class CoinsService {
     return response.data.data;
   }
 
-  static async update(id: string, data: UpdateCoinRequest): Promise<Coin> {
-    const response = await axios.put<CoinResponse>(endpoints.coins.update(id), data);
+  static async update(id: string | number, data: UpdateCoinRequest): Promise<Coin> {
+    const response = await axios.put<CoinResponse>(endpoints.coins.update(String(id)), data);
     return response.data.data;
   }
 
-  static async delete(id: string): Promise<void> {
-    await axios.delete(endpoints.coins.delete(id));
+  static async delete(id: string | number): Promise<void> {
+    await axios.delete(endpoints.coins.delete(String(id)));
   }
 }
