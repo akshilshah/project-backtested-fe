@@ -46,13 +46,17 @@ export function PriceDisplay({
 
   const { valueVariant, labelVariant } = getSizeStyles();
 
-  const formatPrice = () =>
-    new Intl.NumberFormat('en-US', {
+  const formatPrice = () => {
+    if (value === undefined || value === null || isNaN(value)) {
+      return '-';
+    }
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 8,
     }).format(value);
+  };
 
   return (
     <Stack sx={sx}>
