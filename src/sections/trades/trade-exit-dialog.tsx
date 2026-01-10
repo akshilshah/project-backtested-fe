@@ -28,8 +28,8 @@ import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-
 
 const ExitTradeSchema = z.object({
   exitPrice: z
-    .string()
-    .min(1, 'Exit price is required')
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Exit price is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Exit price must be a positive number'),
   exitDate: z.any().refine((val) => val !== null && val !== undefined, 'Exit date is required'),
   exitTime: z.any().refine((val) => val !== null && val !== undefined, 'Exit time is required'),

@@ -33,16 +33,16 @@ const TradeSchema = z.object({
   tradeDate: z.any().refine((val) => val !== null && val !== undefined, 'Trade date is required'),
   tradeTime: z.any().refine((val) => val !== null && val !== undefined, 'Trade time is required'),
   entryPrice: z
-    .string()
-    .min(1, 'Entry price is required')
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Entry price is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Entry price must be a positive number'),
   stopLoss: z
-    .string()
-    .min(1, 'Stop loss is required')
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Stop loss is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Stop loss must be a positive number'),
   quantity: z
-    .string()
-    .min(1, 'Quantity is required')
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Quantity is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Quantity must be a positive number'),
   notes: z.string().optional(),
 });
