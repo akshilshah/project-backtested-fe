@@ -175,17 +175,17 @@ export function TradesTable({
                   colSpan={TABLE_HEAD.length}
                   action={
                     !searchValue &&
-                    statusFilter === 'ALL' &&
-                    !hasActiveFilters && (
-                      <Button
-                        component={RouterLink}
-                        href={paths.dashboard.trades.new}
-                        variant="contained"
-                        startIcon={<Iconify icon="mingcute:add-line" />}
-                      >
-                        New Trade
-                      </Button>
-                    )
+                    statusFilter === 'ALL'
+                    // !hasActiveFilters && (
+                    //   <Button
+                    //     component={RouterLink}
+                    //     href={paths.dashboard.trades.new}
+                    //     variant="contained"
+                    //     startIcon={<Iconify icon="mingcute:add-line" />}
+                    //   >
+                    //     New Trade
+                    //   </Button>
+                    // )
                   }
                 />
               ) : (

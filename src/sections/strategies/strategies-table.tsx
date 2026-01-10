@@ -1,4 +1,4 @@
-import type { Coin } from 'src/types/coin';
+import type { Strategy } from 'src/types/strategy';
 
 import { useCallback } from 'react';
 
@@ -17,20 +17,21 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { TableEmpty } from 'src/components/data-table/table-empty';
 import { TableSkeleton } from 'src/components/data-table/table-skeleton';
 
-import { CoinsTableRow } from './coins-table-row';
-import { CoinsTableToolbar } from './coins-table-toolbar';
+import { StrategiesTableRow } from './strategies-table-row';
+import { StrategiesTableToolbar } from './strategies-table-toolbar';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Coin', width: 280 },
-  { id: 'symbol', label: 'Symbol', width: 120 },
+  { id: 'name', label: 'Name', minWidth: 200 },
+  { id: 'rules', label: 'Rules', width: 120 },
   { id: 'createdAt', label: 'Created', width: 180 },
-  { id: 'actions', label: '', width: 120, align: 'right' as const },
+  { id: 'updatedAt', label: 'Updated', width: 180 },
+  { id: 'actions', label: '', width: 80, align: 'right' as const },
 ];
 
-type CoinsTableProps = {
-  data: Coin[];
+type StrategiesTableProps = {
+  data: Strategy[];
   loading?: boolean;
   totalCount?: number;
   page: number;
@@ -39,12 +40,11 @@ type CoinsTableProps = {
   onSearchChange: (value: string) => void;
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number) => void;
-  onDelete: (id: string) => void;
+  onDelete: (strategy: Strategy) => void;
   onAddClick?: () => void;
-  deletingId?: string | null;
 };
 
-export function CoinsTable({
+export function StrategiesTable({
   data,
   loading = false,
   totalCount,
@@ -56,8 +56,7 @@ export function CoinsTable({
   onRowsPerPageChange,
   onDelete,
   onAddClick,
-  deletingId,
-}: CoinsTableProps) {
+}: StrategiesTableProps) {
   const handlePageChange = useCallback(
     (_: unknown, newPage: number) => {
       onPageChange(newPage);
@@ -76,7 +75,7 @@ export function CoinsTable({
 
   return (
     <Card>
-      <CoinsTableToolbar
+      <StrategiesTableToolbar
         searchValue={searchValue}
         onSearchChange={onSearchChange}
         onAddClick={onAddClick}
@@ -93,6 +92,7 @@ export function CoinsTable({
                     align={cell.align ?? 'left'}
                     sx={{
                       width: cell.width,
+                      minWidth: cell.minWidth,
                       bgcolor: 'background.neutral',
                     }}
                   >
@@ -107,11 +107,11 @@ export function CoinsTable({
                 <TableSkeleton rows={rowsPerPage} columns={TABLE_HEAD.length} />
               ) : isEmpty ? (
                 <TableEmpty
-                  title="No coins found"
+                  title="No strategies found"
                   description={
                     searchValue
                       ? `No results found for "${searchValue}". Try adjusting your search.`
-                      : "You haven't added any coins yet. Add your first coin to get started."
+                      : "You haven't created any strategies yet. Create your first strategy to get started."
                   }
                   colSpan={TABLE_HEAD.length}
                   action={
@@ -121,18 +121,17 @@ export function CoinsTable({
                         startIcon={<Iconify icon="mingcute:add-line" />}
                         onClick={onAddClick}
                       >
-                        New Coin
+                        New Strategy
                       </Button>
                     )
                   }
                 />
               ) : (
                 data.map((row) => (
-                  <CoinsTableRow
+                  <StrategiesTableRow
                     key={row.id}
                     row={row}
                     onDelete={onDelete}
-                    deleting={deletingId === row.id}
                   />
                 ))
               )}

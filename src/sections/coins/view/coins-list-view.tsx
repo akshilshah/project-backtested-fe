@@ -126,6 +126,7 @@ export function CoinsListView() {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDelete={handleDelete}
+        onAddClick={handleOpenCreate}
         deletingId={deletingId}
       />
 

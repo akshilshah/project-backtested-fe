@@ -5,9 +5,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -15,12 +12,14 @@ import { Iconify } from 'src/components/iconify';
 type CoinsTableToolbarProps = {
   searchValue: string;
   onSearchChange: (value: string) => void;
+  onAddClick?: () => void;
   sx?: SxProps<Theme>;
 };
 
 export function CoinsTableToolbar({
   searchValue,
   onSearchChange,
+  onAddClick,
   sx,
 }: CoinsTableToolbarProps) {
   return (
@@ -49,10 +48,9 @@ export function CoinsTableToolbar({
       />
 
       <Button
-        component={RouterLink}
-        href={paths.dashboard.coins.new}
         variant="contained"
         startIcon={<Iconify icon="mingcute:add-line" />}
+        onClick={onAddClick}
       >
         New Coin
       </Button>
