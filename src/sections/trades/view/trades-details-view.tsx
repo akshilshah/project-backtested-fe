@@ -315,26 +315,13 @@ export function TradesDetailsView() {
                   <Typography variant="overline" sx={{ color: 'text.secondary', mb: 2, display: 'block' }}>
                     Risk Analysis
                   </Typography>
-                  <Stack spacing={2}>
-                    <Stack direction="row" justifyContent="space-between">
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Risk Amount
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'USD',
-                        }).format(Math.abs(trade.avgEntry - trade.stopLoss) * trade.quantity)}
-                      </Typography>
-                    </Stack>
-                    <Stack direction="row" justifyContent="space-between">
-                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        Risk %
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        {(((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
-                      </Typography>
-                    </Stack>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      Risk %
+                    </Typography>
+                    <Typography variant="subtitle2">
+                      {(((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
+                    </Typography>
                   </Stack>
                 </CardContent>
               </Card>

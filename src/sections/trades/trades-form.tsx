@@ -287,23 +287,6 @@ export function TradesForm({
             />
           </Grid>
 
-          {/* Risk Amount Display */}
-          {riskAmount !== null && (
-            <Grid size={{ xs: 12 }}>
-              <Alert severity="info" icon={false}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                  <Typography variant="subtitle2">Risk Amount</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                    }).format(riskAmount)}
-                  </Typography>
-                </Stack>
-              </Alert>
-            </Grid>
-          )}
-
           {/* Notes */}
           <Grid size={{ xs: 12 }}>
             <RHFTextField

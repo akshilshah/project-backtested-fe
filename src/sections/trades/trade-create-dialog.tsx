@@ -275,21 +275,6 @@ export function TradeCreateDialog({
               </Grid>
             </Grid>
 
-            {/* Risk Amount Display */}
-            {riskAmount !== null && (
-              <Alert severity="info" icon={false}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
-                  <Typography variant="subtitle2">Risk Amount</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                    }).format(riskAmount)}
-                  </Typography>
-                </Stack>
-              </Alert>
-            )}
-
             {/* Notes */}
             <RHFTextField
               name="notes"
