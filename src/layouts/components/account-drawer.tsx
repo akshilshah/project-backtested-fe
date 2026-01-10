@@ -147,7 +147,8 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
         </IconButton>
 
         <Scrollbar>
-          <Box
+          {/* User avatar, name, email section - commented out */}
+          {/* <Box
             sx={{
               pt: 8,
               display: 'flex',
@@ -164,9 +165,10 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
               {user?.email}
             </Typography>
-          </Box>
+          </Box> */}
 
-          <Box
+          {/* Account switching avatars - commented out */}
+          {/* <Box
             sx={{
               p: 3,
               gap: 1,
@@ -200,13 +202,16 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
                 <Iconify icon="mingcute:add-line" />
               </IconButton>
             </Tooltip>
-          </Box>
+          </Box> */}
+
+          <Box sx={{ pt: 8 }} />
 
           {renderList()}
 
-          <Box sx={{ px: 2.5, py: 3 }}>
+          {/* UpgradeBlock - commented out */}
+          {/* <Box sx={{ px: 2.5, py: 3 }}>
             <UpgradeBlock />
-          </Box>
+          </Box> */}
         </Scrollbar>
 
         <Box sx={{ p: 2.5 }}>

@@ -13,6 +13,7 @@ import { swrConfig } from 'src/lib/swr-config';
 
 import { ProgressBar } from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
+import { LocalizationProvider } from 'src/components/localization-provider';
 import { SettingsDrawer, defaultSettings, SettingsProvider } from 'src/components/settings';
 
 import { AuthProvider } from 'src/auth/context/jwt';
@@ -30,17 +31,19 @@ export default function App({ children }: AppProps) {
     <SWRConfig value={swrConfig}>
       <AuthProvider>
         <SettingsProvider defaultSettings={defaultSettings}>
-          <ThemeProvider
-            modeStorageKey={themeConfig.modeStorageKey}
-            defaultMode={themeConfig.defaultMode}
-          >
-            <MotionLazy>
-              <ProgressBar />
-              <SettingsDrawer defaultSettings={defaultSettings} />
-              <Toaster position="top-right" richColors closeButton />
-              {children}
-            </MotionLazy>
-          </ThemeProvider>
+          <LocalizationProvider>
+            <ThemeProvider
+              modeStorageKey={themeConfig.modeStorageKey}
+              defaultMode={themeConfig.defaultMode}
+            >
+              <MotionLazy>
+                <ProgressBar />
+                <SettingsDrawer defaultSettings={defaultSettings} />
+                <Toaster position="top-right" richColors closeButton />
+                {children}
+              </MotionLazy>
+            </ThemeProvider>
+          </LocalizationProvider>
         </SettingsProvider>
       </AuthProvider>
     </SWRConfig>

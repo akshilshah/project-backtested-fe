@@ -46,8 +46,8 @@ export function AnalyticsView() {
     StrategiesService.getAll({ limit: 100 })
   );
 
-  const coins = coinsData?.data ?? [];
-  const strategies = strategiesData?.data ?? [];
+  const coins = coinsData?.coins ?? [];
+  const strategies = strategiesData?.strategies ?? [];
 
   const handleFiltersChange = useCallback((newFilters: TradeFilters) => {
     setFilters(newFilters);

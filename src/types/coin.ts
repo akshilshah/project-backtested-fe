@@ -28,7 +28,7 @@ export interface CoinResponse {
 
 export interface CoinsListResponse {
   success: boolean;
-  data: Coin[];
+  coins: Coin[];
   pagination?: {
     page: number;
     limit: number;

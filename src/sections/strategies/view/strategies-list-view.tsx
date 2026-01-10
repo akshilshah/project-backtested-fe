@@ -1,4 +1,4 @@
-import type { Strategy } from 'src/types/strategy';
+import type { Strategy, CreateStrategyRequest } from 'src/types/strategy';
 import type { Column } from 'src/components/data-table';
 
 import { useState, useCallback } from 'react';
@@ -11,7 +11,6 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
 import useSWR, { mutate } from 'swr';
 import { toast } from 'sonner';
@@ -20,13 +19,13 @@ import { fDateTime } from 'src/utils/format-time';
 import { paths } from 'src/routes/paths';
 
 import { Iconify } from 'src/components/iconify';
-import { PageHeader } from 'src/components/page/page-header';
 import { DataTable, useTable } from 'src/components/data-table';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
 
 import { StrategiesService } from 'src/services/strategies.service';
 
 import { StrategiesTableRow } from '../strategies-table-row';
+import { StrategyCreateDialog } from '../strategy-create-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +36,8 @@ export function StrategiesListView() {
   const [searchValue, setSearchValue] = useState('');
   const [deleteStrategy, setDeleteStrategy] = useState<Strategy | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
   // Fetch strategies
   const { data, isLoading, error } = useSWR(
@@ -51,7 +52,7 @@ export function StrategiesListView() {
       })
   );
 
-  const strategies = data?.data || [];
+  const strategies = data?.strategies || [];
   const totalCount = data?.pagination?.total || strategies.length;
 
   // Handle search
@@ -92,6 +93,33 @@ export function StrategiesListView() {
   const handleRefresh = useCallback(() => {
     mutate(['strategies', table.page, table.rowsPerPage, table.orderBy, table.order, searchValue]);
   }, [table.page, table.rowsPerPage, table.orderBy, table.order, searchValue]);
+
+  // Create strategy handlers
+  const handleOpenCreate = useCallback(() => {
+    setCreateOpen(true);
+  }, []);
+
+  const handleCloseCreate = useCallback(() => {
+    setCreateOpen(false);
+  }, []);
+
+  const handleCreateSubmit = useCallback(
+    async (data: CreateStrategyRequest) => {
+      try {
+        setCreateLoading(true);
+        await StrategiesService.create(data);
+        toast.success('Strategy created successfully');
+        mutate(['strategies', table.page, table.rowsPerPage, table.orderBy, table.order, searchValue]);
+        setCreateOpen(false);
+      } catch (error: any) {
+        const message = error?.response?.data?.message || 'Failed to create strategy';
+        toast.error(message);
+      } finally {
+        setCreateLoading(false);
+      }
+    },
+    [table.page, table.rowsPerPage, table.orderBy, table.order, searchValue]
+  );
 
   // Table columns
   const columns: Column<Strategy>[] = [
@@ -193,24 +221,16 @@ export function StrategiesListView() {
 
   return (
     <Container maxWidth="lg">
-      <PageHeader
-        title="Strategies"
-        subtitle="Manage your trading strategies"
-        breadcrumbs={[
-          { label: 'Dashboard', href: paths.dashboard.root },
-          { label: 'Strategies' },
-        ]}
-        action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.strategies.new}
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-          >
-            New Strategy
-          </Button>
-        }
-      />
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h4">Strategies</Typography>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleOpenCreate}
+        >
+          Add
+        </Button>
+      </Box>
 
       <DataTable
         columns={columns}
@@ -238,10 +258,9 @@ export function StrategiesListView() {
         emptyDescription="Get started by creating your first trading strategy"
         emptyAction={
           <Button
-            component={RouterLink}
-            href={paths.dashboard.strategies.new}
             variant="contained"
             startIcon={<Iconify icon="mingcute:add-line" />}
+            onClick={handleOpenCreate}
           >
             Create Strategy
           </Button>
@@ -255,6 +274,13 @@ export function StrategiesListView() {
         title="Delete Strategy"
         itemName={deleteStrategy?.name}
         loading={deleting}
+      />
+
+      <StrategyCreateDialog
+        open={createOpen}
+        onClose={handleCloseCreate}
+        onSubmit={handleCreateSubmit}
+        loading={createLoading}
       />
     </Container>
   );

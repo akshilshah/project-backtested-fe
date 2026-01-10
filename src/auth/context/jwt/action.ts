@@ -20,11 +20,14 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
 
     const res = await axios.post(endpoints.auth.login, params);
 
-    const accessToken = res.data.data?.accessToken || res.data.accessToken;
+    const rawToken = res.data.data?.token || res.data.token;
 
-    if (!accessToken) {
+    if (!rawToken) {
       throw new Error('Access token not found in response');
     }
+
+    // Remove "Bearer " prefix if present
+    const accessToken = rawToken.replace(/^Bearer\s+/i, '');
 
     setSession(accessToken);
   } catch (error) {
@@ -52,11 +55,14 @@ export const signUp = async ({
   try {
     const res = await axios.post(endpoints.auth.signup, params);
 
-    const accessToken = res.data.data?.accessToken || res.data.accessToken;
+    const rawToken = res.data.data?.token || res.data.token;
 
-    if (!accessToken) {
+    if (!rawToken) {
       throw new Error('Access token not found in response');
     }
+
+    // Remove "Bearer " prefix if present
+    const accessToken = rawToken.replace(/^Bearer\s+/i, '');
 
     sessionStorage.setItem(JWT_STORAGE_KEY, accessToken);
   } catch (error) {

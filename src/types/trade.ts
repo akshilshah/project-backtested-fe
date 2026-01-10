@@ -70,7 +70,7 @@ export interface TradeResponse {
 
 export interface TradesListResponse {
   success: boolean;
-  data: Trade[];
+  trades: Trade[];
   pagination?: {
     page: number;
     limit: number;

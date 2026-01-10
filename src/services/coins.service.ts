@@ -13,8 +13,8 @@ import axios, { endpoints } from 'src/lib/axios';
 
 export class CoinsService {
   static async getAll(params?: QueryParams): Promise<CoinsListResponse> {
-    const response = await axios.get<CoinsListResponse>(endpoints.coins.list, { params });
-    return response.data;
+    const response = await axios.get<{ data: CoinsListResponse }>(endpoints.coins.list, { params });
+    return response.data.data;
   }
 
   static async getById(id: string): Promise<Coin> {

@@ -13,8 +13,8 @@ import axios, { endpoints } from 'src/lib/axios';
 
 export class StrategiesService {
   static async getAll(params?: QueryParams): Promise<StrategiesListResponse> {
-    const response = await axios.get<StrategiesListResponse>(endpoints.strategies.list, { params });
-    return response.data;
+    const response = await axios.get<{ data: StrategiesListResponse }>(endpoints.strategies.list, { params });
+    return response.data.data;
   }
 
   static async getById(id: string): Promise<Strategy> {

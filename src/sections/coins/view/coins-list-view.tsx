@@ -1,20 +1,21 @@
+import type { CreateCoinRequest } from 'src/types/coin';
+
 import { useState, useCallback } from 'react';
 
 import { toast } from 'sonner';
 import useSWR from 'swr';
 
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
+import Typography from '@mui/material/Typography';
 
 import { CoinsService } from 'src/services/coins.service';
 
 import { Iconify } from 'src/components/iconify';
-import { PageHeader } from 'src/components/page/page-header';
 import { PageContainer } from 'src/components/page/page-container';
 
 import { CoinsTable } from '../coins-table';
+import { CoinCreateDialog } from '../coin-create-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,8 @@ export function CoinsListView() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
   // Fetch coins data
   const { data, isLoading, mutate } = useSWR(
@@ -38,7 +41,7 @@ export function CoinsListView() {
     }
   );
 
-  const coins = data?.data ?? [];
+  const coins = data?.coins ?? [];
   const totalCount = data?.pagination?.total ?? 0;
 
   const handleSearchChange = useCallback((value: string) => {
@@ -72,26 +75,45 @@ export function CoinsListView() {
     [mutate]
   );
 
+  // Create coin handlers
+  const handleOpenCreate = useCallback(() => {
+    setCreateOpen(true);
+  }, []);
+
+  const handleCloseCreate = useCallback(() => {
+    setCreateOpen(false);
+  }, []);
+
+  const handleCreateSubmit = useCallback(
+    async (data: CreateCoinRequest) => {
+      try {
+        setCreateLoading(true);
+        await CoinsService.create(data);
+        toast.success('Coin created successfully');
+        mutate();
+        setCreateOpen(false);
+      } catch (error: any) {
+        const message = error?.response?.data?.message || 'Failed to create coin';
+        toast.error(message);
+      } finally {
+        setCreateLoading(false);
+      }
+    },
+    [mutate]
+  );
+
   return (
     <PageContainer>
-      <PageHeader
-        title="Coins"
-        subtitle="Manage your cryptocurrency coins"
-        breadcrumbs={[
-          { label: 'Dashboard', href: paths.dashboard.root },
-          { label: 'Coins' },
-        ]}
-        action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.coins.new}
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-          >
-            New Coin
-          </Button>
-        }
-      />
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h4">Coins</Typography>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleOpenCreate}
+        >
+          Add
+        </Button>
+      </Box>
 
       <CoinsTable
         data={coins}
@@ -105,6 +127,13 @@ export function CoinsListView() {
         onRowsPerPageChange={handleRowsPerPageChange}
         onDelete={handleDelete}
         deletingId={deletingId}
+      />
+
+      <CoinCreateDialog
+        open={createOpen}
+        onClose={handleCloseCreate}
+        onSubmit={handleCreateSubmit}
+        loading={createLoading}
       />
     </PageContainer>
   );

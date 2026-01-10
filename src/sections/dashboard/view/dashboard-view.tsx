@@ -45,7 +45,7 @@ export function DashboardView() {
     () => TradesService.getAll({ limit: 20 })
   );
 
-  const trades = tradesData?.data ?? [];
+  const trades = tradesData?.trades ?? [];
 
   const handleOpenExit = useCallback((trade: Trade) => {
     setExitTrade(trade);

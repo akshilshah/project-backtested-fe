@@ -19,8 +19,8 @@ export type TradeQueryParams = PaginationParams & TradeFilters;
 
 export class TradesService {
   static async getAll(params?: TradeQueryParams): Promise<TradesListResponse> {
-    const response = await axios.get<TradesListResponse>(endpoints.trades.list, { params });
-    return response.data;
+    const response = await axios.get<{ data: TradesListResponse }>(endpoints.trades.list, { params });
+    return response.data.data;
   }
 
   static async getById(id: string): Promise<Trade> {

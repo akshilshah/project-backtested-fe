@@ -31,7 +31,7 @@ export interface StrategyResponse {
 
 export interface StrategiesListResponse {
   success: boolean;
-  data: Strategy[];
+  strategies: Strategy[];
   pagination?: {
     page: number;
     limit: number;

@@ -44,8 +44,8 @@ export function TradesEditView() {
     StrategiesService.getAll({ limit: 100 })
   );
 
-  const coins = coinsData?.data ?? [];
-  const strategies = strategiesData?.data ?? [];
+  const coins = coinsData?.coins ?? [];
+  const strategies = strategiesData?.strategies ?? [];
 
   const handleSubmit = useCallback(
     async (data: CreateTradeRequest) => {

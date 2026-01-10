@@ -73,10 +73,6 @@ export const navData: NavSectionProps['data'] = [
         title: 'Trades',
         path: paths.dashboard.trades.root,
         icon: ICONS.banking,
-        children: [
-          { title: 'All Trades', path: paths.dashboard.trades.root },
-          { title: 'New Trade', path: paths.dashboard.trades.new },
-        ],
       },
     ],
   },
@@ -90,19 +86,11 @@ export const navData: NavSectionProps['data'] = [
         title: 'Coins',
         path: paths.dashboard.coins.root,
         icon: ICONS.ecommerce,
-        children: [
-          { title: 'All Coins', path: paths.dashboard.coins.root },
-          { title: 'New Coin', path: paths.dashboard.coins.new },
-        ],
       },
       {
         title: 'Strategies',
         path: paths.dashboard.strategies.root,
         icon: ICONS.kanban,
-        children: [
-          { title: 'All Strategies', path: paths.dashboard.strategies.root },
-          { title: 'New Strategy', path: paths.dashboard.strategies.new },
-        ],
       },
     ],
   },

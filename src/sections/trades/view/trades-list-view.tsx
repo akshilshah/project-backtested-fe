@@ -1,25 +1,24 @@
-import type { Trade, TradeStatus, TradeFilters } from 'src/types/trade';
+import type { Trade, TradeStatus, TradeFilters, CreateTradeRequest } from 'src/types/trade';
 
 import { useState, useCallback } from 'react';
 
 import { toast } from 'sonner';
 import useSWR from 'swr';
 
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
+import Typography from '@mui/material/Typography';
 
 import { CoinsService } from 'src/services/coins.service';
 import { TradesService } from 'src/services/trades.service';
 import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
-import { PageHeader } from 'src/components/page/page-header';
 import { PageContainer } from 'src/components/page/page-container';
 
 import { TradesTable } from '../trades-table';
 import { TradeExitDialog } from '../trade-exit-dialog';
+import { TradeCreateDialog } from '../trade-create-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +31,8 @@ export function TradesListView() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [exitTrade, setExitTrade] = useState<Trade | null>(null);
   const [exitLoading, setExitLoading] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
   // Fetch trades data
   const { data: tradesData, isLoading: tradesLoading, mutate: mutateTrades } = useSWR(
@@ -59,10 +60,10 @@ export function TradesListView() {
     StrategiesService.getAll({ limit: 100 })
   );
 
-  const trades = tradesData?.data ?? [];
+  const trades = tradesData?.trades ?? [];
   const totalCount = tradesData?.pagination?.total ?? 0;
-  const coins = coinsData?.data ?? [];
-  const strategies = strategiesData?.data ?? [];
+  const coins = coinsData?.coins ?? [];
+  const strategies = strategiesData?.strategies ?? [];
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchValue(value);
@@ -138,23 +139,45 @@ export function TradesListView() {
     [exitTrade, mutateTrades]
   );
 
+  // Create trade handlers
+  const handleOpenCreate = useCallback(() => {
+    setCreateOpen(true);
+  }, []);
+
+  const handleCloseCreate = useCallback(() => {
+    setCreateOpen(false);
+  }, []);
+
+  const handleCreateSubmit = useCallback(
+    async (data: CreateTradeRequest) => {
+      try {
+        setCreateLoading(true);
+        await TradesService.create(data);
+        toast.success('Trade created successfully');
+        mutateTrades();
+        setCreateOpen(false);
+      } catch (error: any) {
+        const message = error?.response?.data?.message || 'Failed to create trade';
+        toast.error(message);
+      } finally {
+        setCreateLoading(false);
+      }
+    },
+    [mutateTrades]
+  );
+
   return (
     <PageContainer>
-      <PageHeader
-        title="Trades"
-        subtitle="Manage your trading journal"
-        breadcrumbs={[{ label: 'Dashboard', href: paths.dashboard.root }, { label: 'Trades' }]}
-        action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.trades.new}
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-          >
-            New Trade
-          </Button>
-        }
-      />
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h4">Trades</Typography>
+        <Button
+          variant="contained"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+          onClick={handleOpenCreate}
+        >
+          Add
+        </Button>
+      </Box>
 
       <TradesTable
         data={trades}
@@ -186,6 +209,17 @@ export function TradesListView() {
         onClose={handleCloseExit}
         onConfirm={handleConfirmExit}
         loading={exitLoading}
+      />
+
+      <TradeCreateDialog
+        open={createOpen}
+        onClose={handleCloseCreate}
+        onSubmit={handleCreateSubmit}
+        coins={coins}
+        strategies={strategies}
+        coinsLoading={coinsLoading}
+        strategiesLoading={strategiesLoading}
+        loading={createLoading}
       />
     </PageContainer>
   );
