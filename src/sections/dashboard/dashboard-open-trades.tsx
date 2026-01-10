@@ -37,8 +37,8 @@ type DashboardOpenTradesProps = {
 export function DashboardOpenTrades({ trades, loading, onExit }: DashboardOpenTradesProps) {
   const openTrades = trades.filter((trade) => trade.status === 'OPEN').slice(0, 5);
 
-  const formatRisk = (entryPrice: number, stopLoss: number, quantity: number) => {
-    const risk = (entryPrice - stopLoss) * quantity;
+  const formatRisk = (avgEntry: number, stopLoss: number, quantity: number) => {
+    const risk = (avgEntry - stopLoss) * quantity;
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -159,7 +159,7 @@ export function DashboardOpenTrades({ trades, loading, onExit }: DashboardOpenTr
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
-                      <PriceDisplay value={trade.entryPrice} />
+                      <PriceDisplay value={trade.avgEntry} />
                     </TableCell>
                     <TableCell align="right">
                       <PriceDisplay value={trade.stopLoss} />
@@ -169,7 +169,7 @@ export function DashboardOpenTrades({ trades, loading, onExit }: DashboardOpenTr
                         variant="body2"
                         sx={{ color: 'error.main', fontWeight: 500 }}
                       >
-                        {formatRisk(trade.entryPrice, trade.stopLoss, trade.quantity)}
+                        {formatRisk(trade.avgEntry, trade.stopLoss, trade.quantity)}
                       </Typography>
                     </TableCell>
                     <TableCell align="right">

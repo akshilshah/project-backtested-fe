@@ -86,7 +86,7 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmExit = useCallback(
-    async (data: { exitPrice: number; exitDate: string; exitTime: string; notes?: string }) => {
+    async (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => {
       if (!id) return;
 
       try {
@@ -200,7 +200,7 @@ export function TradesDetailsView() {
                       <DetailItem label="Time" value={trade.tradeTime} />
                     </Grid>
                     <Grid size={{ xs: 6, sm: 3 }}>
-                      <PriceDisplay value={trade.entryPrice} label="Entry Price" size="small" />
+                      <PriceDisplay value={trade.avgEntry} label="Avg Entry" size="small" />
                     </Grid>
                     <Grid size={{ xs: 6, sm: 3 }}>
                       <PriceDisplay value={trade.stopLoss} label="Stop Loss" size="small" color="warning.main" />
@@ -212,7 +212,7 @@ export function TradesDetailsView() {
                 </Box>
 
                 {/* Exit Details (if closed) */}
-                {trade.status === 'CLOSED' && trade.exitPrice && (
+                {trade.status === 'CLOSED' && trade.avgExit && (
                   <>
                     <Divider />
                     <Box>
@@ -228,10 +228,10 @@ export function TradesDetailsView() {
                         </Grid>
                         <Grid size={{ xs: 6, sm: 3 }}>
                           <PriceDisplay
-                            value={trade.exitPrice}
-                            label="Exit Price"
+                            value={trade.avgExit}
+                            label="Avg Exit"
                             size="small"
-                            color={trade.exitPrice >= trade.entryPrice ? 'success.main' : 'error.main'}
+                            color={trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main'}
                           />
                         </Grid>
                       </Grid>
@@ -323,7 +323,7 @@ export function TradesDetailsView() {
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'USD',
-                      }).format(Math.abs(trade.entryPrice - trade.stopLoss) * trade.quantity)}
+                      }).format(Math.abs(trade.avgEntry - trade.stopLoss) * trade.quantity)}
                     </Typography>
                   </Stack>
                   <Stack direction="row" justifyContent="space-between">
@@ -331,7 +331,7 @@ export function TradesDetailsView() {
                       Risk %
                     </Typography>
                     <Typography variant="subtitle2">
-                      {(((trade.entryPrice - trade.stopLoss) / trade.entryPrice) * 100).toFixed(2)}%
+                      {(((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
                     </Typography>
                   </Stack>
                 </Stack>

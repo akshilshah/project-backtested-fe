@@ -27,7 +27,7 @@ import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-
 // ----------------------------------------------------------------------
 
 const ExitTradeSchema = z.object({
-  exitPrice: z
+  avgExit: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Exit price is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Exit price must be a positive number'),
@@ -42,7 +42,7 @@ type TradeExitDialogProps = {
   open: boolean;
   trade: Trade | null;
   onClose: () => void;
-  onConfirm: (data: { exitPrice: number; exitDate: string; exitTime: string; notes?: string }) => Promise<void>;
+  onConfirm: (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => Promise<void>;
   loading?: boolean;
 };
 
@@ -54,7 +54,7 @@ export function TradeExitDialog({
   loading = false,
 }: TradeExitDialogProps) {
   const defaultValues: ExitTradeFormValues = {
-    exitPrice: '',
+    avgExit: '',
     exitDate: dayjs(),
     exitTime: dayjs(),
     notes: '',
@@ -67,17 +67,17 @@ export function TradeExitDialog({
 
   const { handleSubmit, watch, reset } = methods;
 
-  const exitPriceValue = watch('exitPrice');
+  const avgExitValue = watch('avgExit');
 
   // Calculate P&L preview
   const calculatePL = () => {
-    if (!trade || !exitPriceValue || isNaN(Number(exitPriceValue))) {
+    if (!trade || !avgExitValue || isNaN(Number(avgExitValue))) {
       return null;
     }
 
-    const exitPrice = Number(exitPriceValue);
-    const profitLoss = (exitPrice - trade.entryPrice) * trade.quantity;
-    const profitLossPercentage = ((exitPrice - trade.entryPrice) / trade.entryPrice) * 100;
+    const avgExit = Number(avgExitValue);
+    const profitLoss = (avgExit - trade.avgEntry) * trade.quantity;
+    const profitLossPercentage = ((avgExit - trade.avgEntry) / trade.avgEntry) * 100;
 
     return { profitLoss, profitLossPercentage };
   };
@@ -86,10 +86,10 @@ export function TradeExitDialog({
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const exitDate = dayjs(data.exitDate).format('YYYY-MM-DD');
-    const exitTime = dayjs(data.exitTime).format('HH:mm');
+    const exitTime = dayjs(data.exitTime).format('HH:mm:ss');
 
     await onConfirm({
-      exitPrice: Number(data.exitPrice),
+      avgExit: Number(data.avgExit),
       exitDate,
       exitTime,
       notes: data.notes || undefined,
@@ -137,7 +137,7 @@ export function TradeExitDialog({
                 <Divider />
 
                 <Stack direction="row" spacing={4}>
-                  <PriceDisplay value={trade.entryPrice} label="Entry Price" size="small" />
+                  <PriceDisplay value={trade.avgEntry} label="Avg Entry" size="small" />
                   <Box>
                     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.25 }}>
                       Quantity
@@ -151,8 +151,8 @@ export function TradeExitDialog({
 
             {/* Exit Form */}
             <RHFTextField
-              name="exitPrice"
-              label="Exit Price"
+              name="avgExit"
+              label="Avg Exit"
               type="number"
               placeholder="Enter exit price"
               slotProps={{

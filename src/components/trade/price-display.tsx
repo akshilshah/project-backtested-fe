@@ -145,16 +145,16 @@ export function PriceChangeDisplay({
 // ----------------------------------------------------------------------
 
 type EntryExitPriceProps = {
-  entryPrice: number;
-  exitPrice?: number;
+  avgEntry: number;
+  avgExit?: number;
   stopLoss?: number;
   currency?: string;
   sx?: SxProps<Theme>;
 };
 
 export function EntryExitPrice({
-  entryPrice,
-  exitPrice,
+  avgEntry,
+  avgExit,
   stopLoss,
   currency = 'USD',
   sx,
@@ -174,11 +174,11 @@ export function EntryExitPrice({
           Entry
         </Typography>
         <Typography variant="body2" sx={{ fontWeight: 600 }}>
-          {formatPrice(entryPrice)}
+          {formatPrice(avgEntry)}
         </Typography>
       </Stack>
 
-      {exitPrice !== undefined && (
+      {avgExit !== undefined && (
         <Stack direction="row" alignItems="center" spacing={1}>
           <Typography variant="caption" sx={{ color: 'text.secondary', width: 50 }}>
             Exit
@@ -187,10 +187,10 @@ export function EntryExitPrice({
             variant="body2"
             sx={{
               fontWeight: 600,
-              color: exitPrice >= entryPrice ? 'success.main' : 'error.main',
+              color: avgExit >= avgEntry ? 'success.main' : 'error.main',
             }}
           >
-            {formatPrice(exitPrice)}
+            {formatPrice(avgExit)}
           </Typography>
         </Stack>
       )}

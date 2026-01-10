@@ -43,8 +43,8 @@ export function TradeCard({
     status,
     tradeDate,
     tradeTime,
-    entryPrice,
-    exitPrice,
+    avgEntry,
+    avgExit,
     profitLoss,
     profitLossPercentage,
     quantity,
@@ -113,17 +113,17 @@ export function TradeCard({
         <Stack direction="row" spacing={3}>
           <Box sx={{ flex: 1 }}>
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-              Entry Price
+              Avg Entry
             </Typography>
-            <Typography variant="subtitle2">{formatPrice(entryPrice)}</Typography>
+            <Typography variant="subtitle2">{formatPrice(avgEntry)}</Typography>
           </Box>
 
-          {isClosed && exitPrice !== undefined && (
+          {isClosed && avgExit !== undefined && (
             <Box sx={{ flex: 1 }}>
               <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-                Exit Price
+                Avg Exit
               </Typography>
-              <Typography variant="subtitle2">{formatPrice(exitPrice)}</Typography>
+              <Typography variant="subtitle2">{formatPrice(avgExit)}</Typography>
             </Box>
           )}
 

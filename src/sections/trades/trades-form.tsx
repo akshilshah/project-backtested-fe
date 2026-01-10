@@ -28,10 +28,10 @@ const TradeSchema = z.object({
   strategyId: z.number({ message: 'Strategy is required' }).min(1, 'Strategy is required'),
   tradeDate: z.any().refine((val) => val !== null && val !== undefined, 'Trade date is required'),
   tradeTime: z.any().refine((val) => val !== null && val !== undefined, 'Trade time is required'),
-  entryPrice: z
+  avgEntry: z
     .union([z.string(), z.number()])
-    .refine((val) => val !== '' && val !== null && val !== undefined, 'Entry price is required')
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Entry price must be a positive number'),
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Average entry is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Average entry must be a positive number'),
   stopLoss: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Stop loss is required')
@@ -76,7 +76,7 @@ export function TradesForm({
       tradeTime: currentTrade?.tradeTime
         ? dayjs(`2000-01-01 ${currentTrade.tradeTime}`)
         : dayjs(),
-      entryPrice: currentTrade?.entryPrice?.toString() ?? '',
+      avgEntry: currentTrade?.avgEntry?.toString() ?? '',
       stopLoss: currentTrade?.stopLoss?.toString() ?? '',
       quantity: currentTrade?.quantity?.toString() ?? '',
       notes: currentTrade?.notes ?? '',
@@ -91,7 +91,7 @@ export function TradesForm({
 
   const { handleSubmit, watch, setValue } = methods;
 
-  const entryPriceValue = watch('entryPrice');
+  const avgEntryValue = watch('avgEntry');
   const stopLossValue = watch('stopLoss');
   const quantityValue = watch('quantity');
   const coinIdValue = watch('coinId');
@@ -99,7 +99,7 @@ export function TradesForm({
 
   // Calculate risk amount
   const riskAmount = useMemo(() => {
-    const entry = Number(entryPriceValue);
+    const entry = Number(avgEntryValue);
     const sl = Number(stopLossValue);
     const qty = Number(quantityValue);
 
@@ -108,7 +108,7 @@ export function TradesForm({
     }
 
     return Math.abs(entry - sl) * qty;
-  }, [entryPriceValue, stopLossValue, quantityValue]);
+  }, [avgEntryValue, stopLossValue, quantityValue]);
 
   const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
   const selectedStrategy = strategies.find((s) => s.id === Number(strategyIdValue)) ?? null;
@@ -122,7 +122,7 @@ export function TradesForm({
       strategyId: Number(data.strategyId),
       tradeDate,
       tradeTime,
-      entryPrice: Number(data.entryPrice),
+      avgEntry: Number(data.avgEntry),
       stopLoss: Number(data.stopLoss),
       quantity: Number(data.quantity),
       notes: data.notes || undefined,
@@ -239,11 +239,11 @@ export function TradesForm({
             />
           </Grid>
 
-          {/* Entry Price */}
+          {/* Avg Entry */}
           <Grid size={{ xs: 12, md: 4 }}>
             <RHFTextField
-              name="entryPrice"
-              label="Entry Price"
+              name="avgEntry"
+              label="Avg Entry"
               type="number"
               placeholder="0.00"
               slotProps={{

@@ -98,15 +98,15 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
           </Stack>
         </TableCell>
 
-        {/* Entry Price */}
+        {/* Avg Entry */}
         <TableCell>
-          <PriceDisplay value={row.entryPrice} size="small" />
+          <PriceDisplay value={row.avgEntry} size="small" />
         </TableCell>
 
-        {/* Exit Price */}
+        {/* Avg Exit */}
         <TableCell>
-          {row.exitPrice ? (
-            <PriceDisplay value={row.exitPrice} size="small" />
+          {row.avgExit ? (
+            <PriceDisplay value={row.avgExit} size="small" />
           ) : (
             <Typography variant="body2" sx={{ color: 'text.disabled' }}>
               -

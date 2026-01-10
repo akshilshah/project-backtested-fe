@@ -32,10 +32,10 @@ const TradeSchema = z.object({
   strategyId: z.number({ message: 'Strategy is required' }).min(1, 'Strategy is required'),
   tradeDate: z.any().refine((val) => val !== null && val !== undefined, 'Trade date is required'),
   tradeTime: z.any().refine((val) => val !== null && val !== undefined, 'Trade time is required'),
-  entryPrice: z
+  avgEntry: z
     .union([z.string(), z.number()])
-    .refine((val) => val !== '' && val !== null && val !== undefined, 'Entry price is required')
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Entry price must be a positive number'),
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Average entry is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Average entry must be a positive number'),
   stopLoss: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Stop loss is required')
@@ -75,7 +75,7 @@ export function TradeCreateDialog({
     strategyId: 0,
     tradeDate: dayjs(),
     tradeTime: dayjs(),
-    entryPrice: '',
+    avgEntry: '',
     stopLoss: '',
     quantity: '',
     notes: '',
@@ -88,7 +88,7 @@ export function TradeCreateDialog({
 
   const { handleSubmit, watch, setValue, reset } = methods;
 
-  const entryPriceValue = watch('entryPrice');
+  const avgEntryValue = watch('avgEntry');
   const stopLossValue = watch('stopLoss');
   const quantityValue = watch('quantity');
   const coinIdValue = watch('coinId');
@@ -96,7 +96,7 @@ export function TradeCreateDialog({
 
   // Calculate risk amount
   const riskAmount = useMemo(() => {
-    const entry = Number(entryPriceValue);
+    const entry = Number(avgEntryValue);
     const sl = Number(stopLossValue);
     const qty = Number(quantityValue);
 
@@ -105,21 +105,21 @@ export function TradeCreateDialog({
     }
 
     return Math.abs(entry - sl) * qty;
-  }, [entryPriceValue, stopLossValue, quantityValue]);
+  }, [avgEntryValue, stopLossValue, quantityValue]);
 
   const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
   const selectedStrategy = strategies.find((s) => s.id === Number(strategyIdValue)) ?? null;
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const tradeDate = dayjs(data.tradeDate).format('YYYY-MM-DD');
-    const tradeTime = dayjs(data.tradeTime).format('HH:mm');
+    const tradeTime = dayjs(data.tradeTime).format('HH:mm:ss');
 
     await onSubmit({
       coinId: data.coinId,
       strategyId: data.strategyId,
       tradeDate,
       tradeTime,
-      entryPrice: Number(data.entryPrice),
+      avgEntry: Number(data.avgEntry),
       stopLoss: Number(data.stopLoss),
       quantity: Number(data.quantity),
       notes: data.notes || undefined,
@@ -227,12 +227,12 @@ export function TradeCreateDialog({
               />
             </Stack>
 
-            {/* Entry Price, Stop Loss, Quantity */}
+            {/* Avg Entry, Stop Loss, Quantity */}
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 4 }}>
                 <RHFTextField
-                  name="entryPrice"
-                  label="Entry Price"
+                  name="avgEntry"
+                  label="Avg Entry"
                   type="number"
                   placeholder="0.00"
                   slotProps={{

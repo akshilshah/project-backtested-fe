@@ -18,15 +18,16 @@ export interface Trade {
   status: TradeStatus;
   tradeDate: string;
   tradeTime: string;
-  entryPrice: number;
+  avgEntry: number;
   stopLoss: number;
   quantity: number;
   notes?: string;
   exitDate?: string;
   exitTime?: string;
-  exitPrice?: number;
+  avgExit?: number;
   profitLoss?: number;
   profitLossPercentage?: number;
+  duration?: number;
   organizationId: number;
   createdAt: string;
   updatedAt: string;
@@ -39,7 +40,7 @@ export interface CreateTradeRequest {
   strategyId: number;
   tradeDate: string;
   tradeTime: string;
-  entryPrice: number;
+  avgEntry: number;
   stopLoss: number;
   quantity: number;
   notes?: string;
@@ -50,7 +51,7 @@ export interface UpdateTradeRequest {
   strategyId?: number;
   tradeDate?: string;
   tradeTime?: string;
-  entryPrice?: number;
+  avgEntry?: number;
   stopLoss?: number;
   quantity?: number;
   notes?: string;
@@ -59,7 +60,7 @@ export interface UpdateTradeRequest {
 export interface ExitTradeRequest {
   exitDate: string;
   exitTime: string;
-  exitPrice: number;
+  avgExit: number;
   notes?: string;
 }
 

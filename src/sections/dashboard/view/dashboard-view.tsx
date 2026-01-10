@@ -56,7 +56,7 @@ export function DashboardView() {
   }, []);
 
   const handleConfirmExit = useCallback(
-    async (data: { exitPrice: number; exitDate: string; exitTime: string; notes?: string }) => {
+    async (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => {
       if (!exitTrade) return;
 
       try {
