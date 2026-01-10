@@ -78,7 +78,6 @@ export function StrategiesTable({
       <StrategiesTableToolbar
         searchValue={searchValue}
         onSearchChange={onSearchChange}
-        onAddClick={onAddClick}
       />
 
       <Scrollbar>

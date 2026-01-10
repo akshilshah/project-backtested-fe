@@ -1,7 +1,6 @@
 import type { Theme, SxProps } from '@mui/material/styles';
 
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -12,22 +11,18 @@ import { Iconify } from 'src/components/iconify';
 type CoinsTableToolbarProps = {
   searchValue: string;
   onSearchChange: (value: string) => void;
-  onAddClick?: () => void;
   sx?: SxProps<Theme>;
 };
 
 export function CoinsTableToolbar({
   searchValue,
   onSearchChange,
-  onAddClick,
   sx,
 }: CoinsTableToolbarProps) {
   return (
     <Stack
-      direction={{ xs: 'column', sm: 'row' }}
-      alignItems={{ xs: 'flex-start', sm: 'center' }}
-      justifyContent="space-between"
-      spacing={2}
+      direction="row"
+      alignItems="center"
       sx={{ p: 2.5, ...sx }}
     >
       <TextField
@@ -46,14 +41,6 @@ export function CoinsTableToolbar({
           },
         }}
       />
-
-      <Button
-        variant="contained"
-        startIcon={<Iconify icon="mingcute:add-line" />}
-        onClick={onAddClick}
-      >
-        New Coin
-      </Button>
     </Stack>
   );
 }

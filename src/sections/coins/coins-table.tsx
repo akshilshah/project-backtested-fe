@@ -79,7 +79,6 @@ export function CoinsTable({
       <CoinsTableToolbar
         searchValue={searchValue}
         onSearchChange={onSearchChange}
-        onAddClick={onAddClick}
       />
 
       <Scrollbar>
