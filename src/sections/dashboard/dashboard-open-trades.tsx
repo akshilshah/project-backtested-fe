@@ -155,7 +155,7 @@ export function DashboardOpenTrades({ trades, loading, onExit }: DashboardOpenTr
                     <TableCell>
                       <Typography variant="body2">{fDate(trade.tradeDate)}</Typography>
                       <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {trade.tradeTime ? fTime(`2000-01-01T${trade.tradeTime}`) : '--'}
+                        {fTime(trade.tradeTime)}
                       </Typography>
                     </TableCell>
                     <TableCell align="right">

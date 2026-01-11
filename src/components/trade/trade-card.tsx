@@ -139,7 +139,7 @@ export function TradeCard({
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack spacing={0.5}>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {fDate(tradeDate)} at {tradeTime ? fTime(`2000-01-01T${tradeTime}`) : '--'}
+              {fDate(tradeDate)} at {fTime(tradeTime)}
             </Typography>
             {strategy && (
               <Typography variant="caption" sx={{ color: 'text.disabled' }}>

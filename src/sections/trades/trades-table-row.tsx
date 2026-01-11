@@ -13,7 +13,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { fDate } from 'src/utils/format-time';
+import { fDate, fTime } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
 import { CoinDisplay } from 'src/components/trade/coin-display';
@@ -93,7 +93,7 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
           <Stack>
             <Typography variant="body2">{fDate(row.tradeDate)}</Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {row.tradeTime}
+              {fTime(row.tradeTime)}
             </Typography>
           </Stack>
         </TableCell>
