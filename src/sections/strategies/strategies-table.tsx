@@ -24,8 +24,6 @@ import { StrategiesTableToolbar } from './strategies-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', minWidth: 200 },
-  { id: 'rules', label: 'Rules', width: 120 },
-  { id: 'createdAt', label: 'Created', width: 180 },
   { id: 'updatedAt', label: 'Updated', width: 180 },
   { id: 'actions', label: '', width: 80, align: 'right' as const },
 ];
@@ -41,6 +39,7 @@ type StrategiesTableProps = {
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number) => void;
   onDelete: (strategy: Strategy) => void;
+  onEdit: (strategy: Strategy) => void;
   onAddClick?: () => void;
 };
 
@@ -55,6 +54,7 @@ export function StrategiesTable({
   onPageChange,
   onRowsPerPageChange,
   onDelete,
+  onEdit,
   onAddClick,
 }: StrategiesTableProps) {
   const handlePageChange = useCallback(
@@ -131,6 +131,7 @@ export function StrategiesTable({
                     key={row.id}
                     row={row}
                     onDelete={onDelete}
+                    onEdit={onEdit}
                   />
                 ))
               )}

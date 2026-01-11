@@ -1,4 +1,4 @@
-import type { Strategy, CreateStrategyRequest } from 'src/types/strategy';
+import type { Strategy, CreateStrategyRequest, UpdateStrategyRequest } from 'src/types/strategy';
 
 import { useState, useCallback } from 'react';
 
@@ -16,6 +16,7 @@ import { PageContainer } from 'src/components/page/page-container';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
 
 import { StrategiesTable } from '../strategies-table';
+import { StrategyEditDialog } from '../strategy-edit-dialog';
 import { StrategyCreateDialog } from '../strategy-create-dialog';
 
 // ----------------------------------------------------------------------
@@ -28,6 +29,8 @@ export function StrategiesListView() {
   const [deleting, setDeleting] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
+  const [editStrategy, setEditStrategy] = useState<Strategy | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
 
   // Fetch strategies data
   const { data, isLoading, mutate } = useSWR(
@@ -112,6 +115,33 @@ export function StrategiesListView() {
     [mutate]
   );
 
+  // Edit strategy handlers
+  const handleOpenEdit = useCallback((strategy: Strategy) => {
+    setEditStrategy(strategy);
+  }, []);
+
+  const handleCloseEdit = useCallback(() => {
+    setEditStrategy(null);
+  }, []);
+
+  const handleEditSubmit = useCallback(
+    async (id: number, data: UpdateStrategyRequest) => {
+      try {
+        setEditLoading(true);
+        await StrategiesService.update(id, data);
+        toast.success('Strategy updated successfully');
+        mutate();
+        setEditStrategy(null);
+      } catch (error: any) {
+        const message = error?.response?.data?.message || 'Failed to update strategy';
+        toast.error(message);
+      } finally {
+        setEditLoading(false);
+      }
+    },
+    [mutate]
+  );
+
   return (
     <PageContainer>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -136,6 +166,7 @@ export function StrategiesListView() {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDelete={handleDeleteClick}
+        onEdit={handleOpenEdit}
         onAddClick={handleOpenCreate}
       />
 
@@ -153,6 +184,14 @@ export function StrategiesListView() {
         onClose={handleCloseCreate}
         onSubmit={handleCreateSubmit}
         loading={createLoading}
+      />
+
+      <StrategyEditDialog
+        open={!!editStrategy}
+        strategy={editStrategy}
+        onClose={handleCloseEdit}
+        onSubmit={handleEditSubmit}
+        loading={editLoading}
       />
     </PageContainer>
   );
