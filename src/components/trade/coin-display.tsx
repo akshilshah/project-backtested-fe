@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 // ----------------------------------------------------------------------
 
 type CoinDisplayProps = {
-  symbol: string;
+  symbol?: string;
   name?: string;
   showName?: boolean;
   size?: 'small' | 'medium' | 'large';
@@ -60,6 +60,7 @@ export function CoinDisplay({
       '#BB8FCE',
       '#85C1E9',
     ];
+    if (!sym) return colors[0];
     const index = sym.charCodeAt(0) % colors.length;
     return colors[index];
   };
@@ -76,12 +77,12 @@ export function CoinDisplay({
           fontWeight: 700,
         }}
       >
-        {symbol.slice(0, 2).toUpperCase()}
+        {symbol?.slice(0, 2).toUpperCase() || '--'}
       </Avatar>
 
       <Box>
         <Typography variant={symbolVariant} sx={{ fontWeight: 600 }}>
-          {symbol.toUpperCase()}
+          {symbol?.toUpperCase() || 'N/A'}
         </Typography>
 
         {showName && name && (
@@ -97,7 +98,7 @@ export function CoinDisplay({
 // ----------------------------------------------------------------------
 
 type CoinChipProps = {
-  symbol: string;
+  symbol?: string;
   sx?: SxProps<Theme>;
 };
 
@@ -114,7 +115,7 @@ export function CoinChip({ symbol, sx }: CoinChipProps) {
       }}
     >
       <Typography variant="caption" sx={{ fontWeight: 600 }}>
-        {symbol.toUpperCase()}
+        {symbol?.toUpperCase() || 'N/A'}
       </Typography>
     </Box>
   );

@@ -106,13 +106,13 @@ export function AnalyticsByCoin({ analytics, loading }: AnalyticsByCoinProps) {
                       <Stack spacing={0.5}>
                         <Stack direction="row" alignItems="center" justifyContent="space-between">
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {item.winRate.toFixed(1)}%
+                            {item.winRate?.toFixed(1) ?? '0.0'}%
                           </Typography>
                         </Stack>
                         <LinearProgress
                           variant="determinate"
-                          value={item.winRate}
-                          color={item.winRate >= 50 ? 'success' : 'error'}
+                          value={item.winRate ?? 0}
+                          color={(item.winRate ?? 0) >= 50 ? 'success' : 'error'}
                           sx={{ height: 6, borderRadius: 1 }}
                         />
                       </Stack>
@@ -122,11 +122,11 @@ export function AnalyticsByCoin({ analytics, loading }: AnalyticsByCoinProps) {
                         variant="body2"
                         sx={{
                           fontWeight: 600,
-                          color: item.profitLoss >= 0 ? 'success.main' : 'error.main',
+                          color: (item.profitLoss ?? 0) >= 0 ? 'success.main' : 'error.main',
                         }}
                       >
-                        {item.profitLoss >= 0 ? '+' : ''}
-                        {formatCurrency(item.profitLoss)}
+                        {(item.profitLoss ?? 0) >= 0 ? '+' : ''}
+                        {formatCurrency(item.profitLoss ?? 0)}
                       </Typography>
                     </TableCell>
                   </TableRow>
