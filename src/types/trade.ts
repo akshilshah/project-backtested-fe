@@ -33,6 +33,11 @@ export interface Trade {
   updatedAt: string;
   createdBy?: number;
   updatedBy?: number;
+  derived?: {
+    direction: 'Long' | 'Short';
+    tradeValue: number;
+    commission: number;
+  };
 }
 
 export interface CreateTradeRequest {
