@@ -9,11 +9,15 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import { useTheme } from '@mui/material/styles';
 import { iconButtonClasses } from '@mui/material/IconButton';
+import Fab from '@mui/material/Fab';
+import Tooltip from '@mui/material/Tooltip';
 
 import { _contacts, _notifications } from 'src/_mock';
 
 import { Logo } from 'src/components/logo';
+import { Iconify } from 'src/components/iconify';
 import { useSettingsContext } from 'src/components/settings';
+import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { useMockedUser } from 'src/auth/hooks';
 
@@ -66,6 +70,7 @@ export function DashboardLayout({
   const navVars = dashboardNavColorVars(theme, settings.state.navColor, settings.state.navLayout);
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
+  const { value: calculatorOpen, onFalse: onCalculatorClose, onTrue: onCalculatorOpen } = useBoolean();
 
   const navData = slotProps?.nav?.data ?? dashboardNavData;
 
@@ -204,7 +209,30 @@ export function DashboardLayout({
 
   const renderFooter = () => null;
 
-  const renderMain = () => <MainSection {...slotProps?.main}>{children}</MainSection>;
+  const renderMain = () => (
+    <>
+      <MainSection {...slotProps?.main}>{children}</MainSection>
+
+      {/* Trading Calculator FAB */}
+      <Tooltip title="Trading Calculator" placement="left">
+        <Fab
+          color="primary"
+          onClick={onCalculatorOpen}
+          sx={{
+            position: 'fixed',
+            bottom: 24,
+            right: 24,
+            zIndex: theme.zIndex.speedDial,
+          }}
+        >
+          <Iconify icon="mdi:calculator" width={24} />
+        </Fab>
+      </Tooltip>
+
+      {/* Trading Calculator Dialog */}
+      <TradingCalculatorDialog open={calculatorOpen} onClose={onCalculatorClose} />
+    </>
+  );
 
   return (
     <LayoutSection
