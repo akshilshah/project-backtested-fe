@@ -66,9 +66,10 @@ export const paths = {
     },
     // Analytics
     analytics: `${ROOTS.DASHBOARD}/analytics`,
-    // Settings
-    settings: `${ROOTS.DASHBOARD}/settings`,
-    // Profile
-    profile: `${ROOTS.DASHBOARD}/profile`,
+    // Account (merged Profile and Settings)
+    account: `${ROOTS.DASHBOARD}/account`,
+    // Legacy paths for backward compatibility
+    settings: `${ROOTS.DASHBOARD}/account`,
+    profile: `${ROOTS.DASHBOARD}/account`,
   },
 };

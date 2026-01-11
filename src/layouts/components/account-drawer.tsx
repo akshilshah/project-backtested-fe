@@ -147,10 +147,10 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
         </IconButton>
 
         <Scrollbar>
-          {/* User avatar, name, email section - clickable to profile */}
+          {/* User avatar, name, email section - clickable to account */}
           <Link
             component={RouterLink}
-            href={paths.dashboard.profile}
+            href={paths.dashboard.account}
             underline="none"
             color="inherit"
             onClick={onClose}

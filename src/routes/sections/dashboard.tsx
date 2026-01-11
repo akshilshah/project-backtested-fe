@@ -38,10 +38,13 @@ const StrategyEditPage = lazy(() => import('src/pages/dashboard/strategies/[id]/
 // Analytics
 const AnalyticsPage = lazy(() => import('src/pages/dashboard/analytics/index'));
 
-// Settings
+// Account (merged Profile and Settings)
+const AccountPage = lazy(() => import('src/pages/dashboard/account/index'));
+
+// Settings (legacy - redirects to account)
 const SettingsPage = lazy(() => import('src/pages/dashboard/settings/index'));
 
-// Profile
+// Profile (legacy - redirects to account)
 const ProfilePage = lazy(() => import('src/pages/dashboard/profile/index'));
 
 // ----------------------------------------------------------------------
@@ -99,9 +102,11 @@ export const dashboardRoutes: RouteObject[] = [
       },
       // Analytics
       { path: 'analytics', element: <AnalyticsPage /> },
-      // Settings
+      // Account
+      { path: 'account', element: <AccountPage /> },
+      // Settings (legacy)
       { path: 'settings', element: <SettingsPage /> },
-      // Profile
+      // Profile (legacy)
       { path: 'profile', element: <ProfilePage /> },
     ],
   },

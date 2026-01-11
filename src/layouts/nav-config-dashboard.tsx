@@ -95,14 +95,14 @@ export const navData: NavSectionProps['data'] = [
     ],
   },
   /**
-   * Settings
+   * Account
    */
   {
     subheader: 'Account',
     items: [
       {
-        title: 'Settings',
-        path: paths.dashboard.settings,
+        title: 'Account',
+        path: paths.dashboard.account,
         icon: ICONS.params,
       },
     ],
