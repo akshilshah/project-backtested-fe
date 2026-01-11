@@ -41,14 +41,6 @@ const TIMEZONE_OPTIONS = [
   { value: 'Australia/Sydney', label: 'Australia/Sydney (AEST/AEDT)' },
 ];
 
-const DATE_FORMAT_OPTIONS = [
-  { value: 'MM/DD/YYYY', label: 'MM/DD/YYYY (12/31/2024)' },
-  { value: 'DD/MM/YYYY', label: 'DD/MM/YYYY (31/12/2024)' },
-  { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD (2024-12-31)' },
-  { value: 'DD-MMM-YYYY', label: 'DD-MMM-YYYY (31-Dec-2024)' },
-  { value: 'MMM DD, YYYY', label: 'MMM DD, YYYY (Dec 31, 2024)' },
-];
-
 export function SettingsGeneral({ settings }: SettingsGeneralProps) {
   return (
     <Card>
@@ -68,14 +60,6 @@ export function SettingsGeneral({ settings }: SettingsGeneralProps) {
 
           <RHFSelect name="timezone" label="Timezone">
             {TIMEZONE_OPTIONS.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </RHFSelect>
-
-          <RHFSelect name="dateFormat" label="Date Format">
-            {DATE_FORMAT_OPTIONS.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>

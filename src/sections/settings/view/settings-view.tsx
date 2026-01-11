@@ -32,7 +32,6 @@ const SettingsSchema = zod.object({
   // General
   currency: zod.string().min(1, 'Currency is required'),
   timezone: zod.string().min(1, 'Timezone is required'),
-  dateFormat: zod.string().min(1, 'Date format is required'),
   // Display
   theme: zod.enum(['light', 'dark', 'system']),
   compactMode: zod.boolean(),
@@ -47,7 +46,6 @@ const SettingsSchema = zod.object({
 const DEFAULT_VALUES: SettingsFormValues = {
   currency: 'USD',
   timezone: 'UTC',
-  dateFormat: 'MM/DD/YYYY',
   theme: 'system',
   compactMode: false,
   tableDensity: 'standard',
@@ -90,7 +88,6 @@ export function SettingsView() {
       reset({
         currency: data.currency || DEFAULT_VALUES.currency,
         timezone: data.timezone || DEFAULT_VALUES.timezone,
-        dateFormat: data.dateFormat || DEFAULT_VALUES.dateFormat,
         theme: data.theme || DEFAULT_VALUES.theme,
         compactMode: data.compactMode ?? DEFAULT_VALUES.compactMode,
         tableDensity: data.tableDensity || DEFAULT_VALUES.tableDensity,
@@ -122,7 +119,6 @@ export function SettingsView() {
       await AuthService.updateSettings({
         currency: data.currency,
         timezone: data.timezone,
-        dateFormat: data.dateFormat,
         theme: data.theme,
         compactMode: data.compactMode,
         tableDensity: data.tableDensity,
