@@ -83,14 +83,19 @@ export const navData: NavSectionProps['data'] = [
     subheader: 'Master Data',
     items: [
       {
-        title: 'Coins',
-        path: paths.dashboard.coins.root,
-        icon: ICONS.ecommerce,
-      },
-      {
-        title: 'Strategies',
-        path: paths.dashboard.strategies.root,
-        icon: ICONS.kanban,
+        title: 'Master',
+        path: '#',
+        icon: ICONS.folder,
+        children: [
+          {
+            title: 'Coins',
+            path: paths.dashboard.coins.root,
+          },
+          {
+            title: 'Strategies',
+            path: paths.dashboard.strategies.root,
+          },
+        ],
       },
     ],
   },

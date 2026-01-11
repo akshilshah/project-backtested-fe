@@ -4,16 +4,19 @@ import { memo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
+import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { fDateTime } from 'src/utils/format-time';
 
+import { usePopover } from 'minimal-shared/hooks';
+
 import { Iconify } from 'src/components/iconify';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
+import { CustomPopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
@@ -26,10 +29,12 @@ type CoinsTableRowProps = {
 
 export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit, deleting }: CoinsTableRowProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const popover = usePopover();
 
   const handleOpenDelete = useCallback(() => {
     setDeleteDialogOpen(true);
-  }, []);
+    popover.onClose();
+  }, [popover]);
 
   const handleCloseDelete = useCallback(() => {
     setDeleteDialogOpen(false);
@@ -42,11 +47,16 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
 
   const handleEdit = useCallback(() => {
     onEdit(row);
+    popover.onClose();
+  }, [onEdit, row, popover]);
+
+  const handleRowClick = useCallback(() => {
+    onEdit(row);
   }, [onEdit, row]);
 
   return (
     <>
-      <TableRow hover>
+      <TableRow hover sx={{ cursor: 'pointer' }} onClick={handleRowClick}>
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Box
@@ -66,15 +76,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
               {row.symbol?.slice(0, 2).toUpperCase() || '--'}
             </Box>
             <Box>
-              <Typography
-                variant="subtitle2"
-                onClick={handleEdit}
-                sx={{
-                  color: 'text.primary',
-                  cursor: 'pointer',
-                  '&:hover': { textDecoration: 'underline' },
-                }}
-              >
+              <Typography variant="subtitle2" noWrap>
                 {row.name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -96,26 +98,29 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
           </Typography>
         </TableCell>
 
-        <TableCell align="right">
-          <Stack direction="row" justifyContent="flex-end" spacing={0.5}>
-            <Tooltip title="Edit">
-              <IconButton onClick={handleEdit} size="small">
-                <Iconify icon={'solar:pen-bold' as any} width={20} />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Delete">
-              <IconButton
-                size="small"
-                color="error"
-                onClick={handleOpenDelete}
-              >
-                <Iconify icon={'solar:trash-bin-trash-bold' as any} width={20} />
-              </IconButton>
-            </Tooltip>
-          </Stack>
+        <TableCell align="right" onClick={(e) => e.stopPropagation()}>
+          <IconButton onClick={popover.onOpen}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
         </TableCell>
       </TableRow>
+
+      <CustomPopover
+        open={popover.open}
+        anchorEl={popover.anchorEl}
+        onClose={popover.onClose}
+        slotProps={{ arrow: { placement: 'right-top' } }}
+      >
+        <MenuItem onClick={handleEdit}>
+          <Iconify icon="solar:pen-bold" />
+          Edit
+        </MenuItem>
+
+        <MenuItem onClick={handleOpenDelete} sx={{ color: 'error.main' }}>
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
+        </MenuItem>
+      </CustomPopover>
 
       <DeleteDialog
         open={deleteDialogOpen}
