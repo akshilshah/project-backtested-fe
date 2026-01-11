@@ -10,9 +10,6 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-
 import { fDateTime } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
@@ -23,10 +20,11 @@ import { DeleteDialog } from 'src/components/form/confirm-dialog';
 type CoinsTableRowProps = {
   row: Coin;
   onDelete: (id: number) => void;
+  onEdit: (coin: Coin) => void;
   deleting?: boolean;
 };
 
-export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleting }: CoinsTableRowProps) {
+export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit, deleting }: CoinsTableRowProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleOpenDelete = useCallback(() => {
@@ -41,6 +39,10 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
     onDelete(row.id);
     setDeleteDialogOpen(false);
   }, [onDelete, row.id]);
+
+  const handleEdit = useCallback(() => {
+    onEdit(row);
+  }, [onEdit, row]);
 
   return (
     <>
@@ -61,23 +63,22 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
                 fontSize: '0.875rem',
               }}
             >
-              {row.symbol.slice(0, 2).toUpperCase()}
+              {row.symbol?.slice(0, 2).toUpperCase() || '--'}
             </Box>
             <Box>
               <Typography
-                component={RouterLink}
-                href={paths.dashboard.coins.details(String(row.id))}
                 variant="subtitle2"
+                onClick={handleEdit}
                 sx={{
                   color: 'text.primary',
-                  textDecoration: 'none',
+                  cursor: 'pointer',
                   '&:hover': { textDecoration: 'underline' },
                 }}
               >
                 {row.name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {row.symbol}
+                {row.symbol || 'N/A'}
               </Typography>
             </Box>
           </Stack>
@@ -85,7 +86,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
 
         <TableCell>
           <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-            {row.symbol}
+            {row.symbol || 'N/A'}
           </Typography>
         </TableCell>
 
@@ -97,22 +98,8 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, deleti
 
         <TableCell align="right">
           <Stack direction="row" justifyContent="flex-end" spacing={0.5}>
-            <Tooltip title="View">
-              <IconButton
-                component={RouterLink}
-                href={paths.dashboard.coins.details(String(row.id))}
-                size="small"
-              >
-                <Iconify icon={'solar:eye-bold' as any} width={20} />
-              </IconButton>
-            </Tooltip>
-
             <Tooltip title="Edit">
-              <IconButton
-                component={RouterLink}
-                href={paths.dashboard.coins.edit(String(row.id))}
-                size="small"
-              >
+              <IconButton onClick={handleEdit} size="small">
                 <Iconify icon={'solar:pen-bold' as any} width={20} />
               </IconButton>
             </Tooltip>

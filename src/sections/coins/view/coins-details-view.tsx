@@ -84,7 +84,7 @@ export function CoinsDetailsView() {
     <PageContainer maxWidth="md">
       <PageHeader
         title={coin.name}
-        subtitle={coin.symbol}
+        subtitle={coin.symbol || 'No symbol'}
         breadcrumbs={[
           { label: 'Dashboard', href: paths.dashboard.root },
           { label: 'Coins', href: paths.dashboard.coins.root },
@@ -132,7 +132,7 @@ export function CoinsDetailsView() {
                   fontSize: '1.5rem',
                 }}
               >
-                {coin.symbol.slice(0, 2).toUpperCase()}
+                {coin.symbol?.slice(0, 2).toUpperCase() || '--'}
               </Box>
               <Box>
                 <Typography variant="h5">{coin.name}</Typography>
@@ -140,7 +140,7 @@ export function CoinsDetailsView() {
                   variant="subtitle1"
                   sx={{ color: 'text.secondary', fontFamily: 'monospace' }}
                 >
-                  {coin.symbol}
+                  {coin.symbol || 'No symbol'}
                 </Typography>
               </Box>
             </Stack>
@@ -155,7 +155,7 @@ export function CoinsDetailsView() {
                 gap: 3,
               }}
             >
-              <DetailItem label="Symbol" value={coin.symbol} mono />
+              <DetailItem label="Symbol" value={coin.symbol || 'N/A'} mono />
               <DetailItem label="Name" value={coin.name} />
               <DetailItem label="Created" value={fDateTime(coin.createdAt)} />
               <DetailItem label="Last Updated" value={fDateTime(coin.updatedAt)} />

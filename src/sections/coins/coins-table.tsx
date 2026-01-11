@@ -40,6 +40,7 @@ type CoinsTableProps = {
   onPageChange: (page: number) => void;
   onRowsPerPageChange: (rowsPerPage: number) => void;
   onDelete: (id: number) => void;
+  onEdit: (coin: Coin) => void;
   onAddClick?: () => void;
   deletingId?: number | null;
 };
@@ -55,6 +56,7 @@ export function CoinsTable({
   onPageChange,
   onRowsPerPageChange,
   onDelete,
+  onEdit,
   onAddClick,
   deletingId,
 }: CoinsTableProps) {
@@ -131,6 +133,7 @@ export function CoinsTable({
                     key={row.id}
                     row={row}
                     onDelete={onDelete}
+                    onEdit={onEdit}
                     deleting={deletingId === row.id}
                   />
                 ))

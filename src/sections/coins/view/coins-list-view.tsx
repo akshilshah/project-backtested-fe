@@ -1,4 +1,4 @@
-import type { CreateCoinRequest } from 'src/types/coin';
+import type { Coin, CreateCoinRequest, UpdateCoinRequest } from 'src/types/coin';
 
 import { useState, useCallback } from 'react';
 
@@ -15,6 +15,7 @@ import { Iconify } from 'src/components/iconify';
 import { PageContainer } from 'src/components/page/page-container';
 
 import { CoinsTable } from '../coins-table';
+import { CoinEditDialog } from '../coin-edit-dialog';
 import { CoinCreateDialog } from '../coin-create-dialog';
 
 // ----------------------------------------------------------------------
@@ -26,6 +27,8 @@ export function CoinsListView() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
+  const [editCoin, setEditCoin] = useState<Coin | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
 
   // Fetch coins data
   const { data, isLoading, mutate } = useSWR(
@@ -102,6 +105,33 @@ export function CoinsListView() {
     [mutate]
   );
 
+  // Edit coin handlers
+  const handleOpenEdit = useCallback((coin: Coin) => {
+    setEditCoin(coin);
+  }, []);
+
+  const handleCloseEdit = useCallback(() => {
+    setEditCoin(null);
+  }, []);
+
+  const handleEditSubmit = useCallback(
+    async (id: number, data: UpdateCoinRequest) => {
+      try {
+        setEditLoading(true);
+        await CoinsService.update(id, data);
+        toast.success('Coin updated successfully');
+        mutate();
+        setEditCoin(null);
+      } catch (error: any) {
+        const message = error?.response?.data?.message || 'Failed to update coin';
+        toast.error(message);
+      } finally {
+        setEditLoading(false);
+      }
+    },
+    [mutate]
+  );
+
   return (
     <PageContainer>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
@@ -126,6 +156,7 @@ export function CoinsListView() {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onDelete={handleDelete}
+        onEdit={handleOpenEdit}
         onAddClick={handleOpenCreate}
         deletingId={deletingId}
       />
@@ -135,6 +166,14 @@ export function CoinsListView() {
         onClose={handleCloseCreate}
         onSubmit={handleCreateSubmit}
         loading={createLoading}
+      />
+
+      <CoinEditDialog
+        open={!!editCoin}
+        coin={editCoin}
+        onClose={handleCloseEdit}
+        onSubmit={handleEditSubmit}
+        loading={editLoading}
       />
     </PageContainer>
   );
