@@ -147,64 +147,41 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
         </IconButton>
 
         <Scrollbar>
-          {/* User avatar, name, email section - commented out */}
-          {/* <Box
+          {/* User avatar, name, email section - clickable to profile */}
+          <Link
+            component={RouterLink}
+            href={paths.dashboard.profile}
+            underline="none"
+            color="inherit"
+            onClick={onClose}
             sx={{
-              pt: 8,
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
+              display: 'block',
+              '&:hover': {
+                bgcolor: (theme) => varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
+              },
+              transition: 'background-color 0.2s',
             }}
           >
-            {renderAvatar()}
+            <Box
+              sx={{
+                pt: 8,
+                pb: 2,
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+              }}
+            >
+              {renderAvatar()}
 
-            <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
-              {user?.displayName}
-            </Typography>
+              <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
+                {user?.displayName}
+              </Typography>
 
-            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
-              {user?.email}
-            </Typography>
-          </Box> */}
-
-          {/* Account switching avatars - commented out */}
-          {/* <Box
-            sx={{
-              p: 3,
-              gap: 1,
-              flexWrap: 'wrap',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            {Array.from({ length: 3 }, (_, index) => (
-              <Tooltip
-                key={_mock.fullName(index + 1)}
-                title={`Switch to: ${_mock.fullName(index + 1)}`}
-              >
-                <Avatar
-                  alt={_mock.fullName(index + 1)}
-                  src={_mock.image.avatar(index + 1)}
-                  onClick={() => {}}
-                />
-              </Tooltip>
-            ))}
-
-            <Tooltip title="Add account">
-              <IconButton
-                sx={[
-                  (theme) => ({
-                    bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-                    border: `dashed 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.32)}`,
-                  }),
-                ]}
-              >
-                <Iconify icon="mingcute:add-line" />
-              </IconButton>
-            </Tooltip>
-          </Box> */}
-
-          <Box sx={{ pt: 8 }} />
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
+                {user?.email}
+              </Typography>
+            </Box>
+          </Link>
 
           {renderList()}
 

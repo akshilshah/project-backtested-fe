@@ -101,11 +101,6 @@ export const navData: NavSectionProps['data'] = [
     subheader: 'Account',
     items: [
       {
-        title: 'Profile',
-        path: paths.dashboard.profile,
-        icon: ICONS.user,
-      },
-      {
         title: 'Settings',
         path: paths.dashboard.settings,
         icon: ICONS.params,
