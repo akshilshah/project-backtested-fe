@@ -1,5 +1,3 @@
-import type { User, UserSettings } from 'src/types/auth';
-
 import { z as zod } from 'zod';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect, useCallback } from 'react';
@@ -11,12 +9,12 @@ import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { useAuthUser } from 'src/hooks/use-auth-user';
@@ -25,8 +23,6 @@ import { AuthService } from 'src/services/auth.service';
 
 import { Form, RHFSwitch, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { PageHeader } from 'src/components/page/page-header';
-import { FormActions } from 'src/components/form/form-actions';
 
 // ----------------------------------------------------------------------
 
@@ -207,7 +203,7 @@ export function AccountView() {
 
   if (loading || !user) {
     return (
-      <DashboardContent maxWidth="lg">
+      <DashboardContent>
         <Box
           sx={{
             display: 'flex',
@@ -223,277 +219,256 @@ export function AccountView() {
   }
 
   return (
-    <DashboardContent maxWidth="lg">
-      <PageHeader title="Account" subtitle="Manage your profile and application preferences" />
+    <DashboardContent>
+      <Typography variant="h4" sx={{ mb: 5 }}>
+        Account
+      </Typography>
+
+      <Tabs value={currentTab} onChange={handleChangeTab} sx={{ mb: 5 }}>
+        {TABS.map((tab) => (
+          <Tab key={tab.value} value={tab.value} label={tab.label} />
+        ))}
+      </Tabs>
 
       <Form methods={methods} onSubmit={onSubmit}>
-        <Stack spacing={3}>
-          <Tabs
-            value={currentTab}
-            onChange={handleChangeTab}
-            sx={{
-              mb: 1,
-              '& .MuiTabs-indicator': {
-                height: 3,
-                borderRadius: 1.5,
-              },
-            }}
-          >
-            {TABS.map((tab) => (
-              <Tab key={tab.value} value={tab.value} label={tab.label} />
-            ))}
-          </Tabs>
+        {/* Profile Tab */}
+        {currentTab === 'profile' && (
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card sx={{ pt: 10, pb: 5, px: 3, textAlign: 'center' }}>
+                <Avatar
+                  sx={{
+                    width: 144,
+                    height: 144,
+                    fontSize: '3rem',
+                    bgcolor: 'primary.main',
+                    mx: 'auto',
+                    mb: 2,
+                  }}
+                >
+                  {getInitials(user.firstName, user.lastName)}
+                </Avatar>
 
-          <Box sx={{ maxWidth: 720 }}>
-            {/* Profile Tab */}
-            {currentTab === 'profile' && (
-              <Stack spacing={3}>
-                <Card>
-                  <CardHeader
-                    title="Profile Information"
-                    subheader="Update your personal information"
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', display: 'block', mt: 2 }}
+                >
+                  Allowed *.jpeg, *.jpg, *.png, *.gif
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  max size of 3 MB
+                </Typography>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Card sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    rowGap: 3,
+                    columnGap: 2,
+                    display: 'grid',
+                    gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                  }}
+                >
+                  <RHFTextField name="firstName" label="First Name" />
+                  <RHFTextField name="lastName" label="Last Name" />
+                  <RHFTextField
+                    name="email"
+                    label="Email Address"
+                    disabled
+                    sx={{ gridColumn: '1 / -1' }}
                   />
-                  <CardContent>
-                    <Stack spacing={3}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Avatar
-                          sx={{
-                            width: 80,
-                            height: 80,
-                            fontSize: '1.5rem',
-                            bgcolor: 'primary.main',
-                          }}
-                        >
-                          {getInitials(user.firstName, user.lastName)}
-                        </Avatar>
-                        <Box>
-                          <Typography variant="h6">
-                            {user.firstName} {user.lastName}
-                          </Typography>
-                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                            {user.role === 'admin' ? 'Administrator' : 'User'}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <Box
-                        sx={{
-                          display: 'grid',
-                          gap: 3,
-                          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                        }}
-                      >
-                        <RHFTextField name="firstName" label="First Name" />
-                        <RHFTextField name="lastName" label="Last Name" />
-                      </Box>
-
-                      <RHFTextField name="email" label="Email Address" disabled />
-                    </Stack>
-                  </CardContent>
-                </Card>
+                </Box>
 
                 {user.organization && (
-                  <Card>
-                    <CardHeader title="Organization" subheader="Your organization details" />
-                    <CardContent>
-                      <Stack spacing={2}>
-                        <Box>
-                          <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                            Organization Name
-                          </Typography>
-                          <Typography variant="body1">{user.organization.name}</Typography>
-                        </Box>
-                        <Box>
-                          <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
-                            Member Since
-                          </Typography>
-                          <Typography variant="body1">
-                            {new Date(user.createdAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </CardContent>
-                  </Card>
+                  <Box
+                    sx={{
+                      mt: 5,
+                      pt: 3,
+                      rowGap: 3,
+                      columnGap: 2,
+                      display: 'grid',
+                      gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                      borderTop: (theme) => `dashed 1px ${theme.palette.divider}`,
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        Organization
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {user.organization.name}
+                      </Typography>
+                    </Box>
+
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                        Role
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {user.role === 'admin' ? 'Administrator' : 'User'}
+                      </Typography>
+                    </Box>
+                  </Box>
                 )}
 
-                <FormActions
-                  loading={saving}
-                  submitText="Save Changes"
-                  onCancel={() =>
-                    reset({
-                      firstName: user.firstName || '',
-                      lastName: user.lastName || '',
-                      email: user.email || '',
-                    })
+                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                  <LoadingButton type="submit" variant="contained" loading={saving}>
+                    Save Changes
+                  </LoadingButton>
+                </Box>
+              </Card>
+            </Grid>
+          </Grid>
+        )}
+
+        {/* General Tab */}
+        {currentTab === 'general' && (
+          <Card sx={{ p: 3 }}>
+            <Box
+              sx={{
+                rowGap: 3,
+                columnGap: 2,
+                display: 'grid',
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+              }}
+            >
+              <RHFSelect name="currency" label="Currency">
+                {CURRENCY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name="timezone" label="Timezone">
+                {TIMEZONE_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+            </Box>
+
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+              <LoadingButton type="submit" variant="contained" loading={saving}>
+                Save Changes
+              </LoadingButton>
+            </Box>
+          </Card>
+        )}
+
+        {/* Display Tab */}
+        {currentTab === 'display' && (
+          <Card sx={{ p: 3 }}>
+            <Box
+              sx={{
+                rowGap: 3,
+                columnGap: 2,
+                display: 'grid',
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+              }}
+            >
+              <RHFSelect name="theme" label="Theme Mode">
+                {THEME_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              <RHFSelect name="tableDensity" label="Table Density">
+                {TABLE_DENSITY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+              <Box sx={{ gridColumn: '1 / -1' }}>
+                <RHFSwitch
+                  name="compactMode"
+                  label={
+                    <Box>
+                      <Typography variant="subtitle2">Compact Mode</Typography>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        Use a more compact layout with reduced spacing
+                      </Typography>
+                    </Box>
                   }
-                  cancelText="Reset"
                 />
-              </Stack>
-            )}
+              </Box>
+            </Box>
 
-            {/* General Settings Tab */}
-            {currentTab === 'general' && (
-              <Stack spacing={3}>
-                <Card>
-                  <CardHeader
-                    title="General Settings"
-                    subheader="Configure your regional and display preferences"
-                  />
-                  <CardContent>
-                    <Stack spacing={3}>
-                      <RHFSelect name="currency" label="Currency">
-                        {CURRENCY_OPTIONS.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </RHFSelect>
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+              <LoadingButton type="submit" variant="contained" loading={saving}>
+                Save Changes
+              </LoadingButton>
+            </Box>
+          </Card>
+        )}
 
-                      <RHFSelect name="timezone" label="Timezone">
-                        {TIMEZONE_OPTIONS.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </RHFSelect>
-                    </Stack>
-                  </CardContent>
-                </Card>
+        {/* Notifications Tab */}
+        {currentTab === 'notifications' && (
+          <Card sx={{ p: 3 }}>
+            <Stack spacing={3} divider={<Box sx={{ borderTop: (theme) => `dashed 1px ${theme.palette.divider}` }} />}>
+              <RHFSwitch
+                name="emailNotifications"
+                label={
+                  <Box>
+                    <Typography variant="subtitle2">Email Notifications</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      Receive email updates about your trades and account activity
+                    </Typography>
+                  </Box>
+                }
+              />
 
-                <FormActions loading={saving} submitText="Save Settings" sx={{ mt: 3 }} />
-              </Stack>
-            )}
+              <RHFSwitch
+                name="tradeAlerts"
+                label={
+                  <Box>
+                    <Typography variant="subtitle2">Trade Alerts</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      Get notified when trades hit stop loss or take profit levels
+                    </Typography>
+                  </Box>
+                }
+              />
 
-            {/* Display Settings Tab */}
-            {currentTab === 'display' && (
-              <Stack spacing={3}>
-                <Card>
-                  <CardHeader
-                    title="Display Settings"
-                    subheader="Customize how the application looks"
-                  />
-                  <CardContent>
-                    <Stack spacing={3}>
-                      <RHFSelect name="theme" label="Theme Mode">
-                        {THEME_OPTIONS.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </RHFSelect>
+              <RHFSwitch
+                name="weeklyReport"
+                label={
+                  <Box>
+                    <Typography variant="subtitle2">Weekly Report</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      Receive a weekly summary of your trading performance
+                    </Typography>
+                  </Box>
+                }
+              />
 
-                      <RHFSelect name="tableDensity" label="Table Density">
-                        {TABLE_DENSITY_OPTIONS.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </RHFSelect>
+              <RHFSwitch
+                name="marketNews"
+                label={
+                  <Box>
+                    <Typography variant="subtitle2">Market News</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      Stay updated with relevant market news and analysis
+                    </Typography>
+                  </Box>
+                }
+              />
+            </Stack>
 
-                      <Stack spacing={1}>
-                        <RHFSwitch
-                          name="compactMode"
-                          label={
-                            <Stack spacing={0.5}>
-                              <Typography variant="subtitle2">Compact Mode</Typography>
-                              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                Use a more compact layout with reduced spacing
-                              </Typography>
-                            </Stack>
-                          }
-                          sx={{ alignItems: 'flex-start' }}
-                        />
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-
-                <FormActions loading={saving} submitText="Save Settings" sx={{ mt: 3 }} />
-              </Stack>
-            )}
-
-            {/* Notifications Tab */}
-            {currentTab === 'notifications' && (
-              <Stack spacing={3}>
-                <Card>
-                  <CardHeader
-                    title="Notifications"
-                    subheader="Manage how you receive notifications"
-                  />
-                  <CardContent>
-                    <Stack spacing={3}>
-                      <Stack spacing={1}>
-                        <RHFSwitch
-                          name="emailNotifications"
-                          label={
-                            <Stack spacing={0.5}>
-                              <Typography variant="subtitle2">Email Notifications</Typography>
-                              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                Receive email updates about your trades and account activity
-                              </Typography>
-                            </Stack>
-                          }
-                          sx={{ alignItems: 'flex-start' }}
-                        />
-                      </Stack>
-
-                      <Stack spacing={1}>
-                        <RHFSwitch
-                          name="tradeAlerts"
-                          label={
-                            <Stack spacing={0.5}>
-                              <Typography variant="subtitle2">Trade Alerts</Typography>
-                              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                Get notified when trades hit stop loss or take profit levels
-                              </Typography>
-                            </Stack>
-                          }
-                          sx={{ alignItems: 'flex-start' }}
-                        />
-                      </Stack>
-
-                      <Stack spacing={1}>
-                        <RHFSwitch
-                          name="weeklyReport"
-                          label={
-                            <Stack spacing={0.5}>
-                              <Typography variant="subtitle2">Weekly Report</Typography>
-                              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                Receive a weekly summary of your trading performance
-                              </Typography>
-                            </Stack>
-                          }
-                          sx={{ alignItems: 'flex-start' }}
-                        />
-                      </Stack>
-
-                      <Stack spacing={1}>
-                        <RHFSwitch
-                          name="marketNews"
-                          label={
-                            <Stack spacing={0.5}>
-                              <Typography variant="subtitle2">Market News</Typography>
-                              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                Stay updated with relevant market news and analysis
-                              </Typography>
-                            </Stack>
-                          }
-                          sx={{ alignItems: 'flex-start' }}
-                        />
-                      </Stack>
-                    </Stack>
-                  </CardContent>
-                </Card>
-
-                <FormActions loading={saving} submitText="Save Settings" sx={{ mt: 3 }} />
-              </Stack>
-            )}
-          </Box>
-        </Stack>
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+              <LoadingButton type="submit" variant="contained" loading={saving}>
+                Save Changes
+              </LoadingButton>
+            </Box>
+          </Card>
+        )}
       </Form>
     </DashboardContent>
   );

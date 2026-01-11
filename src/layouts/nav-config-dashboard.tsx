@@ -94,17 +94,4 @@ export const navData: NavSectionProps['data'] = [
       },
     ],
   },
-  /**
-   * Account
-   */
-  {
-    subheader: 'Account',
-    items: [
-      {
-        title: 'Account',
-        path: paths.dashboard.account,
-        icon: ICONS.params,
-      },
-    ],
-  },
 ];
