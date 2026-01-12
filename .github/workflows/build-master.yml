@@ -22,7 +22,7 @@ jobs:
       - name: npm install, build
         run: |
           npm install -f
-          echo "VITE_API_BASE_URL=https://backtested-api.ioinfotech.com"" >> .env
+          echo "VITE_API_BASE_URL=https://backtested-api.ioinfotech.com" >> .env
           npm run build
         env:
           CI: false
