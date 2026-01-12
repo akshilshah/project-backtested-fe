@@ -16,11 +16,13 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { Form } from 'src/components/hook-form';
@@ -57,6 +59,9 @@ export function TradingCalculatorDialog({
   strategiesLoading = false,
   onTakeTrade,
 }: TradingCalculatorDialogProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [entry, setEntry] = useState<string>('');
   const [stopLoss, setStopLoss] = useState<string>('');
   const [account, setAccount] = useState<string>('');
@@ -194,26 +199,26 @@ export function TradingCalculatorDialog({
   const quantity = calculateQuantity();
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ pb: 2 }}>
-        <Typography variant="h5" fontWeight={600}>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth fullScreen={isMobile}>
+      <DialogTitle sx={{ pb: isMobile ? 1 : 2, px: isMobile ? 2 : 3 }}>
+        <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={600}>
           Trading Calculator
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
           Calculate your position size and risk
         </Typography>
       </DialogTitle>
 
       <Form methods={methods} onSubmit={handleFormSubmit}>
-        <DialogContent>
-          <Stack spacing={3}>
+        <DialogContent sx={{ px: isMobile ? 2 : 3 }}>
+          <Stack spacing={isMobile ? 2 : 3}>
             {/* Input Section */}
-            <Card sx={{ p: 3, bgcolor: 'background.neutral' }}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>
+            <Card sx={{ p: isMobile ? 2 : 3, bgcolor: 'background.neutral' }}>
+              <Typography variant={isMobile ? 'body2' : 'subtitle1'} fontWeight={600} sx={{ mb: isMobile ? 1.5 : 2 }}>
                 Input Values
               </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 6 }}>
+              <Grid container spacing={isMobile ? 1.5 : 2}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Entry Price"
@@ -221,17 +226,18 @@ export function TradingCalculatorDialog({
                     onChange={handleEntryChange}
                     type="number"
                     placeholder="0.00"
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
+                    size={isMobile ? 'small' : 'medium'}
                     slotProps={{
+                      input: {
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      },
                       htmlInput: {
                         step: '0.00000001',
                       },
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Stop Loss Price"
@@ -239,17 +245,18 @@ export function TradingCalculatorDialog({
                     onChange={handleStopLossChange}
                     type="number"
                     placeholder="0.00"
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
+                    size={isMobile ? 'small' : 'medium'}
                     slotProps={{
+                      input: {
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      },
                       htmlInput: {
                         step: '0.00000001',
                       },
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Account Balance"
@@ -257,17 +264,18 @@ export function TradingCalculatorDialog({
                     onChange={handleAccountChange}
                     type="number"
                     placeholder="0.00"
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }}
+                    size={isMobile ? 'small' : 'medium'}
                     slotProps={{
+                      input: {
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                      },
                       htmlInput: {
                         step: '0.01',
                       },
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Risk Percentage"
@@ -275,10 +283,11 @@ export function TradingCalculatorDialog({
                     onChange={handleStopLossPercentageChange}
                     type="number"
                     placeholder="1.8"
-                    InputProps={{
-                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                    }}
+                    size={isMobile ? 'small' : 'medium'}
                     slotProps={{
+                      input: {
+                        endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                      },
                       htmlInput: {
                         step: '0.1',
                       },
@@ -289,59 +298,59 @@ export function TradingCalculatorDialog({
             </Card>
 
             {/* Results Section */}
-            <Card sx={{ p: 3, bgcolor: 'primary.lighter' }}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, color: 'primary.main' }}>
+            <Card sx={{ p: isMobile ? 2 : 3, bgcolor: 'background.neutral', border: '1px solid', borderColor: 'divider' }}>
+              <Typography variant={isMobile ? 'body2' : 'subtitle1'} fontWeight={600} sx={{ mb: isMobile ? 1.5 : 2 }}>
                 Calculated Results
               </Typography>
-              <Grid container spacing={2}>
+              <Grid container spacing={isMobile ? 1.5 : 2}>
                 <Grid size={{ xs: 6, sm: 3 }}>
                   <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Risk Amount
                     </Typography>
-                    <Typography variant="h5" fontWeight={700} sx={{ mt: 0.5, color: 'error.main' }}>
-                      ${riskAmount}
+                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'error.main' }}>
+                      {Number(riskAmount) === 0 ? '-' : `$${riskAmount}`}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       {stopLossPercentage || '0'}% of account
                     </Typography>
                   </Box>
                 </Grid>
                 <Grid size={{ xs: 6, sm: 3 }}>
                   <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Position Size
                     </Typography>
-                    <Typography variant="h5" fontWeight={700} sx={{ mt: 0.5, color: 'primary.main' }}>
-                      ${tradeValue}
+                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'text.primary' }}>
+                      {Number(tradeValue) === 0 ? '-' : `$${tradeValue}`}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Total value
                     </Typography>
                   </Box>
                 </Grid>
                 <Grid size={{ xs: 6, sm: 3 }}>
                   <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Quantity
                     </Typography>
-                    <Typography variant="h5" fontWeight={700} sx={{ mt: 0.5, color: 'success.main' }}>
-                      {quantity.toFixed(8)}
+                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'success.main' }}>
+                      {quantity === 0 ? '-' : quantity.toFixed(8)}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Units to buy
                     </Typography>
                   </Box>
                 </Grid>
                 <Grid size={{ xs: 6, sm: 3 }}>
                   <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Leverage
                     </Typography>
-                    <Typography variant="h5" fontWeight={700} sx={{ mt: 0.5, color: 'warning.main' }}>
-                      {leverage}x
+                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'warning.main' }}>
+                      {Number(leverage) === 0 ? '-' : `${leverage}x`}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
                       Position leverage
                     </Typography>
                   </Box>
@@ -351,13 +360,13 @@ export function TradingCalculatorDialog({
 
             {/* Trade Form Section */}
             {showTradeForm && (
-              <Card sx={{ p: 3, border: '2px solid', borderColor: 'primary.main' }}>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>
+              <Card sx={{ p: isMobile ? 2 : 3, border: '2px solid', borderColor: 'primary.main' }}>
+                <Typography variant={isMobile ? 'body2' : 'subtitle1'} fontWeight={600} sx={{ mb: isMobile ? 1.5 : 2 }}>
                   Trade Details
                 </Typography>
-                <Stack spacing={2.5}>
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 6 }}>
+                <Stack spacing={isMobile ? 1.5 : 2.5}>
+                  <Grid container spacing={isMobile ? 1.5 : 2}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <RHFAutocomplete
                         name="coinId"
                         label="Coin"
@@ -370,6 +379,11 @@ export function TradingCalculatorDialog({
                         }}
                         getOptionLabel={(option: Coin) => `${option.symbol} - ${option.name}`}
                         isOptionEqualToValue={(option: Coin, value: Coin) => option.id === value.id}
+                        slotProps={{
+                          textField: {
+                            size: isMobile ? 'small' : 'medium',
+                          },
+                        }}
                         renderOption={(props, option: Coin) => (
                           <Box component="li" {...props} key={option.id}>
                             <Stack direction="row" alignItems="center" spacing={1.5}>
@@ -402,7 +416,7 @@ export function TradingCalculatorDialog({
                         )}
                       />
                     </Grid>
-                    <Grid size={{ xs: 6 }}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <RHFAutocomplete
                         name="strategyId"
                         label="Strategy"
@@ -417,26 +431,33 @@ export function TradingCalculatorDialog({
                         isOptionEqualToValue={(option: Strategy, value: Strategy) =>
                           option.id === value.id
                         }
+                        slotProps={{
+                          textField: {
+                            size: isMobile ? 'small' : 'medium',
+                          },
+                        }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 6 }}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <RHFDatePicker
                         name="tradeDate"
                         label="Trade Date"
                         slotProps={{
                           textField: {
                             fullWidth: true,
+                            size: isMobile ? 'small' : 'medium',
                           },
                         }}
                       />
                     </Grid>
-                    <Grid size={{ xs: 6 }}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <RHFTimePicker
                         name="tradeTime"
                         label="Trade Time"
                         slotProps={{
                           textField: {
                             fullWidth: true,
+                            size: isMobile ? 'small' : 'medium',
                           },
                         }}
                       />
@@ -450,25 +471,25 @@ export function TradingCalculatorDialog({
 
         <Divider />
 
-        <DialogActions sx={{ p: 2.5 }}>
-          <Button variant="outlined" color="inherit" onClick={onClose}>
+        <DialogActions sx={{ p: isMobile ? 1.5 : 2.5, gap: 1 }}>
+          <Button variant="outlined" color="inherit" onClick={onClose} size={isMobile ? 'medium' : 'large'}>
             Close
           </Button>
           {!showTradeForm ? (
             <Button
               variant="contained"
-              size="large"
+              size={isMobile ? 'medium' : 'large'}
               onClick={handleTakeTradeClick}
               disabled={!entry || !stopLoss || !account || Number(tradeValue) === 0}
             >
               Take Trade
             </Button>
           ) : (
-            <Stack direction="row" spacing={1.5}>
-              <Button variant="outlined" onClick={handleCancelTrade}>
+            <Stack direction="row" spacing={1}>
+              <Button variant="outlined" onClick={handleCancelTrade} size={isMobile ? 'medium' : 'large'}>
                 Cancel Trade
               </Button>
-              <LoadingButton type="submit" variant="contained" size="large" loading={loading}>
+              <LoadingButton type="submit" variant="contained" size={isMobile ? 'medium' : 'large'} loading={loading}>
                 Execute Trade
               </LoadingButton>
             </Stack>
