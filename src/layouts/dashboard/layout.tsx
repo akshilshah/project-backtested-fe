@@ -225,7 +225,7 @@ export function DashboardLayout({
             zIndex: theme.zIndex.speedDial,
           }}
         >
-          <Iconify icon="mdi:calculator" width={24} />
+          <Iconify icon="solar:bill-list-bold" width={24} />
         </Fab>
       </Tooltip>
 

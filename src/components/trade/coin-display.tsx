@@ -72,7 +72,7 @@ export function CoinDisplay({
           width: avatarSize,
           height: avatarSize,
           fontSize: avatarSize * 0.4,
-          bgcolor: getAvatarColor(symbol),
+          bgcolor: getAvatarColor(symbol || ''),
           color: 'white',
           fontWeight: 700,
         }}
