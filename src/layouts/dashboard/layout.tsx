@@ -1,7 +1,10 @@
 import type { Breakpoint } from '@mui/material/styles';
+import type { CreateTradeRequest } from 'src/types/trade';
 import type { NavItemProps, NavSectionProps } from 'src/components/nav-section';
 import type { MainSectionProps, HeaderSectionProps, LayoutSectionProps } from '../core';
 
+import useSWR from 'swr';
+import { toast } from 'sonner';
 import { merge } from 'es-toolkit';
 import { useBoolean } from 'minimal-shared/hooks';
 
@@ -11,6 +14,12 @@ import Alert from '@mui/material/Alert';
 import Tooltip from '@mui/material/Tooltip';
 import { useTheme } from '@mui/material/styles';
 import { iconButtonClasses } from '@mui/material/IconButton';
+
+import { useRouter } from 'src/routes/hooks';
+
+import { CoinsService } from 'src/services/coins.service';
+import { TradesService } from 'src/services/trades.service';
+import { StrategiesService } from 'src/services/strategies.service';
 
 import { Logo } from 'src/components/logo';
 import { Iconify } from 'src/components/iconify';
@@ -53,6 +62,7 @@ export function DashboardLayout({
   layoutQuery = 'lg',
 }: DashboardLayoutProps) {
   const theme = useTheme();
+  const router = useRouter();
 
   const { user } = useMockedUser();
 
@@ -64,6 +74,30 @@ export function DashboardLayout({
   const { value: calculatorOpen, onFalse: onCalculatorClose, onTrue: onCalculatorOpen } = useBoolean();
 
   const navData = slotProps?.nav?.data ?? dashboardNavData;
+
+  // Fetch coins and strategies for trading calculator
+  const { data: coinsData, isLoading: coinsLoading } = useSWR('/api/coins', () =>
+    CoinsService.getAll()
+  );
+  const { data: strategiesData, isLoading: strategiesLoading } = useSWR(
+    '/api/strategies',
+    () => StrategiesService.getAll()
+  );
+
+  const coins = coinsData?.coins || [];
+  const strategies = strategiesData?.strategies || [];
+
+  const handleTakeTrade = async (data: CreateTradeRequest) => {
+    try {
+      await TradesService.create(data);
+      toast.success('Trade created successfully!');
+      onCalculatorClose();
+      router.push('/trades');
+    } catch (error) {
+      toast.error('Failed to create trade');
+      throw error;
+    }
+  };
 
   const isNavMini = settings.state.navLayout === 'mini';
   const isNavHorizontal = settings.state.navLayout === 'horizontal';
@@ -221,7 +255,15 @@ export function DashboardLayout({
       </Tooltip>
 
       {/* Trading Calculator Dialog */}
-      <TradingCalculatorDialog open={calculatorOpen} onClose={onCalculatorClose} />
+      <TradingCalculatorDialog
+        open={calculatorOpen}
+        onClose={onCalculatorClose}
+        coins={coins}
+        strategies={strategies}
+        coinsLoading={coinsLoading}
+        strategiesLoading={strategiesLoading}
+        onTakeTrade={handleTakeTrade}
+      />
     </>
   );
 
