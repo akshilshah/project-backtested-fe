@@ -92,7 +92,7 @@ export function DashboardLayout({
       await TradesService.create(data);
       toast.success('Trade created successfully!');
       onCalculatorClose();
-      router.push('/trades');
+      router.push('/dashboard/trades');
     } catch (error) {
       toast.error('Failed to create trade');
       throw error;

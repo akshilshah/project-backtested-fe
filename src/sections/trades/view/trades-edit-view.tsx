@@ -2,7 +2,7 @@ import type { CreateTradeRequest } from 'src/types/trade';
 
 import useSWR from 'swr';
 import { toast } from 'sonner';
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import Alert from '@mui/material/Alert';
 
@@ -16,15 +16,14 @@ import { StrategiesService } from 'src/services/strategies.service';
 import { PageHeader } from 'src/components/page/page-header';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { PageContainer } from 'src/components/page/page-container';
-
-import { TradesForm } from '../trades-form';
+import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 // ----------------------------------------------------------------------
 
 export function TradesEditView() {
   const router = useRouter();
   const { id } = useParams();
-  const [loading, setLoading] = useState(false);
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
 
   // Fetch trade data
   const {
@@ -46,14 +45,21 @@ export function TradesEditView() {
   const coins = coinsData?.coins ?? [];
   const strategies = strategiesData?.strategies ?? [];
 
+  // Open calculator when trade is loaded
+  useEffect(() => {
+    if (trade && !calculatorOpen) {
+      setCalculatorOpen(true);
+    }
+  }, [trade, calculatorOpen]);
+
   const handleSubmit = useCallback(
     async (data: CreateTradeRequest) => {
       if (!id) return;
 
       try {
-        setLoading(true);
         await TradesService.update(id, data);
         toast.success('Trade updated successfully');
+        setCalculatorOpen(false);
         router.push(paths.dashboard.trades.details(id));
       } catch (err: any) {
         const status = err?.response?.status;
@@ -66,14 +72,14 @@ export function TradesEditView() {
         } else {
           toast.error(message || 'Failed to update trade');
         }
-      } finally {
-        setLoading(false);
+        throw err; // Re-throw to let the calculator handle loading state
       }
     },
     [id, router]
   );
 
-  const handleCancel = useCallback(() => {
+  const handleClose = useCallback(() => {
+    setCalculatorOpen(false);
     if (id) {
       router.push(paths.dashboard.trades.details(id));
     } else {
@@ -120,29 +126,32 @@ export function TradesEditView() {
   }
 
   return (
-    <PageContainer maxWidth="lg">
-      <PageHeader
-        title="Edit Trade"
-        subtitle={`Update ${trade.coin?.symbol ?? 'trade'} trade`}
-        breadcrumbs={[
-          { label: 'Dashboard', href: paths.dashboard.root },
-          { label: 'Trades', href: paths.dashboard.trades.root },
-          { label: `${trade.coin?.symbol ?? 'Trade'}`, href: paths.dashboard.trades.details(id!) },
-          { label: 'Edit' },
-        ]}
-        backHref={paths.dashboard.trades.details(id!)}
-      />
+    <>
+      <PageContainer maxWidth="lg">
+        <PageHeader
+          title="Edit Trade"
+          subtitle={`Update ${trade.coin?.symbol ?? 'trade'} trade`}
+          breadcrumbs={[
+            { label: 'Dashboard', href: paths.dashboard.root },
+            { label: 'Trades', href: paths.dashboard.trades.root },
+            { label: `${trade.coin?.symbol ?? 'Trade'}`, href: paths.dashboard.trades.details(id!) },
+            { label: 'Edit' },
+          ]}
+          backHref={paths.dashboard.trades.details(id!)}
+        />
+      </PageContainer>
 
-      <TradesForm
-        currentTrade={trade}
+      <TradingCalculatorDialog
+        open={calculatorOpen}
+        onClose={handleClose}
         coins={coins}
         strategies={strategies}
         coinsLoading={coinsLoading}
         strategiesLoading={strategiesLoading}
-        onSubmit={handleSubmit}
-        onCancel={handleCancel}
-        loading={loading}
+        onTakeTrade={handleSubmit}
+        currentTrade={trade}
+        isEditMode
       />
-    </PageContainer>
+    </>
   );
 }

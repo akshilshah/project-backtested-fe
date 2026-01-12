@@ -1,12 +1,12 @@
 import type { Coin } from 'src/types/coin';
 import type { Strategy } from 'src/types/strategy';
-import type { CreateTradeRequest } from 'src/types/trade';
+import type { Trade, CreateTradeRequest } from 'src/types/trade';
 
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
-import { useState, useCallback } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -48,6 +48,8 @@ type TradingCalculatorDialogProps = {
   coinsLoading?: boolean;
   strategiesLoading?: boolean;
   onTakeTrade?: (data: CreateTradeRequest) => Promise<void>;
+  currentTrade?: Trade;
+  isEditMode?: boolean;
 };
 
 export function TradingCalculatorDialog({
@@ -58,6 +60,8 @@ export function TradingCalculatorDialog({
   coinsLoading = false,
   strategiesLoading = false,
   onTakeTrade,
+  currentTrade,
+  isEditMode = false,
 }: TradingCalculatorDialogProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -70,16 +74,27 @@ export function TradingCalculatorDialog({
   const [loading, setLoading] = useState(false);
 
   const defaultValues: TradeFormValues = {
-    coinId: 0,
-    strategyId: 0,
-    tradeDate: dayjs(),
-    tradeTime: dayjs(),
+    coinId: currentTrade?.coinId || 0,
+    strategyId: currentTrade?.strategyId || 0,
+    tradeDate: currentTrade?.tradeDate ? dayjs(currentTrade.tradeDate) : dayjs(),
+    tradeTime: currentTrade?.tradeTime ? dayjs(`2000-01-01 ${currentTrade.tradeTime}`) : dayjs(),
   };
 
   const methods = useForm<TradeFormValues>({
     resolver: zodResolver(TradeSchema),
     defaultValues,
   });
+
+  // Pre-populate calculator values when editing
+  useEffect(() => {
+    if (currentTrade && isEditMode) {
+      setEntry(currentTrade.avgEntry.toString());
+      setStopLoss(currentTrade.stopLoss.toString());
+      setAccount(currentTrade.amount.toString());
+      setStopLossPercentage(currentTrade.stopLossPercentage.toString());
+      setShowTradeForm(true); // Auto-show trade form in edit mode
+    }
+  }, [currentTrade, isEditMode]);
 
   // Calculate Stop Loss Amount (configurable % of account as risk amount)
   const calculateStopLossAmount = useCallback(() => {
@@ -202,10 +217,10 @@ export function TradingCalculatorDialog({
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth fullScreen={isMobile}>
       <DialogTitle sx={{ pb: isMobile ? 1 : 2, px: isMobile ? 2 : 3 }}>
         <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={600}>
-          Trading Calculator
+          {isEditMode ? 'Edit Trade' : 'Trading Calculator'}
         </Typography>
         <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-          Calculate your position size and risk
+          {isEditMode ? 'Update trade details and recalculate' : 'Calculate your position size and risk'}
         </Typography>
       </DialogTitle>
 
@@ -482,15 +497,15 @@ export function TradingCalculatorDialog({
               onClick={handleTakeTradeClick}
               disabled={!entry || !stopLoss || !account || Number(tradeValue) === 0}
             >
-              Take Trade
+              {isEditMode ? 'Continue' : 'Take Trade'}
             </Button>
           ) : (
             <Stack direction="row" spacing={1}>
               <Button variant="outlined" onClick={handleCancelTrade} size={isMobile ? 'medium' : 'large'}>
-                Cancel Trade
+                Cancel
               </Button>
               <LoadingButton type="submit" variant="contained" size={isMobile ? 'medium' : 'large'} loading={loading}>
-                Execute Trade
+                {isEditMode ? 'Update Trade' : 'Execute Trade'}
               </LoadingButton>
             </Stack>
           )}

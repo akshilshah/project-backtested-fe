@@ -1,3 +1,4 @@
+import type { CreateTradeRequest } from 'src/types/trade';
 
 import useSWR from 'swr';
 import { toast } from 'sonner';
@@ -18,7 +19,9 @@ import { useRouter, useParams } from 'src/routes/hooks';
 
 import { fDate, fTime, fDateTime } from 'src/utils/format-time';
 
+import { CoinsService } from 'src/services/coins.service';
 import { TradesService } from 'src/services/trades.service';
+import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
@@ -28,6 +31,7 @@ import { DeleteDialog } from 'src/components/form/confirm-dialog';
 import { PriceDisplay } from 'src/components/trade/price-display';
 import { PageContainer } from 'src/components/page/page-container';
 import { TradeStatusBadge } from 'src/components/trade/trade-status-badge';
+import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { TradeExitDialog } from '../trade-exit-dialog';
 
@@ -40,6 +44,7 @@ export function TradesDetailsView() {
   const [deleting, setDeleting] = useState(false);
   const [exitDialogOpen, setExitDialogOpen] = useState(false);
   const [exitLoading, setExitLoading] = useState(false);
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
 
   // Fetch trade data
   const {
@@ -48,6 +53,19 @@ export function TradesDetailsView() {
     error,
     mutate,
   } = useSWR(id ? ['trade', id] : null, () => TradesService.getById(id!));
+
+  // Fetch coins for dropdown
+  const { data: coinsData, isLoading: coinsLoading } = useSWR('coins-all', () =>
+    CoinsService.getAll({ limit: 100 })
+  );
+
+  // Fetch strategies for dropdown
+  const { data: strategiesData, isLoading: strategiesLoading } = useSWR('strategies-all', () =>
+    StrategiesService.getAll({ limit: 100 })
+  );
+
+  const coins = coinsData?.coins ?? [];
+  const strategies = strategiesData?.strategies ?? [];
 
   const handleOpenDelete = useCallback(() => {
     setDeleteDialogOpen(true);
@@ -102,6 +120,40 @@ export function TradesDetailsView() {
     [id, mutate]
   );
 
+  const handleOpenEdit = useCallback(() => {
+    setCalculatorOpen(true);
+  }, []);
+
+  const handleCloseCalculator = useCallback(() => {
+    setCalculatorOpen(false);
+  }, []);
+
+  const handleUpdateTrade = useCallback(
+    async (data: CreateTradeRequest) => {
+      if (!id) return;
+
+      try {
+        await TradesService.update(id, data);
+        toast.success('Trade updated successfully');
+        mutate();
+        setCalculatorOpen(false);
+      } catch (err: any) {
+        const status = err?.response?.status;
+        const message = err?.response?.data?.message;
+
+        if (status === 404) {
+          toast.error('Trade not found');
+        } else if (status === 400) {
+          toast.error(message || 'Invalid trade data');
+        } else {
+          toast.error(message || 'Failed to update trade');
+        }
+        throw err;
+      }
+    },
+    [id, mutate]
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -133,7 +185,7 @@ export function TradesDetailsView() {
                 <Button
                   variant="outlined"
                   color="inherit"
-                  href={paths.dashboard.trades.edit(id!)}
+                  onClick={handleOpenEdit}
                   startIcon={<Iconify icon={'solar:pen-bold' as any} />}
                 >
                   Edit
@@ -469,6 +521,18 @@ export function TradesDetailsView() {
         onClose={handleCloseExit}
         onConfirm={handleConfirmExit}
         loading={exitLoading}
+      />
+
+      <TradingCalculatorDialog
+        open={calculatorOpen}
+        onClose={handleCloseCalculator}
+        coins={coins}
+        strategies={strategies}
+        coinsLoading={coinsLoading}
+        strategiesLoading={strategiesLoading}
+        onTakeTrade={handleUpdateTrade}
+        currentTrade={trade}
+        isEditMode
       />
     </PageContainer>
   );
