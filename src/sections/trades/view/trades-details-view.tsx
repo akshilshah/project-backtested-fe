@@ -213,19 +213,29 @@ export function TradesDetailsView() {
       />
 
       {/* Hero Metrics Section */}
-      <Grid container spacing={2} sx={{ mb: 3 }}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         {/* Coin Info */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card sx={{ height: '100%', bgcolor: 'background.neutral' }}>
-            <CardContent>
-              <Stack spacing={1}>
+          <Card
+            sx={{
+              height: '100%',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              border: '1px solid',
+              borderColor: 'divider',
+              '&:hover': {
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+              },
+            }}
+          >
+            <CardContent sx={{ p: 3 }}>
+              <Stack spacing={2}>
                 <CoinDisplay
                   symbol={trade.coin?.symbol ?? 'N/A'}
                   name={trade.coin?.name}
                   showName
                   size="medium"
                 />
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
+                <Stack direction="row" spacing={1} alignItems="center">
                   {trade.derived?.direction && (
                     <Box
                       sx={{
@@ -236,7 +246,7 @@ export function TradesDetailsView() {
                         color: 'common.white',
                       }}
                     >
-                      <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.7rem' }}>
                         {trade.derived.direction.toUpperCase()}
                       </Typography>
                     </Box>
@@ -248,27 +258,31 @@ export function TradesDetailsView() {
           </Card>
         </Grid>
 
-        {/* P/L Card - Most Important */}
+        {/* P/L Card - Only colored when closed */}
         {trade.status === 'CLOSED' && trade.profitLoss !== undefined && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card
               sx={{
                 height: '100%',
-                bgcolor: trade.profitLoss >= 0 ? 'success.lighter' : 'error.lighter',
-                border: 2,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                border: '1px solid',
                 borderColor: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                },
               }}
             >
-              <CardContent>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5 }}>
                   PROFIT/LOSS
                 </Typography>
                 <Typography
                   variant="h4"
                   sx={{
                     fontWeight: 700,
-                    color: trade.profitLoss >= 0 ? 'success.dark' : 'error.dark',
-                    mt: 0.5
+                    color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
+                    mt: 1,
+                    mb: 0.5,
                   }}
                 >
                   {trade.profitLoss >= 0 ? '+' : ''}
@@ -282,14 +296,14 @@ export function TradesDetailsView() {
                     variant="body2"
                     sx={{
                       fontWeight: 600,
-                      color: trade.profitLoss >= 0 ? 'success.dark' : 'error.dark',
+                      color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
                     }}
                   >
                     {trade.profitLoss >= 0 ? '+' : ''}{trade.profitLossPercentage.toFixed(2)}%
                   </Typography>
                 )}
                 {trade.derived?.commission && (
-                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1.5 }}>
                     Net: {new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'USD',
@@ -304,12 +318,22 @@ export function TradesDetailsView() {
         {/* Position Size */}
         {trade.derived?.tradeValue && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ height: '100%', bgcolor: 'primary.lighter' }}>
-              <CardContent>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+            <Card
+              sx={{
+                height: '100%',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                border: '1px solid',
+                borderColor: 'divider',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                },
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5 }}>
                   POSITION SIZE
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.dark', mt: 0.5 }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mt: 1, mb: 0.5 }}>
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
@@ -329,12 +353,22 @@ export function TradesDetailsView() {
         {/* Risk Info */}
         {trade.avgEntry && trade.stopLoss && trade.quantity && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card sx={{ height: '100%', bgcolor: 'warning.lighter' }}>
-              <CardContent>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+            <Card
+              sx={{
+                height: '100%',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                border: '1px solid',
+                borderColor: 'divider',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                },
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5 }}>
                   RISK
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, color: 'warning.dark', mt: 0.5 }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mt: 1, mb: 0.5 }}>
                   {(((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -362,20 +396,19 @@ export function TradesDetailsView() {
                   <Grid size={{ xs: 12, md: trade.status === 'CLOSED' ? 6 : 12 }}>
                     <Box
                       sx={{
-                        p: 2,
+                        p: 3,
                         borderRadius: 2,
-                        bgcolor: 'grey.100',
                         border: '1px solid',
-                        borderColor: 'grey.300',
+                        borderColor: 'divider',
                       }}
                     >
-                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                        <Iconify icon={'solar:import-bold' as any} width={20} sx={{ color: 'text.primary' }} />
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2.5 }}>
+                        <Iconify icon={'solar:import-bold' as any} width={20} sx={{ color: 'text.secondary' }} />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary', letterSpacing: 0.5 }}>
                           ENTRY
                         </Typography>
                       </Stack>
-                      <Grid container spacing={2}>
+                      <Grid container spacing={2.5}>
                         <Grid size={{ xs: 6 }}>
                           <PriceDisplay value={trade.avgEntry} label="Price" size="small" />
                         </Grid>
@@ -397,14 +430,13 @@ export function TradesDetailsView() {
                     <Grid size={{ xs: 12, md: 6 }}>
                       <Box
                         sx={{
-                          p: 2,
+                          p: 3,
                           borderRadius: 2,
-                          bgcolor: 'grey.100',
-                          border: '2px solid',
+                          border: '1px solid',
                           borderColor: trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main',
                         }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2.5 }}>
                           <Iconify
                             icon={'solar:export-bold' as any}
                             width={20}
@@ -414,13 +446,14 @@ export function TradesDetailsView() {
                             variant="subtitle2"
                             sx={{
                               fontWeight: 700,
-                              color: trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main'
+                              color: trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main',
+                              letterSpacing: 0.5
                             }}
                           >
                             EXIT
                           </Typography>
                         </Stack>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={2.5}>
                           <Grid size={{ xs: 6 }}>
                             <PriceDisplay
                               value={trade.avgExit}
@@ -460,15 +493,16 @@ export function TradesDetailsView() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          bgcolor: 'primary.lighter',
-                          color: 'primary.main',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          color: 'text.secondary',
                         }}
                       >
-                        <Iconify icon={'solar:chart-2-bold' as any} width={28} />
+                        <Iconify icon={'solar:chart-2-bold' as any} width={24} />
                       </Box>
                       <Box>
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                          Strategy
+                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', letterSpacing: 0.5 }}>
+                          STRATEGY
                         </Typography>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                           {trade.strategy?.name ?? 'N/A'}
