@@ -340,7 +340,7 @@ export function TradesDetailsView() {
                   }).format(trade.derived.tradeValue)}
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                  {trade.quantity} × {new Intl.NumberFormat('en-US', {
+                  {trade.quantity?.toFixed(4)} × {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
                   }).format(trade.avgEntry)}
@@ -413,7 +413,7 @@ export function TradesDetailsView() {
                           <PriceDisplay value={trade.avgEntry} label="Price" size="small" />
                         </Grid>
                         <Grid size={{ xs: 6 }}>
-                          <DetailItem label="Quantity" value={trade.quantity?.toString() ?? '-'} />
+                          <DetailItem label="Quantity" value={trade.quantity?.toFixed(4) ?? '-'} />
                         </Grid>
                         <Grid size={{ xs: 6 }}>
                           <DetailItem label="Date" value={fDate(trade.tradeDate)} />

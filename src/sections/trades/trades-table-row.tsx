@@ -116,7 +116,7 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
 
         {/* Quantity */}
         <TableCell>
-          <Typography variant="body2">{row.quantity}</Typography>
+          <Typography variant="body2">{row.quantity?.toFixed(4)}</Typography>
         </TableCell>
 
         {/* P&L */}

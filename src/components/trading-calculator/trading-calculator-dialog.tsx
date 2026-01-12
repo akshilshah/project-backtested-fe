@@ -228,11 +228,11 @@ export function TradingCalculatorDialog({
         <DialogContent sx={{ px: isMobile ? 2 : 3 }}>
           <Stack spacing={isMobile ? 2 : 3}>
             {/* Input Section */}
-            <Card sx={{ p: isMobile ? 2 : 3, bgcolor: 'background.neutral' }}>
-              <Typography variant={isMobile ? 'body2' : 'subtitle1'} fontWeight={600} sx={{ mb: isMobile ? 1.5 : 2 }}>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 1, mb: 2, display: 'block' }}>
                 Input Values
               </Typography>
-              <Grid container spacing={isMobile ? 1.5 : 2}>
+              <Grid container spacing={isMobile ? 2 : 2.5}>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
@@ -310,76 +310,104 @@ export function TradingCalculatorDialog({
                   />
                 </Grid>
               </Grid>
-            </Card>
+            </Box>
 
             {/* Results Section */}
-            <Card sx={{ p: isMobile ? 2 : 3, bgcolor: 'background.neutral', border: '1px solid', borderColor: 'divider' }}>
-              <Typography variant={isMobile ? 'body2' : 'subtitle1'} fontWeight={600} sx={{ mb: isMobile ? 1.5 : 2 }}>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 1, mb: 2, display: 'block' }}>
                 Calculated Results
               </Typography>
-              <Grid container spacing={isMobile ? 1.5 : 2}>
-                <Grid size={{ xs: 6, sm: 3 }}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Risk Amount
-                    </Typography>
-                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'error.main' }}>
-                      {Number(riskAmount) === 0 ? '-' : `$${riskAmount}`}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      {stopLossPercentage || '0'}% of account
-                    </Typography>
-                  </Box>
+
+              {/* Primary Results - Large emphasis */}
+              <Stack spacing={3}>
+                <Grid container spacing={3}>
+                  {/* Position Size - Most Important */}
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Card
+                      sx={{
+                        p: 3,
+                        border: '2px solid',
+                        borderColor: 'primary.main',
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                      }}
+                    >
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                        Position Size
+                      </Typography>
+                      <Typography variant="h3" sx={{ fontWeight: 700, color: 'primary.main', mt: 1, mb: 0.5 }}>
+                        {Number(tradeValue) === 0 ? '-' : `$${tradeValue}`}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        Total value
+                      </Typography>
+                    </Card>
+                  </Grid>
+
+                  {/* Quantity - Second Most Important */}
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Card
+                      sx={{
+                        p: 3,
+                        border: '2px solid',
+                        borderColor: 'primary.main',
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                      }}
+                    >
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                        Quantity
+                      </Typography>
+                      <Typography variant="h3" sx={{ fontWeight: 700, color: 'primary.main', mt: 1, mb: 0.5 }}>
+                        {quantity === 0 ? '-' : quantity.toFixed(4)}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        Units to buy
+                      </Typography>
+                    </Card>
+                  </Grid>
                 </Grid>
-                <Grid size={{ xs: 6, sm: 3 }}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Position Size
-                    </Typography>
-                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'text.primary' }}>
-                      {Number(tradeValue) === 0 ? '-' : `$${tradeValue}`}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Total value
-                    </Typography>
-                  </Box>
+
+                {/* Secondary Results - Smaller */}
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 6 }}>
+                    <Box sx={{ p: 2, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                        Risk Amount
+                      </Typography>
+                      <Typography variant="h5" sx={{ fontWeight: 600, color: 'text.primary', mt: 0.5 }}>
+                        {Number(riskAmount) === 0 ? '-' : `$${riskAmount}`}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>
+                        {stopLossPercentage || '0'}% of account
+                      </Typography>
+                    </Box>
+                  </Grid>
+
+                  <Grid size={{ xs: 6 }}>
+                    <Box sx={{ p: 2, borderRadius: 1.5, border: '1px solid', borderColor: 'divider' }}>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                        Leverage
+                      </Typography>
+                      <Typography variant="h5" sx={{ fontWeight: 600, color: 'text.primary', mt: 0.5 }}>
+                        {Number(leverage) === 0 ? '-' : `${leverage}x`}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>
+                        Position leverage
+                      </Typography>
+                    </Box>
+                  </Grid>
                 </Grid>
-                <Grid size={{ xs: 6, sm: 3 }}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Quantity
-                    </Typography>
-                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'success.main' }}>
-                      {quantity === 0 ? '-' : quantity.toFixed(8)}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Units to buy
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 6, sm: 3 }}>
-                  <Box>
-                    <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Leverage
-                    </Typography>
-                    <Typography variant={isMobile ? 'h6' : 'h5'} fontWeight={700} sx={{ mt: 0.5, color: 'warning.main' }}>
-                      {Number(leverage) === 0 ? '-' : `${leverage}x`}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: isMobile ? '0.65rem' : '0.75rem' }}>
-                      Position leverage
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Card>
+              </Stack>
+            </Box>
 
             {/* Trade Form Section */}
             {showTradeForm && (
-              <Card sx={{ p: isMobile ? 2 : 3, border: '2px solid', borderColor: 'primary.main' }}>
-                <Typography variant={isMobile ? 'body2' : 'subtitle1'} fontWeight={600} sx={{ mb: isMobile ? 1.5 : 2 }}>
+              <Box>
+                <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 1, mb: 2, display: 'block' }}>
                   Trade Details
                 </Typography>
-                <Stack spacing={isMobile ? 1.5 : 2.5}>
+                <Box sx={{ p: isMobile ? 2 : 3, borderRadius: 1.5, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
                   <Grid container spacing={isMobile ? 1.5 : 2}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <RHFAutocomplete
@@ -478,8 +506,8 @@ export function TradingCalculatorDialog({
                       />
                     </Grid>
                   </Grid>
-                </Stack>
-              </Card>
+                </Box>
+              </Box>
             )}
           </Stack>
         </DialogContent>

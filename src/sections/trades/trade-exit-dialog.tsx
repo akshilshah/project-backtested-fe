@@ -142,7 +142,7 @@ export function TradeExitDialog({
                     <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.25 }}>
                       Quantity
                     </Typography>
-                    <Typography variant="subtitle2">{trade.quantity}</Typography>
+                    <Typography variant="subtitle2">{trade.quantity?.toFixed(4)}</Typography>
                   </Box>
                   <PriceDisplay value={trade.stopLoss} label="Stop Loss" size="small" />
                 </Stack>
