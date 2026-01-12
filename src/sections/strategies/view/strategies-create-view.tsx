@@ -1,18 +1,16 @@
 import type { CreateStrategyRequest } from 'src/types/strategy';
 
+import { toast } from 'sonner';
 import { useState, useCallback } from 'react';
 
 import Container from '@mui/material/Container';
 
+import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
-import { toast } from 'sonner';
-
-import { paths } from 'src/routes/paths';
+import { StrategiesService } from 'src/services/strategies.service';
 
 import { PageHeader } from 'src/components/page/page-header';
-
-import { StrategiesService } from 'src/services/strategies.service';
 
 import { StrategyForm } from '../strategies-form';
 

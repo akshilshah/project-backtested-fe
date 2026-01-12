@@ -3,10 +3,10 @@ import type { Theme, SxProps } from '@mui/material/styles';
 import Zoom from '@mui/material/Zoom';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import LoadingButton from '@mui/lab/LoadingButton';
 import DialogContentText from '@mui/material/DialogContentText';
 
 // ----------------------------------------------------------------------

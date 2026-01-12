@@ -46,7 +46,7 @@ export function StatCard({
 }: StatCardProps) {
   const theme = useTheme();
 
-  const formatValue = () => {
+  const _formatValue = () => {
     if (typeof value === 'string') return value;
 
     switch (format) {

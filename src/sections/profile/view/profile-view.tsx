@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import type { ProfileFormValues } from '../profile-form';
 
 import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -8,13 +9,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useAuthUser } from 'src/hooks/use-auth-user';
 
 import { AuthService } from 'src/services/auth.service';
-
 import { DashboardContent } from 'src/layouts/dashboard';
+
 import { PageHeader } from 'src/components/page/page-header';
 
 import { ProfileForm } from '../profile-form';
-
-import type { ProfileFormValues } from '../profile-form';
 
 // ----------------------------------------------------------------------
 

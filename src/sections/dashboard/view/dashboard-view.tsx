@@ -1,9 +1,8 @@
 import type { Trade } from 'src/types/trade';
 
-import { useState, useEffect, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useEffect, useCallback } from 'react';
 
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -17,9 +16,9 @@ import { PageContainer } from 'src/components/page/page-container';
 
 import { DashboardStats } from '../dashboard-stats';
 import { DashboardOpenTrades } from '../dashboard-open-trades';
+import { TradeExitDialog } from '../../trades/trade-exit-dialog';
 import { DashboardQuickActions } from '../dashboard-quick-actions';
 import { DashboardRecentTrades } from '../dashboard-recent-trades';
-import { TradeExitDialog } from '../../trades/trade-exit-dialog';
 
 // ----------------------------------------------------------------------
 

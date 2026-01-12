@@ -1,15 +1,13 @@
 import 'src/global.css';
 
-import { useEffect } from 'react';
-
 import { SWRConfig } from 'swr';
 import { Toaster } from 'sonner';
+import { useEffect } from 'react';
 
 import { usePathname } from 'src/routes/hooks';
 
-import { themeConfig, ThemeProvider } from 'src/theme';
-
 import { swrConfig } from 'src/lib/swr-config';
+import { themeConfig, ThemeProvider } from 'src/theme';
 
 import { ProgressBar } from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';

@@ -1,33 +1,30 @@
-import type { Strategy } from 'src/types/strategy';
 
-import { useState, useCallback } from 'react';
+import useSWR from 'swr';
+import { toast } from 'sonner';
 import { useParams } from 'react-router';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
-import useSWR, { mutate } from 'swr';
-import { toast } from 'sonner';
 import { fDateTime } from 'src/utils/format-time';
 
-import { paths } from 'src/routes/paths';
+import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
-
-import { StrategiesService } from 'src/services/strategies.service';
 
 // ----------------------------------------------------------------------
 

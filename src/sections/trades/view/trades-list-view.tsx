@@ -1,9 +1,8 @@
 import type { Trade, TradeStatus, TradeFilters, CreateTradeRequest } from 'src/types/trade';
 
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';

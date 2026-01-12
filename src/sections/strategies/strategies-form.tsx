@@ -1,4 +1,4 @@
-import type { Strategy, CreateStrategyRequest, UpdateStrategyRequest } from 'src/types/strategy';
+import type { Strategy } from 'src/types/strategy';
 
 import { z } from 'zod';
 import { useMemo } from 'react';

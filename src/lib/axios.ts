@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosError } from 'axios';
+import type { AxiosError, AxiosRequestConfig } from 'axios';
 
 import axios from 'axios';
 import { toast } from 'sonner';

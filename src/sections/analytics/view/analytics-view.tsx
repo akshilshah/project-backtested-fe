@@ -1,8 +1,7 @@
 import type { TradeFilters } from 'src/types/trade';
 
-import { useState, useCallback } from 'react';
-
 import useSWR from 'swr';
+import { useState, useCallback } from 'react';
 
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';

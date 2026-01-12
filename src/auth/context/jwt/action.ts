@@ -1,4 +1,4 @@
-import type { SignupRequest, LoginRequest } from 'src/types/auth';
+import type { LoginRequest, SignupRequest } from 'src/types/auth';
 
 import axios, { endpoints } from 'src/lib/axios';
 

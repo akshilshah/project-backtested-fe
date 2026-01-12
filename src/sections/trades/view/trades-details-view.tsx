@@ -1,9 +1,7 @@
-import type { Trade } from 'src/types/trade';
 
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -24,11 +22,11 @@ import { TradesService } from 'src/services/trades.service';
 
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
-import { PageContainer } from 'src/components/page/page-container';
 import { LoadingScreen } from 'src/components/loading-screen';
-import { DeleteDialog } from 'src/components/form/confirm-dialog';
 import { CoinDisplay } from 'src/components/trade/coin-display';
+import { DeleteDialog } from 'src/components/form/confirm-dialog';
 import { PriceDisplay } from 'src/components/trade/price-display';
+import { PageContainer } from 'src/components/page/page-container';
 import { TradeStatusBadge } from 'src/components/trade/trade-status-badge';
 
 import { TradeExitDialog } from '../trade-exit-dialog';
@@ -67,8 +65,8 @@ export function TradesDetailsView() {
       await TradesService.delete(id);
       toast.success('Trade deleted successfully');
       router.push(paths.dashboard.trades.root);
-    } catch (error: any) {
-      const message = error?.response?.data?.message || 'Failed to delete trade';
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Failed to delete trade';
       toast.error(message);
     } finally {
       setDeleting(false);
@@ -94,8 +92,8 @@ export function TradesDetailsView() {
         toast.success('Trade closed successfully');
         mutate();
         setExitDialogOpen(false);
-      } catch (error: any) {
-        const message = error?.response?.data?.message || 'Failed to close trade';
+      } catch (err: any) {
+        const message = err?.response?.data?.message || 'Failed to close trade';
         toast.error(message);
       } finally {
         setExitLoading(false);

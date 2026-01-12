@@ -1,23 +1,21 @@
 import type { UpdateStrategyRequest } from 'src/types/strategy';
 
-import { useState, useCallback } from 'react';
+import useSWR from 'swr';
+import { toast } from 'sonner';
 import { useParams } from 'react-router';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
-import useSWR from 'swr';
-import { toast } from 'sonner';
-
-import { paths } from 'src/routes/paths';
+import { StrategiesService } from 'src/services/strategies.service';
 
 import { PageHeader } from 'src/components/page/page-header';
-
-import { StrategiesService } from 'src/services/strategies.service';
 
 import { StrategyForm } from '../strategies-form';
 

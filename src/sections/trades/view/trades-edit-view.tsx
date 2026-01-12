@@ -1,9 +1,8 @@
 import type { CreateTradeRequest } from 'src/types/trade';
 
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Alert from '@mui/material/Alert';
 
@@ -15,8 +14,8 @@ import { TradesService } from 'src/services/trades.service';
 import { StrategiesService } from 'src/services/strategies.service';
 
 import { PageHeader } from 'src/components/page/page-header';
-import { PageContainer } from 'src/components/page/page-container';
 import { LoadingScreen } from 'src/components/loading-screen';
+import { PageContainer } from 'src/components/page/page-container';
 
 import { TradesForm } from '../trades-form';
 
@@ -56,9 +55,9 @@ export function TradesEditView() {
         await TradesService.update(id, data);
         toast.success('Trade updated successfully');
         router.push(paths.dashboard.trades.details(id));
-      } catch (error: any) {
-        const status = error?.response?.status;
-        const message = error?.response?.data?.message;
+      } catch (err: any) {
+        const status = err?.response?.status;
+        const message = err?.response?.data?.message;
 
         if (status === 404) {
           toast.error('Trade not found');

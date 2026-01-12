@@ -10,10 +10,10 @@ export * from './motion-viewport';
 
 export * from './scroll-progress';
 
+export * from './page-transition';
+
 export * from './animate-count-up';
 
 export * from './motion-container';
 
 export * from './back-to-top-button';
-
-export * from './page-transition';

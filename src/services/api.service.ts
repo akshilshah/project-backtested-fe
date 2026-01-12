@@ -1,8 +1,7 @@
 import type { AxiosError, AxiosRequestConfig } from 'axios';
+import type { ApiError, ApiResponse } from 'src/types/api';
 
 import axios from 'src/lib/axios';
-
-import type { ApiResponse, ApiError } from 'src/types/api';
 
 // ----------------------------------------------------------------------
 

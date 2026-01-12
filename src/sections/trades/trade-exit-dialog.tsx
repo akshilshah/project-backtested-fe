@@ -20,8 +20,8 @@ import DialogActions from '@mui/material/DialogActions';
 import { Form } from 'src/components/hook-form';
 import { CoinDisplay } from 'src/components/trade/coin-display';
 import { PriceDisplay } from 'src/components/trade/price-display';
-import { ProfitLossDisplay } from 'src/components/stats/profit-loss-display';
 import { RHFTextField } from 'src/components/hook-form/rhf-text-field';
+import { ProfitLossDisplay } from 'src/components/stats/profit-loss-display';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
 
 // ----------------------------------------------------------------------

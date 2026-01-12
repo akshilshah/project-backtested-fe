@@ -2,5 +2,5 @@
 export * from './api';
 export * from './auth';
 export * from './coin';
-export * from './strategy';
 export * from './trade';
+export * from './strategy';

@@ -1,7 +1,6 @@
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -21,9 +20,9 @@ import { CoinsService } from 'src/services/coins.service';
 
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
-import { PageContainer } from 'src/components/page/page-container';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
+import { PageContainer } from 'src/components/page/page-container';
 
 // ----------------------------------------------------------------------
 
@@ -55,8 +54,8 @@ export function CoinsDetailsView() {
       await CoinsService.delete(id);
       toast.success('Coin deleted successfully');
       router.push(paths.dashboard.coins.root);
-    } catch (error: any) {
-      const message = error?.response?.data?.message || 'Failed to delete coin';
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Failed to delete coin';
       toast.error(message);
     } finally {
       setDeleting(false);

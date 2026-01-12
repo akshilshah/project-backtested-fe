@@ -1,9 +1,8 @@
 import type { Coin, CreateCoinRequest, UpdateCoinRequest } from 'src/types/coin';
 
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -88,10 +87,10 @@ export function CoinsListView() {
   }, []);
 
   const handleCreateSubmit = useCallback(
-    async (data: CreateCoinRequest) => {
+    async (formData: CreateCoinRequest) => {
       try {
         setCreateLoading(true);
-        await CoinsService.create(data);
+        await CoinsService.create(formData);
         toast.success('Coin created successfully');
         mutate();
         setCreateOpen(false);
@@ -115,10 +114,10 @@ export function CoinsListView() {
   }, []);
 
   const handleEditSubmit = useCallback(
-    async (id: number, data: UpdateCoinRequest) => {
+    async (id: number, formData: UpdateCoinRequest) => {
       try {
         setEditLoading(true);
-        await CoinsService.update(id, data);
+        await CoinsService.update(id, formData);
         toast.success('Coin updated successfully');
         mutate();
         setEditCoin(null);

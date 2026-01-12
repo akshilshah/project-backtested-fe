@@ -1,5 +1,6 @@
 import type { Coin } from 'src/types/coin';
 
+import { usePopover } from 'minimal-shared/hooks';
 import { memo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -12,11 +13,9 @@ import Typography from '@mui/material/Typography';
 
 import { fDateTime } from 'src/utils/format-time';
 
-import { usePopover } from 'minimal-shared/hooks';
-
 import { Iconify } from 'src/components/iconify';
-import { DeleteDialog } from 'src/components/form/confirm-dialog';
 import { CustomPopover } from 'src/components/custom-popover';
+import { DeleteDialog } from 'src/components/form/confirm-dialog';
 
 // ----------------------------------------------------------------------
 

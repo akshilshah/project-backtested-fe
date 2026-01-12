@@ -21,7 +21,7 @@ type AnalyticsChartsProps = {
 };
 
 export function AnalyticsCharts({ analytics, loading }: AnalyticsChartsProps) {
-  const theme = useTheme();
+  const _theme = useTheme();
 
   return (
     <Grid container spacing={3}>

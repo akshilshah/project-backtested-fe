@@ -1,15 +1,15 @@
+import type { PaginationParams } from 'src/types/api';
 import type {
   Trade,
-  TradeResponse,
   TradeFilters,
+  TradeResponse,
   TradeAnalytics,
+  ExitTradeRequest,
   CreateTradeRequest,
   UpdateTradeRequest,
-  ExitTradeRequest,
   TradesListResponse,
   TradeAnalyticsResponse,
 } from 'src/types/trade';
-import type { PaginationParams } from 'src/types/api';
 
 import axios, { endpoints } from 'src/lib/axios';
 

@@ -1,9 +1,8 @@
 import type { Strategy, CreateStrategyRequest, UpdateStrategyRequest } from 'src/types/strategy';
 
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,8 +11,8 @@ import Typography from '@mui/material/Typography';
 import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
-import { PageContainer } from 'src/components/page/page-container';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
+import { PageContainer } from 'src/components/page/page-container';
 
 import { StrategiesTable } from '../strategies-table';
 import { StrategyEditDialog } from '../strategy-edit-dialog';
@@ -125,10 +124,10 @@ export function StrategiesListView() {
   }, []);
 
   const handleEditSubmit = useCallback(
-    async (id: number, data: UpdateStrategyRequest) => {
+    async (id: number, formData: UpdateStrategyRequest) => {
       try {
         setEditLoading(true);
-        await StrategiesService.update(id, data);
+        await StrategiesService.update(id, formData);
         toast.success('Strategy updated successfully');
         mutate();
         setEditStrategy(null);

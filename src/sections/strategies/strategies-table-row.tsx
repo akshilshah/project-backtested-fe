@@ -1,6 +1,7 @@
 import type { Strategy } from 'src/types/strategy';
 
 import { memo, useCallback } from 'react';
+import { usePopover } from 'minimal-shared/hooks';
 
 import Stack from '@mui/material/Stack';
 import TableRow from '@mui/material/TableRow';
@@ -10,8 +11,6 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { fDateTime } from 'src/utils/format-time';
-
-import { usePopover } from 'minimal-shared/hooks';
 
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';

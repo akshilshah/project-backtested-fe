@@ -50,7 +50,7 @@ export default defineConfig({
           'vendor-charts': ['apexcharts', 'react-apexcharts'],
           'vendor-motion': ['framer-motion'],
           'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'vendor-utils': ['date-fns', 'swr', 'axios', 'sonner'],
+          'vendor-utils': ['dayjs', 'swr', 'axios', 'sonner'],
         },
       },
     },

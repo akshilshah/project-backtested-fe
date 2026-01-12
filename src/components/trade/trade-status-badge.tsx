@@ -1,6 +1,6 @@
-import type { LabelColor } from 'src/components/label';
-import type { TradeStatus } from 'src/types/trade';
 import type { Theme, SxProps } from '@mui/material/styles';
+import type { TradeStatus } from 'src/types/trade';
+import type { LabelColor } from 'src/components/label';
 
 import { Label } from 'src/components/label';
 

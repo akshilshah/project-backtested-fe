@@ -1,6 +1,5 @@
-import { useState, useCallback } from 'react';
-
 import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';

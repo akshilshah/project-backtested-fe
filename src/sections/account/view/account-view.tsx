@@ -1,9 +1,8 @@
 import { z as zod } from 'zod';
-import { useForm } from 'react-hook-form';
-import { useState, useEffect, useCallback } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-
 import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -20,9 +19,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useAuthUser } from 'src/hooks/use-auth-user';
 
 import { AuthService } from 'src/services/auth.service';
+import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Form, RHFSwitch, RHFSelect, RHFTextField } from 'src/components/hook-form';
-import { DashboardContent } from 'src/layouts/dashboard';
 
 // ----------------------------------------------------------------------
 

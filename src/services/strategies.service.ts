@@ -1,3 +1,4 @@
+import type { QueryParams } from 'src/types/api';
 import type {
   Strategy,
   StrategyResponse,
@@ -5,7 +6,6 @@ import type {
   UpdateStrategyRequest,
   StrategiesListResponse,
 } from 'src/types/strategy';
-import type { QueryParams } from 'src/types/api';
 
 import axios, { endpoints } from 'src/lib/axios';
 

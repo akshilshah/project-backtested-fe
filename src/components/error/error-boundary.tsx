@@ -1,5 +1,6 @@
-import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
+
+import { Component } from 'react';
 
 import { ErrorDisplay } from './error-display';
 

@@ -1,7 +1,6 @@
-import { useState, useCallback } from 'react';
-
-import { toast } from 'sonner';
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Alert from '@mui/material/Alert';
 
@@ -11,8 +10,8 @@ import { useRouter, useParams } from 'src/routes/hooks';
 import { CoinsService } from 'src/services/coins.service';
 
 import { PageHeader } from 'src/components/page/page-header';
-import { PageContainer } from 'src/components/page/page-container';
 import { LoadingScreen } from 'src/components/loading-screen';
+import { PageContainer } from 'src/components/page/page-container';
 
 import { CoinsForm } from '../coins-form';
 
@@ -38,9 +37,9 @@ export function CoinsEditView() {
         await CoinsService.update(id, data);
         toast.success('Coin updated successfully');
         router.push(paths.dashboard.coins.root);
-      } catch (error: any) {
-        const status = error?.response?.status;
-        const message = error?.response?.data?.message;
+      } catch (err: any) {
+        const status = err?.response?.status;
+        const message = err?.response?.data?.message;
 
         if (status === 409) {
           toast.error(message || 'A coin with this symbol already exists');

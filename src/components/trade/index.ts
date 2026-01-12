@@ -1,4 +1,4 @@
-export * from './trade-status-badge';
+export * from './trade-card';
 export * from './coin-display';
 export * from './price-display';
-export * from './trade-card';
+export * from './trade-status-badge';

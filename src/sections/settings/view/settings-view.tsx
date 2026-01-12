@@ -1,11 +1,10 @@
 import type { UserSettings } from 'src/types/auth';
 
 import { z as zod } from 'zod';
-import { useForm } from 'react-hook-form';
-import { useState, useEffect, useCallback } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-
 import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -14,9 +13,9 @@ import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { AuthService } from 'src/services/auth.service';
+import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Form } from 'src/components/hook-form';
-import { DashboardContent } from 'src/layouts/dashboard';
 import { PageHeader } from 'src/components/page/page-header';
 import { FormActions } from 'src/components/form/form-actions';
 

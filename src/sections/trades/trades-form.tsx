@@ -98,7 +98,7 @@ export function TradesForm({
   const strategyIdValue = watch('strategyId');
 
   // Calculate risk amount
-  const riskAmount = useMemo(() => {
+  const _riskAmount = useMemo(() => {
     const entry = Number(avgEntryValue);
     const sl = Number(stopLossValue);
     const qty = Number(quantityValue);

@@ -1,3 +1,4 @@
+import type { QueryParams } from 'src/types/api';
 import type {
   Coin,
   CoinResponse,
@@ -5,7 +6,6 @@ import type {
   UpdateCoinRequest,
   CoinsListResponse,
 } from 'src/types/coin';
-import type { QueryParams } from 'src/types/api';
 
 import axios, { endpoints } from 'src/lib/axios';
 

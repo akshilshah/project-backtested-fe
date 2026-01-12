@@ -11,7 +11,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
@@ -95,7 +94,7 @@ export function TradeCreateDialog({
   const strategyIdValue = watch('strategyId');
 
   // Calculate risk amount
-  const riskAmount = useMemo(() => {
+  const _riskAmount = useMemo(() => {
     const entry = Number(avgEntryValue);
     const sl = Number(stopLossValue);
     const qty = Number(quantityValue);
