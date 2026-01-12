@@ -20,27 +20,30 @@ export function TradingCalculatorDialog({ open, onClose }: TradingCalculatorDial
   const [entry, setEntry] = useState<string>('');
   const [stopLoss, setStopLoss] = useState<string>('');
   const [account, setAccount] = useState<string>('');
+  const [stopLossPercentage, setStopLossPercentage] = useState<string>('1.8');
 
-  // Calculate Stop Loss % (1.8% of account as risk amount)
+  // Calculate Stop Loss Amount (configurable % of account as risk amount)
   const calculateStopLossAmount = useCallback(() => {
     const accountValue = parseFloat(account) || 0;
-    return (accountValue * 0.018).toFixed(2);
-  }, [account]);
+    const slPercentage = parseFloat(stopLossPercentage) || 0;
+    return (accountValue * (slPercentage / 100)).toFixed(2);
+  }, [account, stopLossPercentage]);
 
   // Calculate Trade Value
   const calculateTradeValue = useCallback(() => {
     const entryValue = parseFloat(entry) || 0;
     const stopLossValue = parseFloat(stopLoss) || 0;
     const accountValue = parseFloat(account) || 0;
+    const slPercentage = parseFloat(stopLossPercentage) || 0;
 
     const difference = Math.abs(entryValue - stopLossValue);
     if (difference === 0) return '0.00';
 
-    const riskAmount = accountValue * 0.018;
+    const riskAmount = accountValue * (slPercentage / 100);
     const tradeValue = (riskAmount / difference) * entryValue;
 
     return tradeValue.toFixed(2);
-  }, [entry, stopLoss, account]);
+  }, [entry, stopLoss, account, stopLossPercentage]);
 
   // Calculate Leverage
   const calculateLeverage = useCallback(() => {
@@ -63,6 +66,10 @@ export function TradingCalculatorDialog({ open, onClose }: TradingCalculatorDial
 
   const handleAccountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccount(event.target.value);
+  };
+
+  const handleStopLossPercentageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStopLossPercentage(event.target.value);
   };
 
   return (
@@ -106,6 +113,16 @@ export function TradingCalculatorDialog({ open, onClose }: TradingCalculatorDial
                   startAdornment: <InputAdornment position="start">$</InputAdornment>,
                 }}
               />
+              <TextField
+                fullWidth
+                label="Stop Loss Percentage"
+                value={stopLossPercentage}
+                onChange={handleStopLossPercentageChange}
+                type="number"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                }}
+              />
             </Stack>
           </Box>
 
@@ -123,7 +140,7 @@ export function TradingCalculatorDialog({ open, onClose }: TradingCalculatorDial
                 }}
               >
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                  Stop Loss % (1.8% of Account)
+                  Risk Amount ({stopLossPercentage || '0'}% of Account)
                 </Typography>
                 <Typography variant="h6" sx={{ mt: 1 }}>
                   ${calculateStopLossAmount()}

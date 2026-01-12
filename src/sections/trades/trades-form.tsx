@@ -36,10 +36,18 @@ const TradeSchema = z.object({
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Stop loss is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Stop loss must be a positive number'),
+  stopLossPercentage: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Stop loss percentage is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Stop loss percentage must be a positive number'),
   quantity: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Quantity is required')
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Quantity must be a positive number'),
+  amount: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Amount is required')
+    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Amount must be a positive number'),
   notes: z.string().optional(),
 });
 
@@ -78,7 +86,9 @@ export function TradesForm({
         : dayjs(),
       avgEntry: currentTrade?.avgEntry?.toString() ?? '',
       stopLoss: currentTrade?.stopLoss?.toString() ?? '',
+      stopLossPercentage: currentTrade?.stopLossPercentage?.toString() ?? '1.8',
       quantity: currentTrade?.quantity?.toString() ?? '',
+      amount: currentTrade?.amount?.toString() ?? '',
       notes: currentTrade?.notes ?? '',
     }),
     [currentTrade]
@@ -124,7 +134,9 @@ export function TradesForm({
       tradeTime,
       avgEntry: Number(data.avgEntry),
       stopLoss: Number(data.stopLoss),
+      stopLossPercentage: Number(data.stopLossPercentage),
       quantity: Number(data.quantity),
+      amount: Number(data.amount),
       notes: data.notes || undefined,
     });
   });
@@ -271,6 +283,22 @@ export function TradesForm({
             />
           </Grid>
 
+          {/* Stop Loss Percentage */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <RHFTextField
+              name="stopLossPercentage"
+              label="Stop Loss %"
+              type="number"
+              placeholder="1.8"
+              slotProps={{
+                htmlInput: {
+                  step: '0.1',
+                  min: '0',
+                },
+              }}
+            />
+          </Grid>
+
           {/* Quantity */}
           <Grid size={{ xs: 12, md: 4 }}>
             <RHFTextField
@@ -281,6 +309,22 @@ export function TradesForm({
               slotProps={{
                 htmlInput: {
                   step: '0.00000001',
+                  min: '0',
+                },
+              }}
+            />
+          </Grid>
+
+          {/* Amount (Account Balance) */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <RHFTextField
+              name="amount"
+              label="Amount (Account Balance)"
+              type="number"
+              placeholder="0.00"
+              slotProps={{
+                htmlInput: {
+                  step: '0.01',
                   min: '0',
                 },
               }}

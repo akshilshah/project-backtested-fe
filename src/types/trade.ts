@@ -20,7 +20,9 @@ export interface Trade {
   tradeTime: string;
   avgEntry: number;
   stopLoss: number;
+  stopLossPercentage: number;
   quantity: number;
+  amount: number;
   notes?: string;
   exitDate?: string;
   exitTime?: string;
@@ -47,7 +49,9 @@ export interface CreateTradeRequest {
   tradeTime: string;
   avgEntry: number;
   stopLoss: number;
+  stopLossPercentage: number;
   quantity: number;
+  amount: number;
   notes?: string;
 }
 
@@ -58,7 +62,9 @@ export interface UpdateTradeRequest {
   tradeTime?: string;
   avgEntry?: number;
   stopLoss?: number;
+  stopLossPercentage?: number;
   quantity?: number;
+  amount?: number;
   notes?: string;
 }
 
