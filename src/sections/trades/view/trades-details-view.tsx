@@ -428,14 +428,24 @@ export function TradesDetailsView() {
                       sx={{
                         p: 3,
                         borderRadius: 2,
+                        bgcolor: (theme) => theme.palette.grey[50],
                         border: '1px solid',
                         borderColor: 'divider',
                       }}
                     >
-                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2.5 }}>
+                      <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 3 }}>
                         <Iconify icon={'solar:import-bold' as any} width={20} sx={{ color: 'text.secondary' }} />
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary', letterSpacing: 0.5 }}>
-                          ENTRY
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: 700,
+                            color: 'text.primary',
+                            letterSpacing: '0.5px',
+                            textTransform: 'uppercase',
+                            fontSize: '0.8125rem',
+                          }}
+                        >
+                          Entry
                         </Typography>
                       </Stack>
                       <Grid container spacing={2.5}>
@@ -462,25 +472,34 @@ export function TradesDetailsView() {
                         sx={{
                           p: 3,
                           borderRadius: 2,
+                          bgcolor: (theme) =>
+                            trade.avgExit! >= trade.avgEntry
+                              ? theme.palette.success.lighter
+                              : theme.palette.error.lighter,
                           border: '1px solid',
-                          borderColor: trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main',
+                          borderColor: (theme) =>
+                            trade.avgExit! >= trade.avgEntry
+                              ? theme.palette.success.light
+                              : theme.palette.error.light,
                         }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2.5 }}>
+                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 3 }}>
                           <Iconify
                             icon={'solar:export-bold' as any}
                             width={20}
-                            sx={{ color: trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main' }}
+                            sx={{ color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark' }}
                           />
                           <Typography
                             variant="subtitle2"
                             sx={{
                               fontWeight: 700,
-                              color: trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main',
-                              letterSpacing: 0.5
+                              color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark',
+                              letterSpacing: '0.5px',
+                              textTransform: 'uppercase',
+                              fontSize: '0.8125rem',
                             }}
                           >
-                            EXIT
+                            Exit
                           </Typography>
                         </Stack>
                         <Grid container spacing={2.5}>
@@ -523,18 +542,27 @@ export function TradesDetailsView() {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          border: '1px solid',
-                          borderColor: 'divider',
+                          bgcolor: (theme) => theme.palette.grey[100],
                           color: 'text.secondary',
                         }}
                       >
                         <Iconify icon={'solar:chart-2-bold' as any} width={24} />
                       </Box>
                       <Box>
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', letterSpacing: 0.5 }}>
-                          STRATEGY
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: 'text.secondary',
+                            display: 'block',
+                            letterSpacing: '0.5px',
+                            textTransform: 'uppercase',
+                            fontWeight: 600,
+                            fontSize: '0.6875rem',
+                          }}
+                        >
+                          Strategy
                         </Typography>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25 }}>
                           {trade.strategy?.name ?? 'N/A'}
                         </Typography>
                       </Box>
@@ -542,10 +570,19 @@ export function TradesDetailsView() {
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Stack spacing={0.5}>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.secondary',
+                          textTransform: 'uppercase',
+                          fontWeight: 600,
+                          fontSize: '0.6875rem',
+                          letterSpacing: '0.5px',
+                        }}
+                      >
                         Trade Created
                       </Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
                         {fDateTime(trade.createdAt)}
                       </Typography>
                     </Stack>
@@ -557,10 +594,23 @@ export function TradesDetailsView() {
                   <>
                     <Divider />
                     <Box>
-                      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
-                        NOTES
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.secondary',
+                          display: 'block',
+                          mb: 1.5,
+                          textTransform: 'uppercase',
+                          fontWeight: 600,
+                          fontSize: '0.6875rem',
+                          letterSpacing: '0.5px',
+                        }}
+                      >
+                        Notes
                       </Typography>
-                      <Typography variant="body2">{trade.notes}</Typography>
+                      <Typography variant="body2" sx={{ lineHeight: 1.7 }}>
+                        {trade.notes}
+                      </Typography>
                     </Box>
                   </>
                 )}
@@ -620,10 +670,27 @@ type DetailItemProps = {
 function DetailItem({ label, value }: DetailItemProps) {
   return (
     <Box>
-      <Typography variant="caption" sx={{ color: 'text.secondary', mb: 0.5, display: 'block' }}>
+      <Typography
+        variant="caption"
+        sx={{
+          color: 'text.secondary',
+          mb: 0.5,
+          display: 'block',
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          fontSize: '0.6875rem',
+          letterSpacing: '0.5px',
+        }}
+      >
         {label}
       </Typography>
-      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: 600,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
         {value}
       </Typography>
     </Box>
