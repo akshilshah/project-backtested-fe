@@ -88,25 +88,27 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
           <TradeStatusBadge status={row.status} />
         </TableCell>
 
-        {/* Date */}
-        <TableCell>
-          <Stack>
-            <Typography variant="body2">{fDate(row.tradeDate)}</Typography>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {fTime(row.tradeTime)}
-            </Typography>
-          </Stack>
-        </TableCell>
-
         {/* Avg Entry */}
         <TableCell>
-          <PriceDisplay value={row.avgEntry} size="small" />
+          <Stack spacing={0.25}>
+            <PriceDisplay value={row.avgEntry} size="small" />
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              {fDate(row.tradeDate)} {fTime(row.tradeTime)}
+            </Typography>
+          </Stack>
         </TableCell>
 
         {/* Avg Exit */}
         <TableCell>
           {row.avgExit ? (
-            <PriceDisplay value={row.avgExit} size="small" />
+            <Stack spacing={0.25}>
+              <PriceDisplay value={row.avgExit} size="small" />
+              {row.exitDate && row.exitTime && (
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  {fDate(row.exitDate)} {fTime(row.exitTime)}
+                </Typography>
+              )}
+            </Stack>
           ) : (
             <Typography variant="body2" sx={{ color: 'text.disabled' }}>
               -
