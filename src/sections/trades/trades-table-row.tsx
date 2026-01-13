@@ -56,18 +56,7 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
 
   return (
     <>
-      <TableRow
-        hover
-        sx={{
-          transition: 'background-color 0.2s ease-in-out',
-          '&:hover': {
-            bgcolor: alpha(theme.palette.primary.main, 0.04),
-          },
-          '& .MuiTableCell-root': {
-            transition: 'color 0.2s ease-in-out',
-          },
-        }}
-      >
+      <TableRow>
         {/* Coin */}
         <TableCell>
           <CoinDisplay

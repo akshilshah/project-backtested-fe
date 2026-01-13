@@ -45,6 +45,7 @@ export const themeConfig: ThemeConfig = {
    * Palette
    *************************************** */
   palette: {
+    // PRIMARY - Brand color, CTAs, highlights
     primary: {
       lighter: '#C8FAD6',
       light: '#5BE49B',
@@ -69,14 +70,16 @@ export const themeConfig: ThemeConfig = {
       darker: '#003768',
       contrastText: '#FFFFFF',
     },
+    // SUCCESS - profits, wins, positive movements (fintech green)
     success: {
       lighter: '#D3FCD2',
       light: '#77ED8B',
-      main: '#22C55E',
-      dark: '#118D57',
+      main: '#10B981',
+      dark: '#059669',
       darker: '#065E49',
-      contrastText: '#ffffff',
+      contrastText: '#FFFFFF',
     },
+    // WARNING - caution states
     warning: {
       lighter: '#FFF5CC',
       light: '#FFD666',
@@ -85,25 +88,27 @@ export const themeConfig: ThemeConfig = {
       darker: '#7A4100',
       contrastText: '#1C252E',
     },
+    // ERROR - losses, dangers, negative movements (fintech red)
     error: {
       lighter: '#FFE9D5',
       light: '#FFAC82',
-      main: '#FF5630',
-      dark: '#B71D18',
-      darker: '#7A0916',
+      main: '#EF4444',
+      dark: '#DC2626',
+      darker: '#991B1B',
       contrastText: '#FFFFFF',
     },
+    // GREY - enhanced contrast for better hierarchy
     grey: {
-      50: '#FCFDFD',
-      100: '#F9FAFB',
-      200: '#F4F6F8',
-      300: '#DFE3E8',
-      400: '#C4CDD5',
-      500: '#919EAB',
-      600: '#637381',
-      700: '#454F5B',
-      800: '#1C252E',
-      900: '#141A21',
+      50: '#FAFAFA',
+      100: '#F4F4F5',
+      200: '#E4E4E7',
+      300: '#D4D4D8',
+      400: '#A1A1AA',
+      500: '#71717A',
+      600: '#52525B',
+      700: '#3F3F46',
+      800: '#27272A',
+      900: '#18181B',
     },
     common: {
       black: '#000000',

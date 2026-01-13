@@ -137,9 +137,26 @@ export function TradesTable({
       {(filtersOpen || hasActiveFilters) && <Divider />}
 
       <Scrollbar>
-        <TableContainer sx={{ minWidth: 1100 }}>
+        <TableContainer sx={{ minWidth: 1100, position: 'relative' }}>
           <Table>
-            <TableHead>
+            <TableHead
+              sx={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                bgcolor: 'background.paper',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: '1px',
+                  bgcolor: 'divider',
+                  boxShadow: (theme) => `0 2px 4px ${theme.palette.action.hover}`,
+                },
+              }}
+            >
               <TableRow>
                 {TABLE_HEAD.map((cell) => (
                   <TableCell
@@ -147,7 +164,13 @@ export function TradesTable({
                     align={cell.align ?? 'left'}
                     sx={{
                       width: cell.width,
-                      bgcolor: 'background.neutral',
+                      bgcolor: 'background.paper',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      fontSize: '0.75rem',
+                      letterSpacing: '0.5px',
+                      color: 'text.secondary',
+                      py: 2,
                     }}
                   >
                     {cell.label}
@@ -156,7 +179,26 @@ export function TradesTable({
               </TableRow>
             </TableHead>
 
-            <TableBody>
+            <TableBody
+              sx={{
+                '& .MuiTableRow-root': {
+                  // Zebra striping
+                  '&:nth-of-type(even)': {
+                    bgcolor: (theme) => theme.palette.action.hover,
+                  },
+                  // Enhanced hover
+                  '&:hover': {
+                    bgcolor: (theme) => theme.palette.action.selected,
+                  },
+                  // Smooth transitions
+                  transition: 'background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                },
+                // Better cell borders
+                '& .MuiTableCell-root': {
+                  borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+                },
+              }}
+            >
               {loading ? (
                 <TableSkeleton rows={rowsPerPage} columns={TABLE_HEAD.length} />
               ) : isEmpty ? (
