@@ -34,6 +34,7 @@ import { TradeStatusBadge } from 'src/components/trade/trade-status-badge';
 import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { TradeExitDialog } from '../trade-exit-dialog';
+import { TradeNotesDialog } from '../trade-notes-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +46,8 @@ export function TradesDetailsView() {
   const [exitDialogOpen, setExitDialogOpen] = useState(false);
   const [exitLoading, setExitLoading] = useState(false);
   const [calculatorOpen, setCalculatorOpen] = useState(false);
+  const [notesDialogOpen, setNotesDialogOpen] = useState(false);
+  const [notesLoading, setNotesLoading] = useState(false);
 
   // Fetch trade data
   const {
@@ -121,8 +124,13 @@ export function TradesDetailsView() {
   );
 
   const handleOpenEdit = useCallback(() => {
-    setCalculatorOpen(true);
-  }, []);
+    // For closed trades, only allow editing notes
+    if (trade?.status === 'CLOSED') {
+      setNotesDialogOpen(true);
+    } else {
+      setCalculatorOpen(true);
+    }
+  }, [trade?.status]);
 
   const handleCloseCalculator = useCallback(() => {
     setCalculatorOpen(false);
@@ -154,6 +162,30 @@ export function TradesDetailsView() {
     [id, mutate]
   );
 
+  const handleCloseNotes = useCallback(() => {
+    setNotesDialogOpen(false);
+  }, []);
+
+  const handleConfirmNotes = useCallback(
+    async (notes?: string) => {
+      if (!id) return;
+
+      try {
+        setNotesLoading(true);
+        await TradesService.update(id, { notes });
+        toast.success('Notes updated successfully');
+        mutate();
+        setNotesDialogOpen(false);
+      } catch (err: any) {
+        const message = err?.response?.data?.message || 'Failed to update notes';
+        toast.error(message);
+      } finally {
+        setNotesLoading(false);
+      }
+    },
+    [id, mutate]
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -180,25 +212,23 @@ export function TradesDetailsView() {
         backHref={paths.dashboard.trades.root}
         action={
           <Stack direction="row" spacing={1}>
+            <Button
+              variant="outlined"
+              color="inherit"
+              onClick={handleOpenEdit}
+              startIcon={<Iconify icon={'solar:pen-bold' as any} />}
+            >
+              {isOpen ? 'Edit' : 'Edit Notes'}
+            </Button>
             {isOpen && (
-              <>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  onClick={handleOpenEdit}
-                  startIcon={<Iconify icon={'solar:pen-bold' as any} />}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  color="warning"
-                  onClick={handleOpenExit}
-                  startIcon={<Iconify icon={'solar:logout-2-bold' as any} />}
-                >
-                  Exit Trade
-                </Button>
-              </>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={handleOpenExit}
+                startIcon={<Iconify icon={'solar:logout-2-bold' as any} />}
+              >
+                Exit Trade
+              </Button>
             )}
             <Button
               variant="outlined"
@@ -555,6 +585,14 @@ export function TradesDetailsView() {
         onClose={handleCloseExit}
         onConfirm={handleConfirmExit}
         loading={exitLoading}
+      />
+
+      <TradeNotesDialog
+        open={notesDialogOpen}
+        trade={trade}
+        onClose={handleCloseNotes}
+        onConfirm={handleConfirmNotes}
+        loading={notesLoading}
       />
 
       <TradingCalculatorDialog
