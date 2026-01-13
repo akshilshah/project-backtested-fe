@@ -163,7 +163,7 @@ export function TradesListView() {
   );
 
   return (
-    <PageContainer>
+    <PageContainer maxWidth={false}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h4">Trades</Typography>
         <Button
