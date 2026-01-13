@@ -102,6 +102,7 @@ export const endpoints = {
     update: (id: string) => `/api/trades/${id}`,
     delete: (id: string) => `/api/trades/${id}`,
     exit: (id: string) => `/api/trades/${id}/exit`,
+    previewExit: (id: string) => `/api/trades/${id}/preview-exit`,
     analytics: '/api/trades/analytics',
   },
 } as const;

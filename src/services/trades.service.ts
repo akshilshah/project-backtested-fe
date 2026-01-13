@@ -5,6 +5,8 @@ import type {
   TradeResponse,
   TradeAnalytics,
   ExitTradeRequest,
+  PreviewExitRequest,
+  PreviewExitResponse,
   CreateTradeRequest,
   UpdateTradeRequest,
   TradesListResponse,
@@ -44,6 +46,17 @@ export class TradesService {
 
   static async exit(id: string | number, data: ExitTradeRequest): Promise<Trade> {
     const response = await axios.post<TradeResponse>(endpoints.trades.exit(String(id)), data);
+    return response.data.data;
+  }
+
+  static async previewExit(
+    id: string | number,
+    data: PreviewExitRequest
+  ): Promise<PreviewExitResponse> {
+    const response = await axios.post<{ data: PreviewExitResponse }>(
+      endpoints.trades.previewExit(String(id)),
+      data
+    );
     return response.data.data;
   }
 

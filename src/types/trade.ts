@@ -75,6 +75,18 @@ export interface ExitTradeRequest {
   notes?: string;
 }
 
+export interface PreviewExitRequest {
+  avgExit: number;
+}
+
+export interface PreviewExitResponse {
+  profitLoss: number;
+  profitLossPercentage: number;
+  direction: 'Long' | 'Short';
+  commission: number;
+  grossProfitLoss: number;
+}
+
 export interface TradeResponse {
   success: boolean;
   data: Trade;

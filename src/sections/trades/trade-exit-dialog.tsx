@@ -1,8 +1,10 @@
 import type { Trade } from 'src/types/trade';
+import type { PreviewExitResponse } from 'src/types/trade';
 
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
@@ -16,6 +18,9 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import CircularProgress from '@mui/material/CircularProgress';
+
+import { TradesService } from 'src/services/trades.service';
 
 import { Form } from 'src/components/hook-form';
 import { CoinDisplay } from 'src/components/trade/coin-display';
@@ -53,6 +58,9 @@ export function TradeExitDialog({
   onConfirm,
   loading = false,
 }: TradeExitDialogProps) {
+  const [plPreview, setPlPreview] = useState<PreviewExitResponse | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
   const defaultValues: ExitTradeFormValues = {
     avgExit: '',
     exitDate: dayjs(),
@@ -69,20 +77,32 @@ export function TradeExitDialog({
 
   const avgExitValue = watch('avgExit');
 
-  // Calculate P&L preview
-  const calculatePL = () => {
-    if (!trade || !avgExitValue || isNaN(Number(avgExitValue))) {
-      return null;
-    }
+  // Fetch P&L preview from API when avgExit changes
+  useEffect(() => {
+    const fetchPreview = async () => {
+      if (!trade || !avgExitValue || isNaN(Number(avgExitValue)) || Number(avgExitValue) <= 0) {
+        setPlPreview(null);
+        return;
+      }
 
-    const avgExit = Number(avgExitValue);
-    const profitLoss = (avgExit - trade.avgEntry) * trade.quantity;
-    const profitLossPercentage = ((avgExit - trade.avgEntry) / trade.avgEntry) * 100;
+      try {
+        setPreviewLoading(true);
+        const preview = await TradesService.previewExit(trade.id, {
+          avgExit: Number(avgExitValue),
+        });
+        setPlPreview(preview);
+      } catch (error) {
+        console.error('Failed to fetch P&L preview:', error);
+        setPlPreview(null);
+      } finally {
+        setPreviewLoading(false);
+      }
+    };
 
-    return { profitLoss, profitLossPercentage };
-  };
-
-  const plPreview = calculatePL();
+    // Debounce API call
+    const timeoutId = setTimeout(fetchPreview, 500);
+    return () => clearTimeout(timeoutId);
+  }, [trade, avgExitValue]);
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const exitDate = dayjs(data.exitDate).format('YYYY-MM-DD');
@@ -193,7 +213,15 @@ export function TradeExitDialog({
             />
 
             {/* P&L Preview */}
-            {plPreview && (
+            {previewLoading && (
+              <Alert severity="info" icon={false} sx={{ '& .MuiAlert-message': { width: '100%' } }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  <Typography variant="subtitle2">Calculating P&L...</Typography>
+                  <CircularProgress size={20} />
+                </Stack>
+              </Alert>
+            )}
+            {!previewLoading && plPreview && (
               <Alert
                 severity={plPreview.profitLoss >= 0 ? 'success' : 'error'}
                 icon={false}
