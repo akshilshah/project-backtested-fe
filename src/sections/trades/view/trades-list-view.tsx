@@ -14,10 +14,10 @@ import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
 import { PageContainer } from 'src/components/page/page-container';
+import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { TradesTable } from '../trades-table';
 import { TradeExitDialog } from '../trade-exit-dialog';
-import { TradeCreateDialog } from '../trade-create-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +31,6 @@ export function TradesListView() {
   const [exitTrade, setExitTrade] = useState<Trade | null>(null);
   const [exitLoading, setExitLoading] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
-  const [createLoading, setCreateLoading] = useState(false);
 
   // Fetch trades data
   const { data: tradesData, isLoading: tradesLoading, mutate: mutateTrades } = useSWR(
@@ -150,7 +149,6 @@ export function TradesListView() {
   const handleCreateSubmit = useCallback(
     async (data: CreateTradeRequest) => {
       try {
-        setCreateLoading(true);
         await TradesService.create(data);
         toast.success('Trade created successfully');
         mutateTrades();
@@ -158,8 +156,7 @@ export function TradesListView() {
       } catch (error: any) {
         const message = error?.response?.data?.message || 'Failed to create trade';
         toast.error(message);
-      } finally {
-        setCreateLoading(false);
+        throw error; // Re-throw to let the calculator handle loading state
       }
     },
     [mutateTrades]
@@ -210,15 +207,14 @@ export function TradesListView() {
         loading={exitLoading}
       />
 
-      <TradeCreateDialog
+      <TradingCalculatorDialog
         open={createOpen}
         onClose={handleCloseCreate}
-        onSubmit={handleCreateSubmit}
+        onTakeTrade={handleCreateSubmit}
         coins={coins}
         strategies={strategies}
         coinsLoading={coinsLoading}
         strategiesLoading={strategiesLoading}
-        loading={createLoading}
       />
     </PageContainer>
   );
