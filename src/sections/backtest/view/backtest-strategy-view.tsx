@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import { toast } from 'sonner';
 import { useState, useCallback } from 'react';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -314,16 +315,28 @@ export function BacktestStrategyView() {
         {/* Total Trades */}
         <Card>
           <CardContent>
-            <Stack spacing={1}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', textTransform: 'uppercase', fontWeight: 600 }}
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'primary.lighter',
+                }}
               >
-                Total Trades
-              </Typography>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>
-                {summary.totalTrades}
-              </Typography>
+                <Iconify icon={'solar:chart-bold' as any} width={28} sx={{ color: 'primary.main' }} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
+                  Total Trades
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {summary.totalTrades}
+                </Typography>
+              </Box>
             </Stack>
           </CardContent>
         </Card>
@@ -331,16 +344,28 @@ export function BacktestStrategyView() {
         {/* Average Winning R */}
         <Card>
           <CardContent>
-            <Stack spacing={1}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', textTransform: 'uppercase', fontWeight: 600 }}
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'success.lighter',
+                }}
               >
-                Average Winning R
-              </Typography>
-              <Typography variant="h3" sx={{ color: 'success.main', fontWeight: 700 }}>
-                {summary.avgWinningR.toFixed(2)}
-              </Typography>
+                <Iconify icon={'solar:graph-up-bold' as any} width={28} sx={{ color: 'success.main' }} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
+                  Average Winning R
+                </Typography>
+                <Typography variant="h4" sx={{ color: 'success.main', fontWeight: 700 }}>
+                  {summary.avgWinningR.toFixed(2)}
+                </Typography>
+              </Box>
             </Stack>
           </CardContent>
         </Card>
@@ -348,16 +373,28 @@ export function BacktestStrategyView() {
         {/* Average Loss R */}
         <Card>
           <CardContent>
-            <Stack spacing={1}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', textTransform: 'uppercase', fontWeight: 600 }}
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'error.lighter',
+                }}
               >
-                Average Loss R
-              </Typography>
-              <Typography variant="h3" sx={{ color: 'error.main', fontWeight: 700 }}>
-                {summary.avgLossR.toFixed(2)}
-              </Typography>
+                <Iconify icon={'solar:graph-down-bold' as any} width={28} sx={{ color: 'error.main' }} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
+                  Average Loss R
+                </Typography>
+                <Typography variant="h4" sx={{ color: 'error.main', fontWeight: 700 }}>
+                  {summary.avgLossR.toFixed(2)}
+                </Typography>
+              </Box>
             </Stack>
           </CardContent>
         </Card>
@@ -365,16 +402,28 @@ export function BacktestStrategyView() {
         {/* Win Percentage */}
         <Card>
           <CardContent>
-            <Stack spacing={1}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', textTransform: 'uppercase', fontWeight: 600 }}
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'success.lighter',
+                }}
               >
-                Win Percentage
-              </Typography>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>
-                {(summary.winPercentage * 100).toFixed(0)}%
-              </Typography>
+                <Iconify icon={'solar:shield-check-bold' as any} width={28} sx={{ color: 'success.main' }} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
+                  Win Percentage
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {(summary.winPercentage * 100).toFixed(0)}%
+                </Typography>
+              </Box>
             </Stack>
           </CardContent>
         </Card>
@@ -382,65 +431,75 @@ export function BacktestStrategyView() {
         {/* Loss Percentage */}
         <Card>
           <CardContent>
-            <Stack spacing={1}>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', textTransform: 'uppercase', fontWeight: 600 }}
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
+                sx={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'error.lighter',
+                }}
               >
-                Loss Percentage
-              </Typography>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>
-                {(summary.lossPercentage * 100).toFixed(0)}%
-              </Typography>
+                <Iconify icon={'solar:shield-minus-bold' as any} width={28} sx={{ color: 'error.main' }} />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
+                  Loss Percentage
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                  {(summary.lossPercentage * 100).toFixed(0)}%
+                </Typography>
+              </Box>
             </Stack>
           </CardContent>
         </Card>
 
         {/* Expected Value */}
-        <Card
-          sx={{
-            border: '1px solid',
-            borderColor: summary.ev > 0 ? 'success.main' : 'error.main',
-          }}
-        >
+        <Card>
           <CardContent>
-            <Stack spacing={1}>
-              <Typography
-                variant="caption"
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
                 sx={{
-                  color: summary.ev > 0 ? 'success.dark' : 'error.dark',
-                  textTransform: 'uppercase',
-                  fontWeight: 700,
+                  width: 56,
+                  height: 56,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: summary.ev > 0 ? 'success.lighter' : 'error.lighter',
                 }}
               >
-                EV
-              </Typography>
-              <Typography
-                variant="h3"
-                sx={{
-                  color: summary.ev > 0 ? 'success.dark' : 'error.dark',
-                  fontWeight: 700,
-                }}
-              >
-                {summary.ev > 0 ? '+' : ''}
-                {summary.ev.toFixed(2)}
-              </Typography>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
                 <Iconify
-                  icon={summary.ev > 0 ? 'solar:check-circle-bold' : 'solar:close-circle-bold'}
-                  width={16}
-                  sx={{ color: summary.ev > 0 ? 'success.dark' : 'error.dark' }}
+                  icon={'solar:dollar-minimalistic-bold' as any}
+                  width={28}
+                  sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
                 />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                    Expected Value
+                  </Typography>
+                  <Iconify
+                    icon={summary.ev > 0 ? 'solar:check-circle-bold' : 'solar:close-circle-bold'}
+                    width={14}
+                    sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
+                  />
+                </Stack>
                 <Typography
-                  variant="caption"
+                  variant="h4"
                   sx={{
-                    color: summary.ev > 0 ? 'success.dark' : 'error.dark',
-                    fontWeight: 600,
+                    color: summary.ev > 0 ? 'success.main' : 'error.main',
+                    fontWeight: 700,
                   }}
                 >
-                  {summary.ev > 0 ? 'Positive EV!' : 'Negative EV'}
+                  {summary.ev > 0 ? '+' : ''}
+                  {summary.ev.toFixed(2)}
                 </Typography>
-              </Stack>
+              </Box>
             </Stack>
           </CardContent>
         </Card>
