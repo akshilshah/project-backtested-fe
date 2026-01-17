@@ -106,4 +106,12 @@ export const endpoints = {
     previewExit: (id: string) => `/api/trades/${id}/preview-exit`,
     analytics: '/api/trades/analytics',
   },
+  backtest: {
+    list: '/api/backtest',
+    create: '/api/backtest',
+    details: (id: string) => `/api/backtest/${id}`,
+    update: (id: string) => `/api/backtest/${id}`,
+    delete: (id: string) => `/api/backtest/${id}`,
+    analytics: (strategyId: string) => `/api/backtest/analytics/${strategyId}`,
+  },
 } as const;

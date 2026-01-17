@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { toast } from 'sonner';
 import { useState, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
@@ -10,12 +11,15 @@ import CardContent from '@mui/material/CardContent';
 import { paths } from 'src/routes/paths';
 import { useParams } from 'src/routes/hooks';
 
+import { BacktestService } from 'src/services/backtest.service';
 import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { PageContainer } from 'src/components/page/page-container';
+
+import type { CreateBacktestTradeRequest } from 'src/types/backtest';
 
 import { BacktestTradesTable } from '../backtest-trades-table';
 import { BacktestAddTradeDialog } from '../backtest-add-trade-dialog';
@@ -27,73 +31,67 @@ export function BacktestStrategyView() {
   const [addTradeDialogOpen, setAddTradeDialogOpen] = useState(false);
 
   // Fetch strategy details
-  const { data: strategy, isLoading } = useSWR(
+  const { data: strategy, isLoading: isLoadingStrategy } = useSWR(
     id ? ['strategy', id] : null,
     () => StrategiesService.getById(id!)
   );
 
-  // Mock data for summary cards - will come from API later
-  const summary = {
-    avgWinningR: 3.94,
-    avgLossR: 1.0,
-    winPercentage: 0.28,
-    lossPercentage: 0.72,
-    ev: 0.38,
-  };
+  // Fetch backtest trades for this strategy
+  const { data: tradesData, isLoading: isLoadingTrades, mutate: mutateTrades } = useSWR(
+    id ? ['backtest-trades', id] : null,
+    () => BacktestService.getAll({ strategyId: Number(id), limit: 100 })
+  );
 
-  // Mock trades data - will come from API later
-  const trades = [
-    {
-      id: 1,
-      date: '01/02/2025',
-      time: '21:00',
-      coin: 'BCH',
-      direction: 'Long',
-      entry: 410.5,
-      sl50: null,
-      sl70: 401.5,
-      exit: 401.5,
-      r: -1.0,
-    },
-    {
-      id: 2,
-      date: '02/02/2025',
-      time: '04:00',
-      coin: 'BCH',
-      direction: 'Long',
-      entry: 395.5,
-      sl50: null,
-      sl70: 387.4,
-      exit: 387.4,
-      r: -1.0,
-    },
-    {
-      id: 5,
-      date: '03/02/2025',
-      time: '05:15',
-      coin: 'BCH',
-      direction: 'Long',
-      entry: 300.6,
-      sl50: null,
-      sl70: 287.4,
-      exit: 344.2,
-      r: 3.30303,
-    },
-  ];
+  // Fetch analytics/EV calculator for this strategy
+  const { data: analytics, isLoading: isLoadingAnalytics } = useSWR(
+    id ? ['backtest-analytics', id] : null,
+    () => BacktestService.getStrategyAnalytics(id!)
+  );
 
   const handleOpenAddTrade = useCallback(() => {
+    if (!id) {
+      toast.error('Strategy ID not found in URL.');
+      return;
+    }
     setAddTradeDialogOpen(true);
-  }, []);
+  }, [id]);
 
   const handleCloseAddTrade = useCallback(() => {
     setAddTradeDialogOpen(false);
   }, []);
 
-  const handleAddTrade = useCallback(async (data: any) => {
-    // Will implement API call later
-    console.log('Add trade:', data);
-    setAddTradeDialogOpen(false);
-  }, []);
+  const handleAddTrade = useCallback(async (data: CreateBacktestTradeRequest) => {
+    try {
+      await BacktestService.create(data);
+      toast.success('Backtest trade added successfully');
+      setAddTradeDialogOpen(false);
+      mutateTrades(); // Refresh trades list
+    } catch (error) {
+      console.error('Failed to add backtest trade:', error);
+      toast.error('Failed to add backtest trade');
+    }
+  }, [mutateTrades]);
+
+  const handleDeleteTrade = useCallback(async (tradeId: number) => {
+    try {
+      await BacktestService.delete(tradeId);
+      toast.success('Trade deleted successfully');
+      mutateTrades(); // Refresh trades list
+    } catch (error) {
+      console.error('Failed to delete trade:', error);
+      toast.error('Failed to delete trade');
+    }
+  }, [mutateTrades]);
+
+  const isLoading = isLoadingStrategy || isLoadingTrades || isLoadingAnalytics;
+  const trades = tradesData?.backtestTrades || [];
+  const summary = analytics || {
+    avgWinningR: 0,
+    avgLossR: 0,
+    winPercentage: 0,
+    lossPercentage: 0,
+    ev: 0,
+  };
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -118,6 +116,7 @@ export function BacktestStrategyView() {
             variant="contained"
             startIcon={<Iconify icon="solar:add-circle-bold" />}
             onClick={handleOpenAddTrade}
+            disabled={!id}
           >
             Add Trade
           </Button>
@@ -240,15 +239,17 @@ export function BacktestStrategyView() {
       </Stack>
 
       {/* Trades Table */}
-      <BacktestTradesTable trades={trades} />
+      <BacktestTradesTable trades={trades} onDelete={handleDeleteTrade} />
 
       {/* Add Trade Dialog */}
-      <BacktestAddTradeDialog
-        open={addTradeDialogOpen}
-        onClose={handleCloseAddTrade}
-        onConfirm={handleAddTrade}
-        strategyId={strategy.id}
-      />
+      {id && (
+        <BacktestAddTradeDialog
+          open={addTradeDialogOpen}
+          onClose={handleCloseAddTrade}
+          onConfirm={handleAddTrade}
+          strategyId={Number(id)}
+        />
+      )}
     </PageContainer>
   );
 }

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
@@ -12,26 +14,16 @@ import TableContainer from '@mui/material/TableContainer';
 
 import { Iconify } from 'src/components/iconify';
 
-// ----------------------------------------------------------------------
+import type { BacktestTrade } from 'src/types/backtest';
 
-type BacktestTrade = {
-  id: number;
-  date: string;
-  time: string;
-  coin: string;
-  direction: string;
-  entry: number;
-  sl50: number | null;
-  sl70: number;
-  exit: number;
-  r: number;
-};
+// ----------------------------------------------------------------------
 
 type BacktestTradesTableProps = {
   trades: BacktestTrade[];
+  onDelete?: (id: number) => void;
 };
 
-export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
+export function BacktestTradesTable({ trades, onDelete }: BacktestTradesTableProps) {
   return (
     <Card>
       <TableContainer>
@@ -71,10 +63,7 @@ export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
                 Entry
               </TableCell>
               <TableCell align="right" sx={{ fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.5px' }}>
-                SL 50
-              </TableCell>
-              <TableCell align="right" sx={{ fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.5px' }}>
-                SL 70
+                Stop Loss
               </TableCell>
               <TableCell align="right" sx={{ fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.5px' }}>
                 Exit
@@ -109,15 +98,15 @@ export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {trade.date}
+                    {dayjs(trade.tradeDate).format('DD/MM/YYYY')}
                   </Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    {trade.time}
+                    {trade.tradeTime}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {trade.coin}
+                    {trade.coin?.symbol || '—'}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -138,13 +127,8 @@ export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="body2" sx={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: 'text.secondary' }}>
-                    {trade.sl50 ? `$${trade.sl50.toFixed(2)}` : '—'}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
                   <Typography variant="body2" sx={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                    ${trade.sl70.toFixed(2)}
+                    ${trade.stopLoss.toFixed(2)}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
@@ -167,7 +151,7 @@ export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
                       px: 1.5,
                       py: 0.5,
                       borderRadius: 1,
-                      bgcolor: trade.r >= 0 ? 'success.lighter' : 'error.lighter',
+                      bgcolor: trade.rValue >= 0 ? 'success.lighter' : 'error.lighter',
                     }}
                   >
                     <Typography
@@ -175,10 +159,10 @@ export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
                       sx={{
                         fontWeight: 700,
                         fontVariantNumeric: 'tabular-nums',
-                        color: trade.r >= 0 ? 'success.dark' : 'error.dark',
+                        color: trade.rValue >= 0 ? 'success.dark' : 'error.dark',
                       }}
                     >
-                      {trade.r >= 0 ? '+' : ''}{trade.r.toFixed(2)}R
+                      {trade.rValue >= 0 ? '+' : ''}{trade.rValue.toFixed(2)}R
                     </Typography>
                   </Box>
                 </TableCell>
@@ -186,7 +170,11 @@ export function BacktestTradesTable({ trades }: BacktestTradesTableProps) {
                   <IconButton size="small">
                     <Iconify icon="solar:pen-bold" width={16} />
                   </IconButton>
-                  <IconButton size="small" sx={{ color: 'error.main' }}>
+                  <IconButton
+                    size="small"
+                    sx={{ color: 'error.main' }}
+                    onClick={() => onDelete?.(trade.id)}
+                  >
                     <Iconify icon="solar:trash-bin-trash-bold" width={16} />
                   </IconButton>
                 </TableCell>

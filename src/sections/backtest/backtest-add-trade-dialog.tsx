@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import useSWR from 'swr';
 import dayjs from 'dayjs';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -20,7 +22,12 @@ import { CoinsService } from 'src/services/coins.service';
 import { Form, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
 
+import type { Coin } from 'src/types/coin';
+import type { CreateBacktestTradeRequest } from 'src/types/backtest';
+
 // ----------------------------------------------------------------------
+
+const FORM_STORAGE_KEY = 'backtest-add-trade-form';
 
 const AddTradeSchema = z.object({
   coinId: z.number().min(1, 'Coin is required'),
@@ -45,7 +52,7 @@ type AddTradeFormValues = z.infer<typeof AddTradeSchema>;
 type BacktestAddTradeDialogProps = {
   open: boolean;
   onClose: () => void;
-  onConfirm: (data: any) => Promise<void>;
+  onConfirm: (data: CreateBacktestTradeRequest) => Promise<void>;
   strategyId: number;
   loading?: boolean;
 };
@@ -62,6 +69,25 @@ export function BacktestAddTradeDialog({
 
   const coins = coinsData?.coins ?? [];
 
+  // Try to load saved form data from localStorage
+  const getSavedFormData = (): AddTradeFormValues | null => {
+    try {
+      const saved = localStorage.getItem(FORM_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Convert date/time strings back to dayjs objects
+        return {
+          ...parsed,
+          date: parsed.date ? dayjs(parsed.date) : dayjs(),
+          time: parsed.time ? dayjs(parsed.time) : dayjs(),
+        };
+      }
+    } catch (error) {
+      console.error('Failed to load saved form data:', error);
+    }
+    return null;
+  };
+
   const defaultValues: AddTradeFormValues = {
     coinId: 0,
     date: dayjs(),
@@ -71,16 +97,61 @@ export function BacktestAddTradeDialog({
     exit: '',
   };
 
+  const savedData = getSavedFormData();
+  const initialValues = savedData || defaultValues;
+
   const methods = useForm<AddTradeFormValues>({
     resolver: zodResolver(AddTradeSchema),
-    defaultValues,
+    defaultValues: initialValues,
   });
 
-  const { handleSubmit, watch, reset } = methods;
+  const { handleSubmit, watch, reset, setValue } = methods;
 
   const entryValue = watch('entry');
   const slValue = watch('sl');
   const exitValue = watch('exit');
+  const coinIdValue = watch('coinId');
+
+  // Watch all form values
+  const allValues = watch();
+
+  // Find selected coin object from coins array
+  const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    if (open) {
+      // Only save if dialog is open and we have some data
+      const hasData =
+        allValues.coinId ||
+        allValues.entry ||
+        allValues.sl ||
+        allValues.exit;
+
+      if (hasData) {
+        try {
+          // Convert dayjs objects to ISO strings for storage
+          const dataToSave = {
+            ...allValues,
+            date: allValues.date ? dayjs(allValues.date).toISOString() : null,
+            time: allValues.time ? dayjs(allValues.time).toISOString() : null,
+          };
+          localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(dataToSave));
+        } catch (error) {
+          console.error('Failed to save form data:', error);
+        }
+      }
+    }
+  }, [allValues, open]);
+
+  // Clear saved form data from localStorage
+  const clearSavedData = () => {
+    try {
+      localStorage.removeItem(FORM_STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear saved form data:', error);
+    }
+  };
 
   // Calculate direction (auto)
   const direction =
@@ -106,25 +177,33 @@ export function BacktestAddTradeDialog({
   }
 
   const handleFormSubmit = handleSubmit(async (data) => {
+    if (!strategyId) {
+      toast.error('Strategy ID is missing. Please try again.');
+      console.error('Strategy ID is missing:', { strategyId, data });
+      return;
+    }
+
     const tradeDate = dayjs(data.date).format('YYYY-MM-DD');
     const tradeTime = dayjs(data.time).format('HH:mm:ss');
 
     await onConfirm({
       strategyId,
       coinId: data.coinId,
-      date: tradeDate,
-      time: tradeTime,
+      tradeDate,
+      tradeTime,
       entry: Number(data.entry),
-      sl: Number(data.sl),
+      stopLoss: Number(data.sl),
       exit: Number(data.exit),
-      direction,
-      r: rValue,
     });
 
+    // Clear saved form data after successful submission
+    clearSavedData();
     reset(defaultValues);
   });
 
   const handleClose = () => {
+    // Clear saved form data when user explicitly closes the dialog
+    clearSavedData();
     reset(defaultValues);
     onClose();
   };
@@ -140,21 +219,14 @@ export function BacktestAddTradeDialog({
             <RHFAutocomplete
               name="coinId"
               label="Coin"
+              placeholder="Select a coin"
               options={coins}
-              getOptionLabel={(option: any) => {
-                if (typeof option === 'number') {
-                  const coin = coins.find((c) => c.id === option);
-                  return coin ? `${coin.symbol} - ${coin.name}` : '';
-                }
-                return option.symbol ? `${option.symbol} - ${option.name}` : '';
+              value={selectedCoin}
+              onChange={(_: any, newValue: Coin | null) => {
+                setValue('coinId', newValue?.id ?? 0, { shouldValidate: true });
               }}
-              isOptionEqualToValue={(option: any, value: any) => {
-                if (typeof value === 'number') {
-                  return option.id === value;
-                }
-                return option.id === value?.id;
-              }}
-              onChange={(_, value: any) => value?.id || 0}
+              getOptionLabel={(option: Coin) => `${option.symbol} - ${option.name}`}
+              isOptionEqualToValue={(option: Coin, value: Coin) => option.id === value.id}
             />
 
             {/* Date and Time */}
