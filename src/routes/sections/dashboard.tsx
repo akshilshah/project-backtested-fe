@@ -35,6 +35,10 @@ const StrategyCreatePage = lazy(() => import('src/pages/dashboard/strategies/new
 const StrategyDetailsPage = lazy(() => import('src/pages/dashboard/strategies/[id]/index'));
 const StrategyEditPage = lazy(() => import('src/pages/dashboard/strategies/[id]/edit'));
 
+// Backtest
+const BacktestListPage = lazy(() => import('src/pages/dashboard/backtest/index'));
+const BacktestStrategyPage = lazy(() => import('src/pages/dashboard/backtest/[id]/index'));
+
 // Analytics
 const AnalyticsPage = lazy(() => import('src/pages/dashboard/analytics/index'));
 
@@ -98,6 +102,14 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'new', element: <StrategyCreatePage /> },
           { path: ':id', element: <StrategyDetailsPage /> },
           { path: ':id/edit', element: <StrategyEditPage /> },
+        ],
+      },
+      // Backtest
+      {
+        path: 'backtest',
+        children: [
+          { element: <BacktestListPage />, index: true },
+          { path: ':id', element: <BacktestStrategyPage /> },
         ],
       },
       // Analytics

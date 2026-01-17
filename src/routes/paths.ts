@@ -64,6 +64,11 @@ export const paths = {
       details: (id: string) => `${ROOTS.DASHBOARD}/strategies/${id}`,
       edit: (id: string) => `${ROOTS.DASHBOARD}/strategies/${id}/edit`,
     },
+    // Backtest
+    backtest: {
+      root: `${ROOTS.DASHBOARD}/backtest`,
+      strategy: (id: string) => `${ROOTS.DASHBOARD}/backtest/${id}`,
+    },
     // Analytics
     analytics: `${ROOTS.DASHBOARD}/analytics`,
     // Account (merged Profile and Settings)

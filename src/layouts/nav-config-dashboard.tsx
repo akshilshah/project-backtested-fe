@@ -74,6 +74,11 @@ export const navData: NavSectionProps['data'] = [
         path: paths.dashboard.trades.root,
         icon: ICONS.banking,
       },
+      {
+        title: 'Backtest',
+        path: paths.dashboard.backtest.root,
+        icon: ICONS.analytics,
+      },
     ],
   },
   /**
