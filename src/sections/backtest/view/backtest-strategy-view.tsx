@@ -78,6 +78,19 @@ export function BacktestStrategyView() {
     CoinsService.getAll({ limit: 100 })
   );
 
+  // Fetch the most recent trade for prefilling (limit 1, sorted by createdAt descending to get last created)
+  const { data: lastTradeData, mutate: mutateLastTrade } = useSWR(
+    id ? ['backtest-last-trade', id] : null,
+    () =>
+      BacktestService.getAll({
+        strategyId: Number(id),
+        limit: 1,
+        page: 1,
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+      })
+  );
+
   // Fetch analytics/EV calculator for this strategy
   const {
     data: analytics,
@@ -116,6 +129,7 @@ export function BacktestStrategyView() {
         setEditingTrade(null);
         mutateTrades(); // Refresh trades list
         mutateAnalytics(); // Refresh analytics/summary cards
+        mutateLastTrade(); // Refresh last trade for prefilling
       } catch (error) {
         console.error('Failed to save backtest trade:', error);
         toast.error(
@@ -123,7 +137,7 @@ export function BacktestStrategyView() {
         );
       }
     },
-    [editingTrade, mutateTrades, mutateAnalytics]
+    [editingTrade, mutateTrades, mutateAnalytics, mutateLastTrade]
   );
 
   const handleEditTrade = useCallback((trade: BacktestTrade) => {
@@ -224,6 +238,9 @@ export function BacktestStrategyView() {
     lossPercentage: 0,
     ev: 0,
   };
+
+  // Get the most recently created trade for prefilling (from separate API call)
+  const lastTrade = lastTradeData?.backtestTrades?.[0] || null;
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -443,6 +460,7 @@ export function BacktestStrategyView() {
           onConfirm={handleAddTrade}
           strategyId={Number(id)}
           editingTrade={editingTrade}
+          lastTrade={lastTrade}
         />
       )}
 

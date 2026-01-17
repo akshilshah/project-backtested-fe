@@ -90,4 +90,6 @@ export interface BacktestFilters {
   dateTo?: string;
   search?: string;
   direction?: 'Long' | 'Short';
+  sortBy?: 'tradeDate' | 'rValue' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
 }

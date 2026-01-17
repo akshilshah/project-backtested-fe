@@ -229,7 +229,7 @@ export function BacktestTradesTable({
         count={totalCount ?? data.length}
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
     </Card>

@@ -55,6 +55,7 @@ type BacktestAddTradeDialogProps = {
   onConfirm: (data: CreateBacktestTradeRequest) => Promise<void>;
   strategyId: number;
   editingTrade?: BacktestTrade | null;
+  lastTrade?: BacktestTrade | null;
   loading?: boolean;
 };
 
@@ -64,6 +65,7 @@ export function BacktestAddTradeDialog({
   onConfirm,
   strategyId,
   editingTrade,
+  lastTrade,
   loading = false,
 }: BacktestAddTradeDialogProps) {
   // Fetch coins for dropdown
@@ -99,29 +101,60 @@ export function BacktestAddTradeDialog({
     exit: '',
   };
 
-  // If editing, use editingTrade data, otherwise use saved data or defaults
+  // If editing, use editingTrade data, otherwise prefill from lastTrade, use saved data, or defaults
   const getInitialValues = (): AddTradeFormValues => {
     if (editingTrade) {
-      // Parse the time properly - tradeTime is in "HH:mm:ss" format
-      const timeStr = editingTrade.tradeTime;
-      // Create a dayjs object with today's date and the trade time
-      const timeParts = timeStr.split(':');
-      const timeObj = dayjs()
-        .hour(parseInt(timeParts[0], 10))
-        .minute(parseInt(timeParts[1], 10))
-        .second(parseInt(timeParts[2] || '0', 10));
+      // Parse the ISO timestamps from backend
+      const datePart = dayjs(editingTrade.tradeDate);
+      const timePart = dayjs(editingTrade.tradeTime);
+
+      // Combine: take the date from datePart and time from timePart
+      const combinedDateTime = datePart
+        .hour(timePart.hour())
+        .minute(timePart.minute())
+        .second(timePart.second());
 
       return {
         coinId: editingTrade.coinId,
-        date: dayjs(editingTrade.tradeDate),
-        time: timeObj,
+        date: combinedDateTime,
+        time: combinedDateTime,
         entry: editingTrade.entry,
         sl: editingTrade.stopLoss,
         exit: editingTrade.exit,
       };
     }
+
+    // Try to get saved data first (preserves user's in-progress work)
     const savedData = getSavedFormData();
-    return savedData || defaultValues;
+    if (savedData) {
+      return savedData;
+    }
+
+    // If no saved data but we have lastTrade, prefill coin, date, and time from last trade
+    if (lastTrade) {
+      // Parse the ISO timestamps from backend
+      // tradeDate is a full ISO timestamp like "2026-01-17T08:00:00.000Z"
+      // tradeTime is a full ISO timestamp like "1970-01-01T12:31:28.000Z" (with dummy date)
+      const datePart = dayjs(lastTrade.tradeDate);
+      const timePart = dayjs(lastTrade.tradeTime);
+
+      // Combine: take the date from datePart and time from timePart
+      const combinedDateTime = datePart
+        .hour(timePart.hour())
+        .minute(timePart.minute())
+        .second(timePart.second());
+
+      return {
+        coinId: lastTrade.coinId,
+        date: combinedDateTime,
+        time: combinedDateTime,
+        entry: '',
+        sl: '',
+        exit: '',
+      };
+    }
+
+    return defaultValues;
   };
 
   const initialValues = getInitialValues();
@@ -144,14 +177,20 @@ export function BacktestAddTradeDialog({
   // Find selected coin object from coins array
   const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
 
-  // Reset form when editingTrade changes or dialog opens
+  // Reset form when editingTrade or lastTrade changes or dialog opens
   useEffect(() => {
     if (open) {
+      // Clear saved data when opening dialog for new trade (not editing)
+      // This ensures lastTrade prefill takes precedence over stale localStorage data
+      if (!editingTrade) {
+        clearSavedData();
+      }
+
       const newValues = getInitialValues();
       reset(newValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, editingTrade]);
+  }, [open, editingTrade, lastTrade]);
 
   // Save form data to localStorage whenever it changes (only for new trades, not editing)
   useEffect(() => {
@@ -168,8 +207,12 @@ export function BacktestAddTradeDialog({
           // Convert dayjs objects to ISO strings for storage
           const dataToSave = {
             ...allValues,
-            date: allValues.date ? dayjs(allValues.date).toISOString() : null,
-            time: allValues.time ? dayjs(allValues.time).toISOString() : null,
+            date: allValues.date && dayjs.isDayjs(allValues.date) && allValues.date.isValid()
+              ? allValues.date.toISOString()
+              : null,
+            time: allValues.time && dayjs.isDayjs(allValues.time) && allValues.time.isValid()
+              ? allValues.time.toISOString()
+              : null,
           };
           localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(dataToSave));
         } catch (error) {

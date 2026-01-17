@@ -25,13 +25,9 @@ import { TradesService } from 'src/services/trades.service';
 import { StrategiesService } from 'src/services/strategies.service';
 
 import { Iconify } from 'src/components/iconify';
-import { PageHeader } from 'src/components/page/page-header';
 import { LoadingScreen } from 'src/components/loading-screen';
-import { CoinDisplay } from 'src/components/trade/coin-display';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
-import { PriceDisplay } from 'src/components/trade/price-display';
 import { PageContainer } from 'src/components/page/page-container';
-import { TradeStatusBadge } from 'src/components/trade/trade-status-badge';
 import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { TradeExitDialog } from '../trade-exit-dialog';
@@ -236,142 +232,267 @@ export function TradesDetailsView() {
 
   const isOpen = trade.status === 'OPEN';
 
+  const direction = trade.derived?.direction;
+  const tradeDirection = direction === 'Long' ? 'LONG' : 'SHORT';
+
+  // Calculate duration in readable format
+  const getDuration = () => {
+    if (trade.status === 'OPEN') return null;
+
+    let durationMs = trade.duration;
+
+    // If duration is not provided or is 0, calculate it from entry and exit times
+    if ((!durationMs || durationMs === 0) && trade.exitDate && trade.exitTime) {
+      try {
+        // Extract time components from the time strings
+        const entryTime = new Date(trade.tradeTime);
+        const exitTime = new Date(trade.exitTime);
+        const entryDate = new Date(trade.tradeDate);
+        const exitDate = new Date(trade.exitDate);
+
+        // Combine date and time properly
+        const entryDateTime = new Date(
+          entryDate.getFullYear(),
+          entryDate.getMonth(),
+          entryDate.getDate(),
+          entryTime.getHours(),
+          entryTime.getMinutes(),
+          entryTime.getSeconds()
+        );
+
+        const exitDateTime = new Date(
+          exitDate.getFullYear(),
+          exitDate.getMonth(),
+          exitDate.getDate(),
+          exitTime.getHours(),
+          exitTime.getMinutes(),
+          exitTime.getSeconds()
+        );
+
+        durationMs = exitDateTime.getTime() - entryDateTime.getTime();
+      } catch (error) {
+        console.error('Error calculating duration:', error);
+        return null;
+      }
+    }
+
+    if (!durationMs || durationMs <= 0) return null;
+
+    const seconds = Math.floor(durationMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}d ${hours % 24}h`;
+    if (hours > 0) return `${hours}h ${minutes % 60}m`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+    return `${seconds}s`;
+  };
+
+  const getDurationType = () => {
+    if (trade.status === 'OPEN') return '';
+
+    let durationMs = trade.duration;
+
+    // If duration is not provided or is 0, calculate it from entry and exit times
+    if ((!durationMs || durationMs === 0) && trade.exitDate && trade.exitTime) {
+      try {
+        const entryTime = new Date(trade.tradeTime);
+        const exitTime = new Date(trade.exitTime);
+        const entryDate = new Date(trade.tradeDate);
+        const exitDate = new Date(trade.exitDate);
+
+        const entryDateTime = new Date(
+          entryDate.getFullYear(),
+          entryDate.getMonth(),
+          entryDate.getDate(),
+          entryTime.getHours(),
+          entryTime.getMinutes(),
+          entryTime.getSeconds()
+        );
+
+        const exitDateTime = new Date(
+          exitDate.getFullYear(),
+          exitDate.getMonth(),
+          exitDate.getDate(),
+          exitTime.getHours(),
+          exitTime.getMinutes(),
+          exitTime.getSeconds()
+        );
+
+        durationMs = exitDateTime.getTime() - entryDateTime.getTime();
+      } catch (error) {
+        console.error('Error calculating duration type:', error);
+        return '';
+      }
+    }
+
+    if (!durationMs || durationMs <= 0) return '';
+
+    const hours = Math.floor(durationMs / (1000 * 60 * 60));
+
+    if (hours < 1) return `${direction} Scalp`;
+    if (hours < 24) return `${direction} Intraday`;
+    if (hours < 168) return `${direction} Swing`;
+    return `${direction} Position`;
+  };
+
+  const timeSinceUpdate = () => {
+    const now = new Date();
+    const updated = new Date(trade.updatedAt);
+    const diffMs = now.getTime() - updated.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 0) return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`;
+    if (diffHours > 0) return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+    if (diffMins > 0) return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`;
+    return 'just now';
+  };
+
   return (
-    <PageContainer maxWidth="lg">
-      <PageHeader
-        title={`${trade.coin?.symbol ?? 'Trade'} Trade`}
-        subtitle={`${fDate(trade.tradeDate)} at ${fTime(trade.tradeTime)}`}
-        backHref={paths.dashboard.trades.root}
-        action={
-          <Stack direction="row" spacing={1}>
-            <Button
-              variant="outlined"
-              color="inherit"
-              onClick={handleOpenEdit}
-              startIcon={<Iconify icon={'solar:pen-bold' as any} />}
-            >
-              {isOpen ? 'Edit' : 'Edit Notes'}
-            </Button>
-            {isOpen && (
+    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
+      <PageContainer maxWidth="lg">
+        {/* Custom Header */}
+        <Box sx={{ mb: 4, pt: 3 }}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={2}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <IconButton
+                onClick={() => router.push(paths.dashboard.trades.root)}
+                sx={{ color: 'text.secondary' }}
+              >
+                <Iconify icon="solar:alt-arrow-left-outline" width={24} />
+              </IconButton>
+              <Box>
+                <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
+                  <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                    {trade.coin?.symbol ?? 'Trade'} Trade
+                  </Typography>
+                  <Box
+                    sx={{
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 0.75,
+                      bgcolor: direction === 'Long' ? 'success.main' : 'error.main',
+                      color: 'common.white',
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.75rem' }}>
+                      {tradeDirection}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 0.75,
+                      bgcolor: trade.status === 'CLOSED' ? 'success.lighter' : 'info.lighter',
+                      color: trade.status === 'CLOSED' ? 'success.darker' : 'info.darker',
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.75rem' }}>
+                      {trade.status}
+                    </Typography>
+                  </Box>
+                </Stack>
+                <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                  {fDate(trade.tradeDate)} at {fTime(trade.tradeTime)}
+                </Typography>
+              </Box>
+            </Stack>
+            <Stack direction="row" spacing={1}>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={handleOpenEdit}
+                startIcon={<Iconify icon="solar:pen-bold" />}
+              >
+                {isOpen ? 'Edit' : 'Edit Notes'}
+              </Button>
+              {isOpen && (
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={handleOpenExit}
+                  startIcon={<Iconify icon="solar:logout-2-bold" />}
+                >
+                  Exit Trade
+                </Button>
+              )}
               <Button
                 variant="contained"
-                color="warning"
-                onClick={handleOpenExit}
-                startIcon={<Iconify icon={'solar:logout-2-bold' as any} />}
+                color="error"
+                onClick={handleOpenDelete}
+                startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
               >
-                Exit Trade
+                Delete
               </Button>
-            )}
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={handleOpenDelete}
-              startIcon={<Iconify icon={'solar:trash-bin-trash-bold' as any} />}
-            >
-              Delete
-            </Button>
+            </Stack>
           </Stack>
-        }
-      />
+        </Box>
 
-      {/* Hero Metrics Section */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {/* Coin Info */}
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <Card
-            sx={{
-              height: '100%',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-              border: '1px solid',
-              borderColor: 'divider',
-              '&:hover': {
-                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-              },
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Stack spacing={2}>
-                <CoinDisplay
-                  symbol={trade.coin?.symbol ?? 'N/A'}
-                  name={trade.coin?.name}
-                  showName
-                  size="medium"
-                />
-                <Stack direction="row" spacing={1} alignItems="center">
-                  {trade.derived?.direction && (
-                    <Box
-                      sx={{
-                        px: 1.5,
-                        py: 0.5,
-                        borderRadius: 1,
-                        bgcolor: trade.derived.direction === 'Long' ? 'success.main' : 'error.main',
-                        color: 'common.white',
-                      }}
-                    >
-                      <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.7rem' }}>
-                        {trade.derived.direction.toUpperCase()}
-                      </Typography>
-                    </Box>
-                  )}
-                  <TradeStatusBadge status={trade.status} />
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* P/L Card - Only colored when closed */}
+      {/* Metrics Section */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        {/* P/L Card - Only for closed trades */}
         {trade.status === 'CLOSED' && trade.profitLoss !== undefined && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card
               sx={{
                 height: '100%',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                border: '1px solid',
+                boxShadow: 'none',
+                border: '2px solid',
                 borderColor: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                },
+                borderRadius: 2,
               }}
             >
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5 }}>
-                  PROFIT/LOSS
-                </Typography>
+              <CardContent sx={{ p: 2.5 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8 }}>
+                    PROFIT/LOSS
+                  </Typography>
+                  <Iconify
+                    icon={trade.profitLoss >= 0 ? 'solar:graph-up-bold' : 'solar:graph-down-bold'}
+                    width={20}
+                    sx={{ color: trade.profitLoss >= 0 ? 'success.main' : 'error.main' }}
+                  />
+                </Stack>
                 <Typography
                   variant="h4"
                   sx={{
                     fontWeight: 700,
                     color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
-                    mt: 1,
                     mb: 0.5,
                   }}
                 >
-                  {trade.profitLoss >= 0 ? '+' : ''}
+                  {trade.profitLoss >= 0 ? '' : '-'}
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
-                  }).format(trade.profitLoss)}
+                  }).format(Math.abs(trade.profitLoss))}
                 </Typography>
-                {trade.profitLossPercentage !== undefined && (
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 600,
-                      color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
-                    }}
-                  >
-                    {trade.profitLoss >= 0 ? '+' : ''}{trade.profitLossPercentage.toFixed(2)}%
-                  </Typography>
-                )}
-                {trade.derived?.commission && (
-                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1.5 }}>
-                    Net: {new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                    }).format(trade.profitLoss - trade.derived.commission)}
-                  </Typography>
-                )}
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {trade.profitLossPercentage !== undefined && (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 600,
+                        color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
+                      }}
+                    >
+                      {trade.profitLoss >= 0 ? '' : '-'}{Math.abs(trade.profitLossPercentage).toFixed(2)}%
+                    </Typography>
+                  )}
+                  {trade.derived?.commission && (
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                      Net:{' '}
+                      {new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }).format(trade.profitLoss - trade.derived.commission)}
+                    </Typography>
+                  )}
+                </Stack>
               </CardContent>
             </Card>
           </Grid>
@@ -383,19 +504,20 @@ export function TradesDetailsView() {
             <Card
               sx={{
                 height: '100%',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                boxShadow: 'none',
                 border: '1px solid',
                 borderColor: 'divider',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                },
+                borderRadius: 2,
               }}
             >
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5 }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
+                >
                   POSITION SIZE
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mt: 1, mb: 0.5 }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
@@ -413,31 +535,64 @@ export function TradesDetailsView() {
         )}
 
         {/* Risk Info */}
-        {trade.avgEntry && trade.stopLoss && trade.quantity && (
+        {trade.avgEntry && trade.stopLoss && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card
               sx={{
                 height: '100%',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                boxShadow: 'none',
                 border: '1px solid',
                 borderColor: 'divider',
-                '&:hover': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                },
+                borderRadius: 2,
               }}
             >
-              <CardContent sx={{ p: 3 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.5 }}>
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
+                >
                   RISK
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mt: 1, mb: 0.5 }}>
-                  {(((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
+                  {direction === 'Short' ? '-' : ''}
+                  {(Math.abs((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                  SL @ {new Intl.NumberFormat('en-US', {
+                  SL @{' '}
+                  {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
                   }).format(trade.stopLoss)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
+
+        {/* Duration - Only for closed trades */}
+        {trade.status === 'CLOSED' && getDuration() && (
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card
+              sx={{
+                height: '100%',
+                boxShadow: 'none',
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
+                >
+                  DURATION
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
+                  {getDuration()}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  {getDurationType()}
                 </Typography>
               </CardContent>
             </Card>
@@ -460,38 +615,56 @@ export function TradesDetailsView() {
                       sx={{
                         p: 3,
                         borderRadius: 2,
-                        bgcolor: (theme) => theme.palette.grey[50],
+                        bgcolor: (theme) => (theme.palette.mode === 'light' ? '#F9FAFB' : 'rgba(255, 255, 255, 0.05)'),
                         border: '1px solid',
                         borderColor: 'divider',
                       }}
                     >
                       <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 3 }}>
-                        <Iconify icon={'solar:import-bold' as any} width={20} sx={{ color: 'text.secondary' }} />
+                        <Box
+                          sx={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: (theme) =>
+                              theme.palette.mode === 'light' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.2)',
+                          }}
+                        >
+                          <Iconify icon="solar:arrow-down-bold" width={20} sx={{ color: 'rgb(139, 92, 246)' }} />
+                        </Box>
                         <Typography
                           variant="subtitle2"
                           sx={{
                             fontWeight: 700,
                             color: 'text.primary',
                             letterSpacing: '0.5px',
-                            textTransform: 'uppercase',
-                            fontSize: '0.8125rem',
+                            fontSize: '0.9375rem',
                           }}
                         >
-                          Entry
+                          Entry Details
                         </Typography>
                       </Stack>
                       <Grid container spacing={2.5}>
                         <Grid size={{ xs: 6 }}>
-                          <PriceDisplay value={trade.avgEntry} label="Price" size="small" />
+                          <DetailItem
+                            label="PRICE"
+                            value={new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'USD',
+                            }).format(trade.avgEntry)}
+                          />
                         </Grid>
                         <Grid size={{ xs: 6 }}>
-                          <DetailItem label="Quantity" value={trade.quantity?.toFixed(4) ?? '-'} />
+                          <DetailItem label="QUANTITY" value={trade.quantity?.toFixed(4) ?? '-'} />
                         </Grid>
                         <Grid size={{ xs: 6 }}>
-                          <DetailItem label="Date" value={fDate(trade.tradeDate)} />
+                          <DetailItem label="DATE" value={fDate(trade.tradeDate)} />
                         </Grid>
                         <Grid size={{ xs: 6 }}>
-                          <DetailItem label="Time" value={fTime(trade.tradeTime)} />
+                          <DetailItem label="TIME" value={fTime(trade.tradeTime)} />
                         </Grid>
                       </Grid>
                     </Box>
@@ -504,29 +677,37 @@ export function TradesDetailsView() {
                         sx={{
                           p: 3,
                           borderRadius: 2,
-                          bgcolor: (theme) => theme.palette.grey[50],
+                          bgcolor: (theme) => (theme.palette.mode === 'light' ? '#F9FAFB' : 'rgba(255, 255, 255, 0.05)'),
                           border: '1px solid',
                           borderColor: 'divider',
                         }}
                       >
                         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
                           <Stack direction="row" alignItems="center" spacing={1}>
-                            <Iconify
-                              icon={'solar:export-bold' as any}
-                              width={20}
-                              sx={{ color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark' }}
-                            />
+                            <Box
+                              sx={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                bgcolor: (theme) =>
+                                  theme.palette.mode === 'light' ? 'rgba(34, 197, 94, 0.12)' : 'rgba(34, 197, 94, 0.2)',
+                              }}
+                            >
+                              <Iconify icon="solar:arrow-up-bold" width={20} sx={{ color: 'rgb(34, 197, 94)' }} />
+                            </Box>
                             <Typography
                               variant="subtitle2"
                               sx={{
                                 fontWeight: 700,
-                                color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark',
+                                color: 'text.primary',
                                 letterSpacing: '0.5px',
-                                textTransform: 'uppercase',
-                                fontSize: '0.8125rem',
+                                fontSize: '0.9375rem',
                               }}
                             >
-                              Exit
+                              Exit Details
                             </Typography>
                           </Stack>
                           <IconButton
@@ -539,29 +720,35 @@ export function TradesDetailsView() {
                               },
                             }}
                           >
-                            <Iconify icon={'solar:pen-bold' as any} width={16} />
+                            <Iconify icon="solar:pen-bold" width={16} />
                           </IconButton>
                         </Stack>
                         <Grid container spacing={2.5}>
                           <Grid size={{ xs: 6 }}>
-                            <PriceDisplay
-                              value={trade.avgExit}
-                              label="Price"
-                              size="small"
-                              color={trade.avgExit >= trade.avgEntry ? 'success.main' : 'error.main'}
+                            <DetailItem
+                              label="PRICE"
+                              value={new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                              }).format(trade.avgExit)}
+                              valueColor={trade.profitLoss && trade.profitLoss >= 0 ? 'success.main' : 'error.main'}
                             />
                           </Grid>
                           <Grid size={{ xs: 6 }}>
                             <DetailItem
-                              label="Change"
-                              value={`${trade.avgExit >= trade.avgEntry ? '+' : ''}${(((trade.avgExit - trade.avgEntry) / trade.avgEntry) * 100).toFixed(2)}%`}
+                              label="CHANGE"
+                              value={`${trade.avgExit >= trade.avgEntry ? '+' : ''}${(
+                                ((trade.avgExit - trade.avgEntry) / trade.avgEntry) *
+                                100
+                              ).toFixed(2)}%`}
+                              valueColor={trade.profitLoss && trade.profitLoss >= 0 ? 'success.main' : 'error.main'}
                             />
                           </Grid>
                           <Grid size={{ xs: 6 }}>
-                            <DetailItem label="Date" value={trade.exitDate ? fDate(trade.exitDate) : '-'} />
+                            <DetailItem label="DATE" value={trade.exitDate ? fDate(trade.exitDate) : '-'} />
                           </Grid>
                           <Grid size={{ xs: 6 }}>
-                            <DetailItem label="Time" value={trade.exitTime ? fTime(trade.exitTime) : '-'} />
+                            <DetailItem label="TIME" value={trade.exitTime ? fTime(trade.exitTime) : '-'} />
                           </Grid>
                         </Grid>
                       </Box>
@@ -569,65 +756,85 @@ export function TradesDetailsView() {
                   )}
                 </Grid>
 
-                {/* Strategy & Additional Info */}
+                {/* Strategy Section */}
                 <Divider />
-                <Grid container spacing={3}>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <Box
-                        sx={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: 1.5,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          bgcolor: (theme) => theme.palette.grey[100],
-                          color: 'text.secondary',
-                        }}
-                      >
-                        <Iconify icon={'solar:chart-2-bold' as any} width={24} />
-                      </Box>
-                      <Box>
+                <Box>
+                  <Stack direction="row" alignItems="flex-start" spacing={2.5}>
+                    <Box
+                      sx={{
+                        width: 52,
+                        height: 52,
+                        borderRadius: 1.5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: (theme) =>
+                          theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)',
+                        color: 'text.secondary',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Iconify icon="solar:chart-2-bold" width={26} />
+                    </Box>
+                    <Stack direction="row" sx={{ flex: 1 }} spacing={0}>
+                      <Box sx={{ flex: 1, pr: 3 }}>
                         <Typography
                           variant="caption"
                           sx={{
                             color: 'text.secondary',
                             display: 'block',
-                            letterSpacing: '0.5px',
+                            letterSpacing: '0.8px',
                             textTransform: 'uppercase',
                             fontWeight: 600,
                             fontSize: '0.6875rem',
+                            mb: 1,
                           }}
                         >
-                          Strategy
+                          STRATEGY
                         </Typography>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 0.25 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
                           {trade.strategy?.name ?? 'N/A'}
+                        </Typography>
+                        {(trade.strategy?.description || trade.strategy?.notes) && (
+                          <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.7 }}>
+                            {trade.strategy.description || trade.strategy.notes}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: 'text.secondary',
+                            textTransform: 'uppercase',
+                            fontWeight: 600,
+                            fontSize: '0.6875rem',
+                            letterSpacing: '0.5px',
+                            display: 'block',
+                            mb: 0.5,
+                          }}
+                        >
+                          TRADE CREATED
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', mb: 1 }}>
+                          {fDateTime(trade.createdAt)}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: 'text.secondary',
+                            fontWeight: 500,
+                            fontSize: '0.6875rem',
+                            display: 'block',
+                            fontStyle: 'italic',
+                          }}
+                        >
+                          Last modified {timeSinceUpdate()}
                         </Typography>
                       </Box>
                     </Stack>
-                  </Grid>
-                  <Grid size={{ xs: 12, sm: 6 }}>
-                    <Stack spacing={0.5}>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: 'text.secondary',
-                          textTransform: 'uppercase',
-                          fontWeight: 600,
-                          fontSize: '0.6875rem',
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        Trade Created
-                      </Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                        {fDateTime(trade.createdAt)}
-                      </Typography>
-                    </Stack>
-                  </Grid>
-                </Grid>
+                  </Stack>
+                </Box>
 
                 {/* Notes */}
                 {trade.notes && (
@@ -643,13 +850,13 @@ export function TradesDetailsView() {
                           textTransform: 'uppercase',
                           fontWeight: 600,
                           fontSize: '0.6875rem',
-                          letterSpacing: '0.5px',
+                          letterSpacing: '0.8px',
                         }}
                       >
-                        Notes
+                        TRADE NOTES
                       </Typography>
-                      <Typography variant="body2" sx={{ lineHeight: 1.7 }}>
-                        {trade.notes}
+                      <Typography variant="body2" sx={{ lineHeight: 1.8, fontStyle: 'italic', color: 'text.secondary' }}>
+                        "{trade.notes}"
                       </Typography>
                     </Box>
                   </>
@@ -705,6 +912,7 @@ export function TradesDetailsView() {
         loading={editExitLoading}
       />
     </PageContainer>
+    </Box>
   );
 }
 
@@ -713,9 +921,10 @@ export function TradesDetailsView() {
 type DetailItemProps = {
   label: string;
   value: string;
+  valueColor?: string;
 };
 
-function DetailItem({ label, value }: DetailItemProps) {
+function DetailItem({ label, value, valueColor }: DetailItemProps) {
   return (
     <Box>
       <Typography
@@ -737,6 +946,7 @@ function DetailItem({ label, value }: DetailItemProps) {
         sx={{
           fontWeight: 600,
           fontVariantNumeric: 'tabular-nums',
+          ...(valueColor && { color: valueColor }),
         }}
       >
         {value}

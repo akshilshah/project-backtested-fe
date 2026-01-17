@@ -14,6 +14,8 @@ export interface Trade {
   strategy?: {
     id: number;
     name: string;
+    description?: string;
+    notes?: string;
   };
   status: TradeStatus;
   tradeDate: string;
