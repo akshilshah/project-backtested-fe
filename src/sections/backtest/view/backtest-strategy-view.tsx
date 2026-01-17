@@ -30,6 +30,7 @@ export function BacktestStrategyView() {
   const { id } = useParams();
   const [addTradeDialogOpen, setAddTradeDialogOpen] = useState(false);
   const [editingTrade, setEditingTrade] = useState<BacktestTrade | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // Fetch strategy details
   const { data: strategy, isLoading: isLoadingStrategy } = useSWR(
@@ -89,6 +90,7 @@ export function BacktestStrategyView() {
   }, []);
 
   const handleDeleteTrade = useCallback(async (tradeId: number) => {
+    setDeletingId(tradeId);
     try {
       await BacktestService.delete(tradeId);
       toast.success('Trade deleted successfully');
@@ -97,6 +99,8 @@ export function BacktestStrategyView() {
     } catch (error) {
       console.error('Failed to delete trade:', error);
       toast.error('Failed to delete trade');
+    } finally {
+      setDeletingId(null);
     }
   }, [mutateTrades, mutateAnalytics]);
 
@@ -256,7 +260,12 @@ export function BacktestStrategyView() {
       </Stack>
 
       {/* Trades Table */}
-      <BacktestTradesTable trades={trades} onEdit={handleEditTrade} onDelete={handleDeleteTrade} />
+      <BacktestTradesTable
+        trades={trades}
+        onEdit={handleEditTrade}
+        onDelete={handleDeleteTrade}
+        deletingId={deletingId}
+      />
 
       {/* Add/Edit Trade Dialog */}
       {id && (

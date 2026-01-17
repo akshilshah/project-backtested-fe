@@ -102,10 +102,19 @@ export function BacktestAddTradeDialog({
   // If editing, use editingTrade data, otherwise use saved data or defaults
   const getInitialValues = (): AddTradeFormValues => {
     if (editingTrade) {
+      // Parse the time properly - tradeTime is in "HH:mm:ss" format
+      const timeStr = editingTrade.tradeTime;
+      // Create a dayjs object with today's date and the trade time
+      const timeParts = timeStr.split(':');
+      const timeObj = dayjs()
+        .hour(parseInt(timeParts[0], 10))
+        .minute(parseInt(timeParts[1], 10))
+        .second(parseInt(timeParts[2] || '0', 10));
+
       return {
         coinId: editingTrade.coinId,
         date: dayjs(editingTrade.tradeDate),
-        time: dayjs(`2000-01-01T${editingTrade.tradeTime}`),
+        time: timeObj,
         entry: editingTrade.entry,
         sl: editingTrade.stopLoss,
         exit: editingTrade.exit,
