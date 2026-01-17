@@ -1,4 +1,4 @@
-import type { BacktestTrade, CreateBacktestTradeRequest, BacktestFilters } from 'src/types/backtest';
+import type { BacktestFilters, BacktestTrade, CreateBacktestTradeRequest } from 'src/types/backtest';
 
 import useSWR from 'swr';
 import { toast } from 'sonner';

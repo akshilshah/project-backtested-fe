@@ -270,8 +270,8 @@ export function TradesDetailsView() {
         );
 
         durationMs = exitDateTime.getTime() - entryDateTime.getTime();
-      } catch (error) {
-        console.error('Error calculating duration:', error);
+      } catch (err) {
+        console.error('Error calculating duration:', err);
         return null;
       }
     }
@@ -321,8 +321,8 @@ export function TradesDetailsView() {
         );
 
         durationMs = exitDateTime.getTime() - entryDateTime.getTime();
-      } catch (error) {
-        console.error('Error calculating duration type:', error);
+      } catch (err) {
+        console.error('Error calculating duration type:', err);
         return '';
       }
     }
@@ -362,7 +362,7 @@ export function TradesDetailsView() {
                 onClick={() => router.push(paths.dashboard.trades.root)}
                 sx={{ color: 'text.secondary' }}
               >
-                <Iconify icon="solar:alt-arrow-left-outline" width={24} />
+                <Iconify icon={'solar:alt-arrow-left-outline' as any} width={24} />
               </IconButton>
               <Box>
                 <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
@@ -415,7 +415,7 @@ export function TradesDetailsView() {
                   variant="contained"
                   color="warning"
                   onClick={handleOpenExit}
-                  startIcon={<Iconify icon="solar:logout-2-bold" />}
+                  startIcon={<Iconify icon={'solar:logout-2-bold' as any} />}
                 >
                   Exit Trade
                 </Button>
@@ -452,7 +452,7 @@ export function TradesDetailsView() {
                     PROFIT/LOSS
                   </Typography>
                   <Iconify
-                    icon={trade.profitLoss >= 0 ? 'solar:graph-up-bold' : 'solar:graph-down-bold'}
+                    icon={(trade.profitLoss >= 0 ? 'solar:graph-up-bold' : 'solar:graph-down-bold') as any}
                     width={20}
                     sx={{ color: trade.profitLoss >= 0 ? 'success.main' : 'error.main' }}
                   />
@@ -633,7 +633,7 @@ export function TradesDetailsView() {
                               theme.palette.mode === 'light' ? 'rgba(139, 92, 246, 0.12)' : 'rgba(139, 92, 246, 0.2)',
                           }}
                         >
-                          <Iconify icon="solar:arrow-down-bold" width={20} sx={{ color: 'rgb(139, 92, 246)' }} />
+                          <Iconify icon={'solar:arrow-down-bold' as any} width={20} sx={{ color: 'rgb(139, 92, 246)' }} />
                         </Box>
                         <Typography
                           variant="subtitle2"
@@ -696,7 +696,7 @@ export function TradesDetailsView() {
                                   theme.palette.mode === 'light' ? 'rgba(34, 197, 94, 0.12)' : 'rgba(34, 197, 94, 0.2)',
                               }}
                             >
-                              <Iconify icon="solar:arrow-up-bold" width={20} sx={{ color: 'rgb(34, 197, 94)' }} />
+                              <Iconify icon={'solar:arrow-up-bold' as any} width={20} sx={{ color: 'rgb(34, 197, 94)' }} />
                             </Box>
                             <Typography
                               variant="subtitle2"
@@ -774,7 +774,7 @@ export function TradesDetailsView() {
                         flexShrink: 0,
                       }}
                     >
-                      <Iconify icon="solar:chart-2-bold" width={26} />
+                      <Iconify icon={'solar:chart-2-bold' as any} width={26} />
                     </Box>
                     <Stack direction="row" sx={{ flex: 1 }} spacing={0}>
                       <Box sx={{ flex: 1, pr: 3 }}>
@@ -856,7 +856,7 @@ export function TradesDetailsView() {
                         TRADE NOTES
                       </Typography>
                       <Typography variant="body2" sx={{ lineHeight: 1.8, fontStyle: 'italic', color: 'text.secondary' }}>
-                        "{trade.notes}"
+                        &ldquo;{trade.notes}&rdquo;
                       </Typography>
                     </Box>
                   </>
