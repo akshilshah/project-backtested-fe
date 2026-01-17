@@ -17,14 +17,14 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 
+import type { Strategy } from 'src/types/strategy';
+import type { BacktestAnalytics } from 'src/types/backtest';
+
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { BacktestService } from 'src/services/backtest.service';
 import { StrategiesService } from 'src/services/strategies.service';
-
-import type { Strategy } from 'src/types/strategy';
-import type { BacktestAnalytics } from 'src/types/backtest';
 
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
