@@ -31,7 +31,7 @@ import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-
 
 // ----------------------------------------------------------------------
 
-const ExitTradeSchema = z.object({
+const EditExitTradeSchema = z.object({
   avgExit: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Exit price is required')
@@ -41,9 +41,9 @@ const ExitTradeSchema = z.object({
   notes: z.string().optional(),
 });
 
-type ExitTradeFormValues = z.infer<typeof ExitTradeSchema>;
+type EditExitTradeFormValues = z.infer<typeof EditExitTradeSchema>;
 
-type TradeExitDialogProps = {
+type TradeEditExitDialogProps = {
   open: boolean;
   trade: Trade | null;
   onClose: () => void;
@@ -51,31 +51,44 @@ type TradeExitDialogProps = {
   loading?: boolean;
 };
 
-export function TradeExitDialog({
+export function TradeEditExitDialog({
   open,
   trade,
   onClose,
   onConfirm,
   loading = false,
-}: TradeExitDialogProps) {
+}: TradeEditExitDialogProps) {
   const [plPreview, setPlPreview] = useState<PreviewExitResponse | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
 
-  const defaultValues: ExitTradeFormValues = {
-    avgExit: '',
-    exitDate: dayjs(),
-    exitTime: dayjs(),
-    notes: '',
+  // Pre-fill with existing exit data
+  const defaultValues: EditExitTradeFormValues = {
+    avgExit: trade?.avgExit ?? '',
+    exitDate: trade?.exitDate ? dayjs(trade.exitDate) : dayjs(),
+    exitTime: trade?.exitTime ? dayjs(trade.exitTime, 'HH:mm:ss') : dayjs(),
+    notes: trade?.notes ?? '',
   };
 
-  const methods = useForm<ExitTradeFormValues>({
-    resolver: zodResolver(ExitTradeSchema),
+  const methods = useForm<EditExitTradeFormValues>({
+    resolver: zodResolver(EditExitTradeSchema),
     defaultValues,
   });
 
   const { handleSubmit, watch, reset } = methods;
 
   const avgExitValue = watch('avgExit');
+
+  // Reset form when dialog opens with new trade data
+  useEffect(() => {
+    if (open && trade) {
+      reset({
+        avgExit: trade.avgExit ?? '',
+        exitDate: trade.exitDate ? dayjs(trade.exitDate) : dayjs(),
+        exitTime: trade.exitTime ? dayjs(trade.exitTime, 'HH:mm:ss') : dayjs(),
+        notes: trade.notes ?? '',
+      });
+    }
+  }, [open, trade, reset]);
 
   // Fetch P&L preview from API when avgExit changes
   useEffect(() => {
@@ -114,12 +127,9 @@ export function TradeExitDialog({
       exitTime,
       notes: data.notes || undefined,
     });
-
-    reset(defaultValues);
   });
 
   const handleClose = () => {
-    reset(defaultValues);
     onClose();
   };
 
@@ -129,7 +139,7 @@ export function TradeExitDialog({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Exit Trade</DialogTitle>
+      <DialogTitle>Edit Exit Details</DialogTitle>
 
       <Form methods={methods} onSubmit={handleFormSubmit}>
         <DialogContent dividers>
@@ -245,7 +255,7 @@ export function TradeExitDialog({
             Cancel
           </Button>
           <LoadingButton type="submit" variant="contained" loading={loading}>
-            Exit Trade
+            Update Exit
           </LoadingButton>
         </DialogActions>
       </Form>

@@ -49,6 +49,11 @@ export class TradesService {
     return response.data.data;
   }
 
+  static async updateExit(id: string | number, data: ExitTradeRequest): Promise<Trade> {
+    const response = await axios.put<TradeResponse>(endpoints.trades.updateExit(String(id)), data);
+    return response.data.data;
+  }
+
   static async previewExit(
     id: string | number,
     data: PreviewExitRequest

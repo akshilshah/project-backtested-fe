@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
 
@@ -35,6 +36,7 @@ import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { TradeExitDialog } from '../trade-exit-dialog';
 import { TradeNotesDialog } from '../trade-notes-dialog';
+import { TradeEditExitDialog } from '../trade-edit-exit-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +50,8 @@ export function TradesDetailsView() {
   const [calculatorOpen, setCalculatorOpen] = useState(false);
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
   const [notesLoading, setNotesLoading] = useState(false);
+  const [editExitDialogOpen, setEditExitDialogOpen] = useState(false);
+  const [editExitLoading, setEditExitLoading] = useState(false);
 
   // Fetch trade data
   const {
@@ -181,6 +185,34 @@ export function TradesDetailsView() {
         toast.error(message);
       } finally {
         setNotesLoading(false);
+      }
+    },
+    [id, mutate]
+  );
+
+  const handleOpenEditExit = useCallback(() => {
+    setEditExitDialogOpen(true);
+  }, []);
+
+  const handleCloseEditExit = useCallback(() => {
+    setEditExitDialogOpen(false);
+  }, []);
+
+  const handleConfirmEditExit = useCallback(
+    async (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => {
+      if (!id) return;
+
+      try {
+        setEditExitLoading(true);
+        await TradesService.updateExit(id, data);
+        toast.success('Exit details updated successfully');
+        mutate();
+        setEditExitDialogOpen(false);
+      } catch (err: any) {
+        const message = err?.response?.data?.message || 'Failed to update exit details';
+        toast.error(message);
+      } finally {
+        setEditExitLoading(false);
       }
     },
     [id, mutate]
@@ -472,35 +504,43 @@ export function TradesDetailsView() {
                         sx={{
                           p: 3,
                           borderRadius: 2,
-                          bgcolor: (theme) =>
-                            trade.avgExit! >= trade.avgEntry
-                              ? theme.palette.success.lighter
-                              : theme.palette.error.lighter,
+                          bgcolor: (theme) => theme.palette.grey[50],
                           border: '1px solid',
-                          borderColor: (theme) =>
-                            trade.avgExit! >= trade.avgEntry
-                              ? theme.palette.success.light
-                              : theme.palette.error.light,
+                          borderColor: 'divider',
                         }}
                       >
-                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 3 }}>
-                          <Iconify
-                            icon={'solar:export-bold' as any}
-                            width={20}
-                            sx={{ color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark' }}
-                          />
-                          <Typography
-                            variant="subtitle2"
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Iconify
+                              icon={'solar:export-bold' as any}
+                              width={20}
+                              sx={{ color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark' }}
+                            />
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontWeight: 700,
+                                color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark',
+                                letterSpacing: '0.5px',
+                                textTransform: 'uppercase',
+                                fontSize: '0.8125rem',
+                              }}
+                            >
+                              Exit
+                            </Typography>
+                          </Stack>
+                          <IconButton
+                            size="small"
+                            onClick={handleOpenEditExit}
                             sx={{
-                              fontWeight: 700,
-                              color: trade.avgExit >= trade.avgEntry ? 'success.dark' : 'error.dark',
-                              letterSpacing: '0.5px',
-                              textTransform: 'uppercase',
-                              fontSize: '0.8125rem',
+                              color: 'text.secondary',
+                              '&:hover': {
+                                bgcolor: 'action.hover',
+                              },
                             }}
                           >
-                            Exit
-                          </Typography>
+                            <Iconify icon={'solar:pen-bold' as any} width={16} />
+                          </IconButton>
                         </Stack>
                         <Grid container spacing={2.5}>
                           <Grid size={{ xs: 6 }}>
@@ -655,6 +695,14 @@ export function TradesDetailsView() {
         onTakeTrade={handleUpdateTrade}
         currentTrade={trade}
         isEditMode
+      />
+
+      <TradeEditExitDialog
+        open={editExitDialogOpen}
+        trade={trade}
+        onClose={handleCloseEditExit}
+        onConfirm={handleConfirmEditExit}
+        loading={editExitLoading}
       />
     </PageContainer>
   );
