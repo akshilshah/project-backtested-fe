@@ -232,6 +232,7 @@ export function BacktestStrategyView() {
   const totalCount = tradesData?.pagination?.total ?? 0;
   const coins = coinsData?.coins ?? [];
   const summary = analytics || {
+    totalTrades: 0,
     avgWinningR: 0,
     avgLossR: 0,
     winPercentage: 0,
@@ -310,6 +311,23 @@ export function BacktestStrategyView() {
           '& > *': { flex: 1 },
         }}
       >
+        {/* Total Trades */}
+        <Card>
+          <CardContent>
+            <Stack spacing={1}>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', textTransform: 'uppercase', fontWeight: 600 }}
+              >
+                Total Trades
+              </Typography>
+              <Typography variant="h3" sx={{ fontWeight: 700 }}>
+                {summary.totalTrades}
+              </Typography>
+            </Stack>
+          </CardContent>
+        </Card>
+
         {/* Average Winning R */}
         <Card>
           <CardContent>
@@ -381,7 +399,6 @@ export function BacktestStrategyView() {
         {/* Expected Value */}
         <Card
           sx={{
-            bgcolor: summary.ev > 0 ? 'success.lighter' : 'error.lighter',
             border: '1px solid',
             borderColor: summary.ev > 0 ? 'success.main' : 'error.main',
           }}
