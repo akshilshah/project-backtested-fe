@@ -1,4 +1,6 @@
 import useSWR from 'swr';
+import { toast } from 'sonner';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -6,10 +8,12 @@ import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 
@@ -19,20 +23,26 @@ import { useRouter } from 'src/routes/hooks';
 import { BacktestService } from 'src/services/backtest.service';
 import { StrategiesService } from 'src/services/strategies.service';
 
+import type { Strategy } from 'src/types/strategy';
+import type { BacktestAnalytics } from 'src/types/backtest';
+
 import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { PageContainer } from 'src/components/page/page-container';
 
-import type { BacktestAnalytics } from 'src/types/backtest';
+import { BacktestNotesDialog } from '../backtest-notes-dialog';
 
 // ----------------------------------------------------------------------
 
 export function BacktestListView() {
   const router = useRouter();
+  const [notesDialogOpen, setNotesDialogOpen] = useState(false);
+  const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
+  const [updatingNotes, setUpdatingNotes] = useState(false);
 
   // Fetch all strategies
-  const { data, isLoading } = useSWR('strategies-all', () =>
+  const { data, isLoading, mutate } = useSWR('strategies-all', () =>
     StrategiesService.getAll({ limit: 100 })
   );
 
@@ -63,6 +73,45 @@ export function BacktestListView() {
     router.push(paths.dashboard.backtest.strategy(String(strategyId)));
   };
 
+  const handleOpenNotesDialog = useCallback((strategy: Strategy, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setEditingStrategy(strategy);
+    setNotesDialogOpen(true);
+  }, []);
+
+  const handleCloseNotesDialog = useCallback(() => {
+    setNotesDialogOpen(false);
+    setEditingStrategy(null);
+  }, []);
+
+  const handleSaveNotes = useCallback(
+    async (notes: string) => {
+      if (!editingStrategy || !editingStrategy.id) {
+        toast.error('Strategy ID is missing');
+        return;
+      }
+
+      setUpdatingNotes(true);
+      try {
+        await StrategiesService.update(editingStrategy.id, {
+          notes,
+        });
+        toast.success('Notes updated successfully');
+
+        // Force revalidation of strategies list
+        await mutate();
+        setNotesDialogOpen(false);
+        setEditingStrategy(null);
+      } catch (error) {
+        console.error('Failed to update notes:', error);
+        toast.error('Failed to update notes');
+      } finally {
+        setUpdatingNotes(false);
+      }
+    },
+    [editingStrategy, mutate]
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -81,11 +130,12 @@ export function BacktestListView() {
             <TableHead>
               <TableRow>
                 <TableCell>Strategy</TableCell>
-                <TableCell>Created</TableCell>
+                <TableCell>Notes</TableCell>
                 <TableCell>Trades</TableCell>
                 <TableCell>Win Rate</TableCell>
                 <TableCell>Avg R</TableCell>
                 <TableCell>EV</TableCell>
+                <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -118,21 +168,22 @@ export function BacktestListView() {
                         </Avatar>
                         <Box>
                           <Typography variant="subtitle2">{strategy.name}</Typography>
-                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                            {strategy.description || 'No description'}
-                          </Typography>
                         </Box>
                       </Stack>
                     </TableCell>
-                    <TableCell>
-                      <Typography variant="body2">
-                        {new Date(strategy.createdAt).toLocaleDateString()}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {new Date(strategy.createdAt).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                    <TableCell sx={{ maxWidth: 300 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: strategy.notes ? 'text.primary' : 'text.disabled',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                        }}
+                      >
+                        {strategy.notes || 'No notes'}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -192,6 +243,16 @@ export function BacktestListView() {
                         </Typography>
                       </Box>
                     </TableCell>
+                    <TableCell align="right" onClick={(e) => e.stopPropagation()}>
+                      <Tooltip title="Edit Notes">
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleOpenNotesDialog(strategy, e)}
+                        >
+                          <Iconify icon="solar:pen-bold" width={20} />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -217,6 +278,15 @@ export function BacktestListView() {
           </Box>
         )}
       </Card>
+
+      {/* Notes Dialog */}
+      <BacktestNotesDialog
+        open={notesDialogOpen}
+        onClose={handleCloseNotesDialog}
+        onConfirm={handleSaveNotes}
+        currentNotes={editingStrategy?.notes || ''}
+        loading={updatingNotes}
+      />
     </PageContainer>
   );
 }

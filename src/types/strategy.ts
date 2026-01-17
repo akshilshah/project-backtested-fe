@@ -4,6 +4,7 @@ export interface Strategy {
   id: number;
   name: string;
   description?: string;
+  notes?: string;
   rules?: Record<string, unknown>;
   organizationId: number;
   createdAt: string;
@@ -21,6 +22,7 @@ export interface CreateStrategyRequest {
 export interface UpdateStrategyRequest {
   name?: string;
   description?: string;
+  notes?: string;
   rules?: Record<string, unknown>;
 }
 

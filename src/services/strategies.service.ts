@@ -28,6 +28,9 @@ export class StrategiesService {
   }
 
   static async update(id: string | number, data: UpdateStrategyRequest): Promise<Strategy> {
+    if (!id || id === 'undefined') {
+      throw new Error('Invalid strategy ID');
+    }
     const response = await axios.put<StrategyResponse>(endpoints.strategies.update(String(id)), data);
     return response.data.data;
   }
