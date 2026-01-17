@@ -1,4 +1,4 @@
-import type { BacktestTrade, CreateBacktestTradeRequest } from 'src/types/backtest';
+import type { BacktestTrade, CreateBacktestTradeRequest, BacktestFilters } from 'src/types/backtest';
 
 import useSWR from 'swr';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ import CardContent from '@mui/material/CardContent';
 import { paths } from 'src/routes/paths';
 import { useParams } from 'src/routes/hooks';
 
+import { CoinsService } from 'src/services/coins.service';
 import { BacktestService } from 'src/services/backtest.service';
 import { StrategiesService } from 'src/services/strategies.service';
 
@@ -27,6 +28,8 @@ import { BacktestAddTradeDialog } from '../backtest-add-trade-dialog';
 
 // ----------------------------------------------------------------------
 
+type Direction = 'Long' | 'Short';
+
 export function BacktestStrategyView() {
   const { id } = useParams();
   const [addTradeDialogOpen, setAddTradeDialogOpen] = useState(false);
@@ -34,6 +37,13 @@ export function BacktestStrategyView() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
   const [updatingNotes, setUpdatingNotes] = useState(false);
+
+  // Table state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchValue, setSearchValue] = useState('');
+  const [directionFilter, setDirectionFilter] = useState<Direction | 'ALL'>('ALL');
+  const [filters, setFilters] = useState<BacktestFilters>({});
 
   // Fetch strategy details
   const {
@@ -47,8 +57,25 @@ export function BacktestStrategyView() {
     data: tradesData,
     isLoading: isLoadingTrades,
     mutate: mutateTrades,
-  } = useSWR(id ? ['backtest-trades', id] : null, () =>
-    BacktestService.getAll({ strategyId: Number(id), limit: 100 })
+  } = useSWR(
+    id ? ['backtest-trades', id, page, rowsPerPage, searchValue, directionFilter, filters] : null,
+    () =>
+      BacktestService.getAll({
+        strategyId: Number(id),
+        page: page + 1,
+        limit: rowsPerPage,
+        search: searchValue || undefined,
+        direction: directionFilter !== 'ALL' ? directionFilter : undefined,
+        ...filters,
+      }),
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  // Fetch coins for filter dropdown
+  const { data: coinsData, isLoading: coinsLoading } = useSWR('coins-all', () =>
+    CoinsService.getAll({ limit: 100 })
   );
 
   // Fetch analytics/EV calculator for this strategy
@@ -157,8 +184,39 @@ export function BacktestStrategyView() {
     [id, mutateStrategy]
   );
 
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchValue(value);
+    setPage(0);
+  }, []);
+
+  const handleDirectionFilterChange = useCallback((value: Direction | 'ALL') => {
+    setDirectionFilter(value);
+    setPage(0);
+  }, []);
+
+  const handleFiltersChange = useCallback((newFilters: BacktestFilters) => {
+    setFilters(newFilters);
+    setPage(0);
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    setFilters({});
+    setPage(0);
+  }, []);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  const handleRowsPerPageChange = useCallback((newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage);
+    setPage(0);
+  }, []);
+
   const isLoading = isLoadingStrategy || isLoadingTrades || isLoadingAnalytics;
   const trades = tradesData?.backtestTrades || [];
+  const totalCount = tradesData?.pagination?.total ?? 0;
+  const coins = coinsData?.coins ?? [];
   const summary = analytics || {
     avgWinningR: 0,
     avgLossR: 0,
@@ -356,10 +414,25 @@ export function BacktestStrategyView() {
 
       {/* Trades Table */}
       <BacktestTradesTable
-        trades={trades}
+        data={trades}
+        loading={isLoadingTrades}
+        totalCount={totalCount}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        searchValue={searchValue}
+        directionFilter={directionFilter}
+        filters={filters}
+        onSearchChange={handleSearchChange}
+        onDirectionFilterChange={handleDirectionFilterChange}
+        onFiltersChange={handleFiltersChange}
+        onClearFilters={handleClearFilters}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         onEdit={handleEditTrade}
         onDelete={handleDeleteTrade}
         deletingId={deletingId}
+        coins={coins}
+        coinsLoading={coinsLoading}
       />
 
       {/* Add/Edit Trade Dialog */}

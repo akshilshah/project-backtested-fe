@@ -88,4 +88,6 @@ export interface BacktestFilters {
   coinId?: number;
   dateFrom?: string;
   dateTo?: string;
+  search?: string;
+  direction?: 'Long' | 'Short';
 }
