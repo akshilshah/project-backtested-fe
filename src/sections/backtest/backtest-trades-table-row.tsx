@@ -22,6 +22,7 @@ import { DeleteDialog } from 'src/components/form/confirm-dialog';
 
 type BacktestTradesTableRowProps = {
   row: BacktestTrade;
+  index: number;
   onEdit: (trade: BacktestTrade) => void;
   onDelete: (id: number) => void;
   deleting?: boolean;
@@ -29,6 +30,7 @@ type BacktestTradesTableRowProps = {
 
 export const BacktestTradesTableRow = memo(function BacktestTradesTableRow({
   row,
+  index,
   onEdit,
   onDelete,
   deleting,
@@ -58,7 +60,7 @@ export const BacktestTradesTableRow = memo(function BacktestTradesTableRow({
         {/* # */}
         <TableCell>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {row.id}
+            {index}
           </Typography>
         </TableCell>
 

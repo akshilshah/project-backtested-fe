@@ -108,10 +108,11 @@ export function BacktestTradesTable({ trades, onEdit, onDelete, deletingId }: Ba
                   colSpan={TABLE_HEAD.length}
                 />
               ) : (
-                trades.map((row) => (
+                trades.map((row, index) => (
                   <BacktestTradesTableRow
                     key={row.id}
                     row={row}
+                    index={index + 1}
                     onEdit={(trade) => onEdit?.(trade)}
                     onDelete={(id) => onDelete?.(id)}
                     deleting={deletingId === row.id}
