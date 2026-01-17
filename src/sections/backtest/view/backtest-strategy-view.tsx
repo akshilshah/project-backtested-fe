@@ -122,9 +122,9 @@ export function BacktestStrategyView() {
     [mutateTrades, mutateAnalytics]
   );
 
-  const handleOpenNotesDialog = useCallback(() => {
-    setNotesDialogOpen(true);
-  }, []);
+  // const handleOpenNotesDialog = useCallback(() => {
+  //   setNotesDialogOpen(true);
+  // }, []);
 
   const handleCloseNotesDialog = useCallback(() => {
     setNotesDialogOpen(false);

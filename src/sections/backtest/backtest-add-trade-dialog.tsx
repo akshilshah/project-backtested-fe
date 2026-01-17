@@ -1,3 +1,6 @@
+import type { Coin } from 'src/types/coin';
+import type { BacktestTrade, CreateBacktestTradeRequest } from 'src/types/backtest';
+
 import { z } from 'zod';
 import useSWR from 'swr';
 import dayjs from 'dayjs';
@@ -6,19 +9,16 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import type { Coin } from 'src/types/coin';
-import type { BacktestTrade, CreateBacktestTradeRequest } from 'src/types/backtest';
-
-import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
+import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
 
 import { CoinsService } from 'src/services/coins.service';
 

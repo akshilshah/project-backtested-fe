@@ -1,5 +1,4 @@
-import type { Trade } from 'src/types/trade';
-import type { PreviewExitResponse } from 'src/types/trade';
+import type { Trade , PreviewExitResponse } from 'src/types/trade';
 
 import { z } from 'zod';
 import dayjs from 'dayjs';

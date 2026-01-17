@@ -4,10 +4,10 @@ import type {
   BacktestFilters,
   BacktestAnalytics,
   BacktestTradeResponse,
+  BacktestAnalyticsResponse,
   CreateBacktestTradeRequest,
   UpdateBacktestTradeRequest,
   BacktestTradesListResponse,
-  BacktestAnalyticsResponse,
 } from 'src/types/backtest';
 
 import axios, { endpoints } from 'src/lib/axios';

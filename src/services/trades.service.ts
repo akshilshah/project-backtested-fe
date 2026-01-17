@@ -6,10 +6,10 @@ import type {
   TradeAnalytics,
   ExitTradeRequest,
   PreviewExitRequest,
-  PreviewExitResponse,
   CreateTradeRequest,
   UpdateTradeRequest,
   TradesListResponse,
+  PreviewExitResponse,
   TradeAnalyticsResponse,
 } from 'src/types/trade';
 
