@@ -20,10 +20,11 @@ import type { BacktestTrade } from 'src/types/backtest';
 
 type BacktestTradesTableProps = {
   trades: BacktestTrade[];
+  onEdit?: (trade: BacktestTrade) => void;
   onDelete?: (id: number) => void;
 };
 
-export function BacktestTradesTable({ trades, onDelete }: BacktestTradesTableProps) {
+export function BacktestTradesTable({ trades, onEdit, onDelete }: BacktestTradesTableProps) {
   return (
     <Card>
       <TableContainer>
@@ -167,7 +168,7 @@ export function BacktestTradesTable({ trades, onDelete }: BacktestTradesTablePro
                   </Box>
                 </TableCell>
                 <TableCell align="right">
-                  <IconButton size="small">
+                  <IconButton size="small" onClick={() => onEdit?.(trade)}>
                     <Iconify icon="solar:pen-bold" width={16} />
                   </IconButton>
                   <IconButton

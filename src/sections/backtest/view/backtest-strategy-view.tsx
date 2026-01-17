@@ -19,7 +19,7 @@ import { PageHeader } from 'src/components/page/page-header';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { PageContainer } from 'src/components/page/page-container';
 
-import type { CreateBacktestTradeRequest } from 'src/types/backtest';
+import type { BacktestTrade, CreateBacktestTradeRequest } from 'src/types/backtest';
 
 import { BacktestTradesTable } from '../backtest-trades-table';
 import { BacktestAddTradeDialog } from '../backtest-add-trade-dialog';
@@ -29,6 +29,7 @@ import { BacktestAddTradeDialog } from '../backtest-add-trade-dialog';
 export function BacktestStrategyView() {
   const { id } = useParams();
   const [addTradeDialogOpen, setAddTradeDialogOpen] = useState(false);
+  const [editingTrade, setEditingTrade] = useState<BacktestTrade | null>(null);
 
   // Fetch strategy details
   const { data: strategy, isLoading: isLoadingStrategy } = useSWR(
@@ -43,7 +44,7 @@ export function BacktestStrategyView() {
   );
 
   // Fetch analytics/EV calculator for this strategy
-  const { data: analytics, isLoading: isLoadingAnalytics } = useSWR(
+  const { data: analytics, isLoading: isLoadingAnalytics, mutate: mutateAnalytics } = useSWR(
     id ? ['backtest-analytics', id] : null,
     () => BacktestService.getStrategyAnalytics(id!)
   );
@@ -58,30 +59,46 @@ export function BacktestStrategyView() {
 
   const handleCloseAddTrade = useCallback(() => {
     setAddTradeDialogOpen(false);
+    setEditingTrade(null);
   }, []);
 
   const handleAddTrade = useCallback(async (data: CreateBacktestTradeRequest) => {
     try {
-      await BacktestService.create(data);
-      toast.success('Backtest trade added successfully');
+      if (editingTrade) {
+        // Update existing trade
+        await BacktestService.update(editingTrade.id, data);
+        toast.success('Backtest trade updated successfully');
+      } else {
+        // Create new trade
+        await BacktestService.create(data);
+        toast.success('Backtest trade added successfully');
+      }
       setAddTradeDialogOpen(false);
+      setEditingTrade(null);
       mutateTrades(); // Refresh trades list
+      mutateAnalytics(); // Refresh analytics/summary cards
     } catch (error) {
-      console.error('Failed to add backtest trade:', error);
-      toast.error('Failed to add backtest trade');
+      console.error('Failed to save backtest trade:', error);
+      toast.error(editingTrade ? 'Failed to update backtest trade' : 'Failed to add backtest trade');
     }
-  }, [mutateTrades]);
+  }, [editingTrade, mutateTrades, mutateAnalytics]);
+
+  const handleEditTrade = useCallback((trade: BacktestTrade) => {
+    setEditingTrade(trade);
+    setAddTradeDialogOpen(true);
+  }, []);
 
   const handleDeleteTrade = useCallback(async (tradeId: number) => {
     try {
       await BacktestService.delete(tradeId);
       toast.success('Trade deleted successfully');
       mutateTrades(); // Refresh trades list
+      mutateAnalytics(); // Refresh analytics/summary cards
     } catch (error) {
       console.error('Failed to delete trade:', error);
       toast.error('Failed to delete trade');
     }
-  }, [mutateTrades]);
+  }, [mutateTrades, mutateAnalytics]);
 
   const isLoading = isLoadingStrategy || isLoadingTrades || isLoadingAnalytics;
   const trades = tradesData?.backtestTrades || [];
@@ -239,15 +256,16 @@ export function BacktestStrategyView() {
       </Stack>
 
       {/* Trades Table */}
-      <BacktestTradesTable trades={trades} onDelete={handleDeleteTrade} />
+      <BacktestTradesTable trades={trades} onEdit={handleEditTrade} onDelete={handleDeleteTrade} />
 
-      {/* Add Trade Dialog */}
+      {/* Add/Edit Trade Dialog */}
       {id && (
         <BacktestAddTradeDialog
           open={addTradeDialogOpen}
           onClose={handleCloseAddTrade}
           onConfirm={handleAddTrade}
           strategyId={Number(id)}
+          editingTrade={editingTrade}
         />
       )}
     </PageContainer>

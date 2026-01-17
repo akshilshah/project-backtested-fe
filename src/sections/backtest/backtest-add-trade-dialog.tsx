@@ -23,7 +23,7 @@ import { Form, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
 
 import type { Coin } from 'src/types/coin';
-import type { CreateBacktestTradeRequest } from 'src/types/backtest';
+import type { BacktestTrade, CreateBacktestTradeRequest } from 'src/types/backtest';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +54,7 @@ type BacktestAddTradeDialogProps = {
   onClose: () => void;
   onConfirm: (data: CreateBacktestTradeRequest) => Promise<void>;
   strategyId: number;
+  editingTrade?: BacktestTrade | null;
   loading?: boolean;
 };
 
@@ -62,6 +63,7 @@ export function BacktestAddTradeDialog({
   onClose,
   onConfirm,
   strategyId,
+  editingTrade,
   loading = false,
 }: BacktestAddTradeDialogProps) {
   // Fetch coins for dropdown
@@ -97,8 +99,23 @@ export function BacktestAddTradeDialog({
     exit: '',
   };
 
-  const savedData = getSavedFormData();
-  const initialValues = savedData || defaultValues;
+  // If editing, use editingTrade data, otherwise use saved data or defaults
+  const getInitialValues = (): AddTradeFormValues => {
+    if (editingTrade) {
+      return {
+        coinId: editingTrade.coinId,
+        date: dayjs(editingTrade.tradeDate),
+        time: dayjs(`2000-01-01T${editingTrade.tradeTime}`),
+        entry: editingTrade.entry,
+        sl: editingTrade.stopLoss,
+        exit: editingTrade.exit,
+      };
+    }
+    const savedData = getSavedFormData();
+    return savedData || defaultValues;
+  };
+
+  const initialValues = getInitialValues();
 
   const methods = useForm<AddTradeFormValues>({
     resolver: zodResolver(AddTradeSchema),
@@ -118,9 +135,18 @@ export function BacktestAddTradeDialog({
   // Find selected coin object from coins array
   const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
 
-  // Save form data to localStorage whenever it changes
+  // Reset form when editingTrade changes or dialog opens
   useEffect(() => {
     if (open) {
+      const newValues = getInitialValues();
+      reset(newValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editingTrade]);
+
+  // Save form data to localStorage whenever it changes (only for new trades, not editing)
+  useEffect(() => {
+    if (open && !editingTrade) {
       // Only save if dialog is open and we have some data
       const hasData =
         allValues.coinId ||
@@ -142,7 +168,7 @@ export function BacktestAddTradeDialog({
         }
       }
     }
-  }, [allValues, open]);
+  }, [allValues, open, editingTrade]);
 
   // Clear saved form data from localStorage
   const clearSavedData = () => {
@@ -196,21 +222,25 @@ export function BacktestAddTradeDialog({
       exit: Number(data.exit),
     });
 
-    // Clear saved form data after successful submission
-    clearSavedData();
+    // Clear saved form data after successful submission (only for new trades)
+    if (!editingTrade) {
+      clearSavedData();
+    }
     reset(defaultValues);
   });
 
   const handleClose = () => {
-    // Clear saved form data when user explicitly closes the dialog
-    clearSavedData();
+    // Clear saved form data when user explicitly closes the dialog (only for new trades)
+    if (!editingTrade) {
+      clearSavedData();
+    }
     reset(defaultValues);
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add Backtest Trade</DialogTitle>
+      <DialogTitle>{editingTrade ? 'Edit Backtest Trade' : 'Add Backtest Trade'}</DialogTitle>
 
       <Form methods={methods} onSubmit={handleFormSubmit}>
         <DialogContent dividers>
@@ -334,7 +364,7 @@ export function BacktestAddTradeDialog({
             Cancel
           </Button>
           <LoadingButton type="submit" variant="contained" loading={loading}>
-            Add Trade
+            {editingTrade ? 'Update Trade' : 'Add Trade'}
           </LoadingButton>
         </DialogActions>
       </Form>
