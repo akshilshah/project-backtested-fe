@@ -55,7 +55,7 @@ export function AnalyticsSummary({ analytics, loading }: AnalyticsSummaryProps) 
             (analytics?.totalProfitLoss ?? 0) >= 0 ? 'success.main' : 'error.main'
           }
           loading={loading}
-          format="currency"
+          prefix="$"
           decimals={2}
           subtitle="Realized profit/loss"
         />
@@ -70,7 +70,7 @@ export function AnalyticsSummary({ analytics, loading }: AnalyticsSummaryProps) 
             (analytics?.averageProfitLoss ?? 0) >= 0 ? 'success.main' : 'error.main'
           }
           loading={loading}
-          format="currency"
+          prefix="$"
           decimals={2}
           subtitle="Per closed trade"
         />

@@ -71,4 +71,12 @@ export class TradesService {
     });
     return response.data.data;
   }
+
+  static async getDailyPnl(year: number, month: number): Promise<{ dailyPnl: Array<{ day: number; pnl: number }>; year: number; month: number }> {
+    const response = await axios.get<{ data: { dailyPnl: Array<{ day: number; pnl: number }>; year: number; month: number } }>(
+      endpoints.trades.dailyPnl,
+      { params: { year, month } }
+    );
+    return response.data.data;
+  }
 }

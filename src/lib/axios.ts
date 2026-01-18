@@ -105,6 +105,7 @@ export const endpoints = {
     updateExit: (id: string) => `/api/trades/${id}/exit`,
     previewExit: (id: string) => `/api/trades/${id}/preview-exit`,
     analytics: '/api/trades/analytics',
+    dailyPnl: '/api/trades/analytics/daily-pnl',
   },
   backtest: {
     list: '/api/backtest',

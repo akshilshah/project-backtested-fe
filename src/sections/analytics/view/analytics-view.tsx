@@ -15,8 +15,8 @@ import { StrategiesService } from 'src/services/strategies.service';
 import { PageHeader } from 'src/components/page/page-header';
 import { PageContainer } from 'src/components/page/page-container';
 
+import { PnlCalendar } from '../pnl-calendar';
 import { AnalyticsCharts } from '../analytics-charts';
-import { AnalyticsByCoin } from '../analytics-by-coin';
 import { AnalyticsFilters } from '../analytics-filters';
 import { AnalyticsSummary } from '../analytics-summary';
 import { AnalyticsByStrategy } from '../analytics-by-strategy';
@@ -82,12 +82,12 @@ export function AnalyticsView() {
         {/* Charts */}
         <AnalyticsCharts analytics={analyticsData} loading={analyticsLoading} />
 
-        {/* Tables */}
+        {/* Calendar and Strategy Performance */}
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, lg: 6 }}>
-            <AnalyticsByCoin analytics={analyticsData} loading={analyticsLoading} />
+          <Grid size={{ xs: 12, lg: 4.8 }}>
+            <PnlCalendar loading={analyticsLoading} />
           </Grid>
-          <Grid size={{ xs: 12, lg: 6 }}>
+          <Grid size={{ xs: 12, lg: 7.2 }}>
             <AnalyticsByStrategy analytics={analyticsData} loading={analyticsLoading} />
           </Grid>
         </Grid>
