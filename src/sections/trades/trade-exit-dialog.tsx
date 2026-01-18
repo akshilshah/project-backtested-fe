@@ -17,6 +17,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { TradesService } from 'src/services/trades.service';
@@ -37,6 +38,9 @@ const ExitTradeSchema = z.object({
     .refine((val) => !isNaN(Number(val)) && Number(val) > 0, 'Exit price must be a positive number'),
   exitDate: z.any().refine((val) => val !== null && val !== undefined, 'Exit date is required'),
   exitTime: z.any().refine((val) => val !== null && val !== undefined, 'Exit time is required'),
+  exitFeePercentage: z
+    .union([z.string(), z.number()])
+    .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, 'Exit fee must be a positive number'),
   notes: z.string().optional(),
 });
 
@@ -46,7 +50,7 @@ type TradeExitDialogProps = {
   open: boolean;
   trade: Trade | null;
   onClose: () => void;
-  onConfirm: (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => Promise<void>;
+  onConfirm: (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => Promise<void>;
   loading?: boolean;
 };
 
@@ -64,6 +68,7 @@ export function TradeExitDialog({
     avgExit: '',
     exitDate: dayjs(),
     exitTime: dayjs(),
+    exitFeePercentage: 0.05,
     notes: '',
   };
 
@@ -75,8 +80,9 @@ export function TradeExitDialog({
   const { handleSubmit, watch, reset } = methods;
 
   const avgExitValue = watch('avgExit');
+  const exitFeePercentageValue = watch('exitFeePercentage');
 
-  // Fetch P&L preview from API when avgExit changes
+  // Fetch P&L preview from API when avgExit or exitFeePercentage changes
   useEffect(() => {
     const fetchPreview = async () => {
       if (!trade || !avgExitValue || isNaN(Number(avgExitValue)) || Number(avgExitValue) <= 0) {
@@ -88,6 +94,7 @@ export function TradeExitDialog({
         setPreviewLoading(true);
         const preview = await TradesService.previewExit(trade.id, {
           avgExit: Number(avgExitValue),
+          exitFeePercentage: Number(exitFeePercentageValue) || 0.05,
         });
         setPlPreview(preview);
       } catch (error) {
@@ -101,7 +108,7 @@ export function TradeExitDialog({
     // Debounce API call
     const timeoutId = setTimeout(fetchPreview, 500);
     return () => clearTimeout(timeoutId);
-  }, [trade, avgExitValue]);
+  }, [trade, avgExitValue, exitFeePercentageValue]);
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const exitDate = dayjs(data.exitDate).format('YYYY-MM-DD');
@@ -111,6 +118,7 @@ export function TradeExitDialog({
       avgExit: Number(data.avgExit),
       exitDate,
       exitTime,
+      exitFeePercentage: Number(data.exitFeePercentage),
       notes: data.notes || undefined,
     });
 
@@ -202,6 +210,23 @@ export function TradeExitDialog({
                 }}
               />
             </Stack>
+
+            <RHFTextField
+              name="exitFeePercentage"
+              label="Exit Fee (Market Order)"
+              type="number"
+              placeholder="0.05"
+              slotProps={{
+                input: {
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                },
+                htmlInput: {
+                  step: '0.01',
+                  min: '0',
+                },
+              }}
+              helperText="Default: 0.05% for market orders"
+            />
 
             <RHFTextField
               name="notes"

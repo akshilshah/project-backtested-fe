@@ -133,6 +133,8 @@ export function TradeCreateDialog({
       stopLossPercentage: Number(data.stopLossPercentage),
       quantity: Number(data.quantity),
       amount: Number(data.amount),
+      entryOrderType: 'LIMIT',
+      entryFeePercentage: 0.02,
       notes: data.notes || undefined,
     });
 

@@ -104,7 +104,7 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmExit = useCallback(
-    async (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => {
+    async (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => {
       if (!id) return;
 
       try {
@@ -195,7 +195,7 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmEditExit = useCallback(
-    async (data: { avgExit: number; exitDate: string; exitTime: string; notes?: string }) => {
+    async (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => {
       if (!id) return;
 
       try {

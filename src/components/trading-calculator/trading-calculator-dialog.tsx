@@ -20,10 +20,12 @@ import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
+import ToggleButton from '@mui/material/ToggleButton';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { Form } from 'src/components/hook-form';
 import { RHFAutocomplete } from 'src/components/hook-form/rhf-autocomplete';
@@ -70,6 +72,8 @@ export function TradingCalculatorDialog({
   const [stopLoss, setStopLoss] = useState<string>('');
   const [account, setAccount] = useState<string>('');
   const [stopLossPercentage, setStopLossPercentage] = useState<string>('1.8');
+  const [entryOrderType, setEntryOrderType] = useState<'MARKET' | 'LIMIT'>('LIMIT');
+  const [entryFeePercentage, setEntryFeePercentage] = useState<string>('0.02');
   const [showTradeForm, setShowTradeForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -92,9 +96,21 @@ export function TradingCalculatorDialog({
       setStopLoss(currentTrade.stopLoss.toString());
       setAccount(currentTrade.amount.toString());
       setStopLossPercentage(currentTrade.stopLossPercentage.toString());
+      setEntryOrderType(currentTrade.entryOrderType);
+      setEntryFeePercentage(currentTrade.entryFeePercentage.toString());
       setShowTradeForm(true); // Auto-show trade form in edit mode
     }
   }, [currentTrade, isEditMode]);
+
+  // Update entry fee when order type changes
+  const handleOrderTypeChange = (newOrderType: 'MARKET' | 'LIMIT') => {
+    setEntryOrderType(newOrderType);
+    if (newOrderType === 'MARKET') {
+      setEntryFeePercentage('0.05');
+    } else {
+      setEntryFeePercentage('0.02');
+    }
+  };
 
   // Calculate Stop Loss Amount (configurable % of account as risk amount)
   const calculateStopLossAmount = useCallback(() => {
@@ -192,6 +208,8 @@ export function TradingCalculatorDialog({
         stopLossPercentage: Number(stopLossPercentage),
         quantity,
         amount: Number(account),
+        entryOrderType,
+        entryFeePercentage: Number(entryFeePercentage),
       });
 
       // Reset form
@@ -201,6 +219,8 @@ export function TradingCalculatorDialog({
       setStopLoss('');
       setAccount('');
       setStopLossPercentage('1.8');
+      setEntryOrderType('LIMIT');
+      setEntryFeePercentage('0.02');
     } catch (error) {
       console.error('Failed to create trade:', error);
     } finally {
@@ -504,6 +524,55 @@ export function TradingCalculatorDialog({
                           },
                         }}
                       />
+                    </Grid>
+
+                    {/* Order Type and Entry Fee - Compact Single Row */}
+                    <Grid size={{ xs: 12 }}>
+                      <Stack spacing={1.5}>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                          Order Type & Entry Fee
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                          <ToggleButtonGroup
+                            value={entryOrderType}
+                            exclusive
+                            onChange={(_, newValue) => {
+                              if (newValue !== null) {
+                                handleOrderTypeChange(newValue);
+                              }
+                            }}
+                            size={isMobile ? 'small' : 'medium'}
+                            sx={{ flex: 1 }}
+                          >
+                            <ToggleButton value="LIMIT" sx={{ flex: 1 }}>
+                              Limit Order
+                            </ToggleButton>
+                            <ToggleButton value="MARKET" sx={{ flex: 1 }}>
+                              Market Order
+                            </ToggleButton>
+                          </ToggleButtonGroup>
+                          <TextField
+                            label="Entry Fee"
+                            value={entryFeePercentage}
+                            onChange={(e) => setEntryFeePercentage(e.target.value)}
+                            type="number"
+                            size={isMobile ? 'small' : 'medium'}
+                            sx={{ width: '140px' }}
+                            slotProps={{
+                              input: {
+                                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                              },
+                              htmlInput: {
+                                step: '0.01',
+                                min: '0',
+                              },
+                            }}
+                          />
+                        </Box>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem', mt: 0.5 }}>
+                          Default: {entryOrderType === 'MARKET' ? '0.05' : '0.02'}% • Exit fee (0.05%) will be entered at exit time
+                        </Typography>
+                      </Stack>
                     </Grid>
                   </Grid>
                 </Box>

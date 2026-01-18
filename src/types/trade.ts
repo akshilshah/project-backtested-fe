@@ -25,6 +25,9 @@ export interface Trade {
   stopLossPercentage: number;
   quantity: number;
   amount: number;
+  entryOrderType: 'MARKET' | 'LIMIT';
+  entryFeePercentage: number;
+  exitFeePercentage?: number;
   notes?: string;
   exitDate?: string;
   exitTime?: string;
@@ -54,6 +57,8 @@ export interface CreateTradeRequest {
   stopLossPercentage: number;
   quantity: number;
   amount: number;
+  entryOrderType: 'MARKET' | 'LIMIT';
+  entryFeePercentage: number;
   notes?: string;
 }
 
@@ -67,6 +72,9 @@ export interface UpdateTradeRequest {
   stopLossPercentage?: number;
   quantity?: number;
   amount?: number;
+  entryOrderType?: 'MARKET' | 'LIMIT';
+  entryFeePercentage?: number;
+  exitFeePercentage?: number;
   notes?: string;
 }
 
@@ -74,11 +82,13 @@ export interface ExitTradeRequest {
   exitDate: string;
   exitTime: string;
   avgExit: number;
+  exitFeePercentage: number;
   notes?: string;
 }
 
 export interface PreviewExitRequest {
   avgExit: number;
+  exitFeePercentage?: number;
 }
 
 export interface PreviewExitResponse {
