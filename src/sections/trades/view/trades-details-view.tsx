@@ -496,8 +496,7 @@ export function TradesDetailsView() {
                   RISK
                 </Typography>
                 <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-                  {direction === 'Short' ? '-' : ''}
-                  {(Math.abs((trade.avgEntry - trade.stopLoss) / trade.avgEntry) * 100).toFixed(2)}%
+                  {trade.stopLossPercentage?.toFixed(2)}%
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                   SL @{' '}
