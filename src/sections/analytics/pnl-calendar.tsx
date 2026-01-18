@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
 import useSWR from 'swr';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,8 +10,9 @@ import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 import { alpha, useTheme } from '@mui/material/styles';
 
-import { Iconify } from 'src/components/iconify';
 import { TradesService } from 'src/services/trades.service';
+
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -61,14 +62,10 @@ export function PnlCalendar({ loading: externalLoading }: PnlCalendarProps) {
   }, [selectedMonth]);
 
   // Get days in month
-  const getDaysInMonth = (year: number, month: number) => {
-    return new Date(year, month, 0).getDate();
-  };
+  const getDaysInMonth = (year: number, month: number) => new Date(year, month, 0).getDate();
 
   // Get first day of month (0-6, where 0 is Sunday)
-  const getFirstDayOfMonth = (year: number, month: number) => {
-    return new Date(year, month - 1, 1).getDay();
-  };
+  const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month - 1, 1).getDay();
 
   // Generate calendar days
   const generateCalendarDays = () => {
@@ -125,13 +122,13 @@ export function PnlCalendar({ loading: externalLoading }: PnlCalendarProps) {
         action={
           <Stack direction="row" spacing={1} alignItems="center">
             <IconButton onClick={handlePrevMonth} size="small">
-              <Iconify icon="solar:alt-arrow-left-line-duotone" width={20} />
+              <Iconify icon="eva:arrow-ios-back-fill" width={20} />
             </IconButton>
             <Typography variant="subtitle2" sx={{ minWidth: 140, textAlign: 'center' }}>
               {MONTHS[selectedMonth - 1]} {selectedYear}
             </Typography>
             <IconButton onClick={handleNextMonth} size="small">
-              <Iconify icon="solar:alt-arrow-right-line-duotone" width={20} />
+              <Iconify icon="eva:arrow-ios-forward-fill" width={20} />
             </IconButton>
           </Stack>
         }
