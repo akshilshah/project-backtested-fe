@@ -15,11 +15,13 @@ export interface Coin {
 export interface CreateCoinRequest {
   symbol: string;
   name: string;
+  image?: string;
 }
 
 export interface UpdateCoinRequest {
   symbol?: string;
   name?: string;
+  image?: string;
 }
 
 export interface CoinResponse {

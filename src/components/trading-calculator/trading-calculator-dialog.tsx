@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
@@ -26,6 +27,8 @@ import DialogActions from '@mui/material/DialogActions';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
+import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 
 import { Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
@@ -608,25 +611,26 @@ export function TradingCalculatorDialog({
                         renderOption={(props, option: Coin) => (
                           <Box component="li" {...props} key={option.id}>
                             <Stack direction="row" alignItems="center" spacing={1.5}>
-                              <Box
+                              <Avatar
+                                src={option.image ? `${S3_ASSETS_BASE_URL}/${option.image}` : undefined}
+                                alt={option.symbol}
                                 sx={{
                                   width: 28,
                                   height: 28,
                                   borderRadius: 0.75,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
                                   bgcolor: (t) =>
-                                    t.palette.mode === 'dark'
-                                      ? 'rgba(99, 102, 241, 0.16)'
-                                      : 'rgba(99, 102, 241, 0.1)',
+                                    option.image
+                                      ? 'transparent'
+                                      : t.palette.mode === 'dark'
+                                        ? 'rgba(99, 102, 241, 0.16)'
+                                        : 'rgba(99, 102, 241, 0.1)',
                                   color: 'primary.main',
                                   fontWeight: 600,
                                   fontSize: '0.7rem',
                                 }}
                               >
-                                {option.symbol.slice(0, 2)}
-                              </Box>
+                                {!option.image && option.symbol.slice(0, 2)}
+                              </Avatar>
                               <Box>
                                 <Typography variant="body2" fontWeight={600}>
                                   {option.symbol}
