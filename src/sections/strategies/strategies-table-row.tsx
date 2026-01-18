@@ -81,8 +81,20 @@ export const StrategiesTableRow = memo(function StrategiesTableRow({ row, onDele
         </TableCell>
 
         <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-          <IconButton onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+          <IconButton
+            onClick={popover.onOpen}
+            sx={{
+              color: 'text.secondary',
+              '&:hover': {
+                color: 'primary.main',
+                bgcolor: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(99, 102, 241, 0.12)'
+                    : 'rgba(99, 102, 241, 0.08)',
+              },
+            }}
+          >
+            <Iconify icon="eva:more-vertical-fill" width={18} />
           </IconButton>
         </TableCell>
       </TableRow>

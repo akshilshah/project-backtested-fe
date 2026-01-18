@@ -77,14 +77,19 @@ export function CoinsTable({
   const isEmpty = !loading && data.length === 0;
 
   return (
-    <Card>
+    <Card
+      sx={{
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+        overflow: 'hidden',
+      }}
+    >
       <CoinsTableToolbar
         searchValue={searchValue}
         onSearchChange={onSearchChange}
       />
 
       <Scrollbar>
-        <TableContainer sx={{ minWidth: 800 }}>
+        <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -92,10 +97,7 @@ export function CoinsTable({
                   <TableCell
                     key={cell.id}
                     align={cell.align ?? 'left'}
-                    sx={{
-                      width: cell.width,
-                      bgcolor: 'background.neutral',
-                    }}
+                    sx={{ width: cell.width }}
                   >
                     {cell.label}
                   </TableCell>
@@ -103,7 +105,24 @@ export function CoinsTable({
               </TableRow>
             </TableHead>
 
-            <TableBody>
+            <TableBody
+              sx={{
+                '& .MuiTableRow-root': {
+                  '&:nth-of-type(even)': {
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(255, 255, 255, 0.02)'
+                        : 'rgba(0, 0, 0, 0.015)',
+                  },
+                  '&:hover': {
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(99, 102, 241, 0.08)'
+                        : 'rgba(99, 102, 241, 0.04)',
+                  },
+                },
+              }}
+            >
               {loading ? (
                 <TableSkeleton rows={rowsPerPage} columns={TABLE_HEAD.length} />
               ) : isEmpty ? (

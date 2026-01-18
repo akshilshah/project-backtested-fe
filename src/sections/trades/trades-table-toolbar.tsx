@@ -42,14 +42,31 @@ export function TradesTableToolbar({
       alignItems={{ xs: 'stretch', sm: 'center' }}
       justifyContent="space-between"
       spacing={2}
-      sx={{ p: 2.5 }}
+      sx={{ p: 2, py: 1.5 }}
     >
       <TextField
         value={searchValue}
         onChange={handleSearchChange}
         placeholder="Search trades..."
         size="small"
-        sx={{ width: { xs: '100%', sm: 280 } }}
+        sx={{
+          width: { xs: '100%', sm: 260 },
+          '& .MuiOutlinedInput-root': {
+            bgcolor: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'rgba(255, 255, 255, 0.04)'
+                : 'rgba(0, 0, 0, 0.02)',
+            '&:hover': {
+              bgcolor: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.06)'
+                  : 'rgba(0, 0, 0, 0.03)',
+            },
+            '&.Mui-focused': {
+              bgcolor: 'transparent',
+            },
+          },
+        }}
         slotProps={{
           input: {
             startAdornment: (
@@ -67,10 +84,41 @@ export function TradesTableToolbar({
         onChange={handleStatusChange}
         size="small"
         sx={{
+          bgcolor: (theme) =>
+            theme.palette.mode === 'dark'
+              ? 'rgba(255, 255, 255, 0.04)'
+              : 'rgba(0, 0, 0, 0.02)',
+          borderRadius: 1,
           '& .MuiToggleButton-root': {
             px: 2,
-            py: 0.75,
+            py: 0.625,
             fontSize: '0.8125rem',
+            fontWeight: 500,
+            border: 'none',
+            color: 'text.secondary',
+            '&.Mui-selected': {
+              bgcolor: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? 'rgba(99, 102, 241, 0.16)'
+                  : 'rgba(99, 102, 241, 0.12)',
+              color: 'primary.main',
+              '&:hover': {
+                bgcolor: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(99, 102, 241, 0.24)'
+                    : 'rgba(99, 102, 241, 0.16)',
+              },
+            },
+            '&:hover': {
+              bgcolor: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+          },
+          '& .MuiToggleButtonGroup-grouped:not(:first-of-type)': {
+            borderLeft: 'none',
+            marginLeft: 0,
           },
         }}
       >

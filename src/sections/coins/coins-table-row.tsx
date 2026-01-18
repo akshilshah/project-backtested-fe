@@ -60,16 +60,19 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
           <Stack direction="row" alignItems="center" spacing={2}>
             <Box
               sx={{
-                width: 40,
-                height: 40,
+                width: 36,
+                height: 36,
                 borderRadius: 1,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                bgcolor: 'primary.lighter',
+                bgcolor: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(99, 102, 241, 0.16)'
+                    : 'rgba(99, 102, 241, 0.1)',
                 color: 'primary.main',
-                fontWeight: 700,
-                fontSize: '0.875rem',
+                fontWeight: 600,
+                fontSize: '0.8125rem',
               }}
             >
               {row.symbol?.slice(0, 2).toUpperCase() || '--'}
@@ -78,7 +81,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
               <Typography variant="subtitle2" noWrap>
                 {row.name}
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                 {row.symbol || 'N/A'}
               </Typography>
             </Box>
@@ -86,7 +89,7 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
         </TableCell>
 
         <TableCell>
-          <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+          <Typography variant="body2" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
             {row.symbol || 'N/A'}
           </Typography>
         </TableCell>
@@ -98,8 +101,20 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
         </TableCell>
 
         <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-          <IconButton onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
+          <IconButton
+            onClick={popover.onOpen}
+            sx={{
+              color: 'text.secondary',
+              '&:hover': {
+                color: 'primary.main',
+                bgcolor: (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(99, 102, 241, 0.12)'
+                    : 'rgba(99, 102, 241, 0.08)',
+              },
+            }}
+          >
+            <Iconify icon="eva:more-vertical-fill" width={18} />
           </IconButton>
         </TableCell>
       </TableRow>

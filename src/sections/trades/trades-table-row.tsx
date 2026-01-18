@@ -167,8 +167,18 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
                 component={RouterLink}
                 href={paths.dashboard.trades.details(String(row.id))}
                 size="small"
+                sx={{
+                  color: 'text.secondary',
+                  '&:hover': {
+                    color: 'primary.main',
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(99, 102, 241, 0.12)'
+                        : 'rgba(99, 102, 241, 0.08)',
+                  },
+                }}
               >
-                <Iconify icon={'solar:eye-bold' as any} width={20} />
+                <Iconify icon={'solar:eye-bold' as any} width={18} />
               </IconButton>
             </Tooltip>
 
@@ -179,22 +189,58 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
                     component={RouterLink}
                     href={paths.dashboard.trades.edit(String(row.id))}
                     size="small"
+                    sx={{
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: 'primary.main',
+                        bgcolor: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? 'rgba(99, 102, 241, 0.12)'
+                            : 'rgba(99, 102, 241, 0.08)',
+                      },
+                    }}
                   >
-                    <Iconify icon={'solar:pen-bold' as any} width={20} />
+                    <Iconify icon={'solar:pen-bold' as any} width={18} />
                   </IconButton>
                 </Tooltip>
 
                 <Tooltip title="Exit Trade">
-                  <IconButton size="small" color="warning" onClick={handleExit}>
-                    <Iconify icon={'solar:logout-2-bold' as any} width={20} />
+                  <IconButton
+                    size="small"
+                    onClick={handleExit}
+                    sx={{
+                      color: 'text.secondary',
+                      '&:hover': {
+                        color: 'warning.main',
+                        bgcolor: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? 'rgba(245, 158, 11, 0.12)'
+                            : 'rgba(245, 158, 11, 0.08)',
+                      },
+                    }}
+                  >
+                    <Iconify icon={'solar:logout-2-bold' as any} width={18} />
                   </IconButton>
                 </Tooltip>
               </>
             )}
 
             <Tooltip title="Delete">
-              <IconButton size="small" color="error" onClick={handleOpenDelete}>
-                <Iconify icon={'solar:trash-bin-trash-bold' as any} width={20} />
+              <IconButton
+                size="small"
+                onClick={handleOpenDelete}
+                sx={{
+                  color: 'text.secondary',
+                  '&:hover': {
+                    color: 'error.main',
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(244, 63, 94, 0.12)'
+                        : 'rgba(244, 63, 94, 0.08)',
+                  },
+                }}
+              >
+                <Iconify icon={'solar:trash-bin-trash-bold' as any} width={18} />
               </IconButton>
             </Tooltip>
           </Stack>

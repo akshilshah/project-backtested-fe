@@ -110,8 +110,25 @@ export function TradesTable({
   const hasActiveFilters = filters.coinId || filters.strategyId || filters.dateFrom || filters.dateTo;
 
   return (
-    <Card>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ pr: 2.5 }}>
+    <Card
+      sx={{
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+        overflow: 'hidden',
+      }}
+    >
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          pr: 2.5,
+          borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+          bgcolor: (theme) =>
+            theme.palette.mode === 'dark'
+              ? 'rgba(255, 255, 255, 0.02)'
+              : 'rgba(0, 0, 0, 0.01)',
+        }}
+      >
         <TradesTableToolbar
           searchValue={searchValue}
           onSearchChange={onSearchChange}
@@ -119,7 +136,25 @@ export function TradesTable({
           onStatusFilterChange={onStatusFilterChange}
         />
 
-        <IconButton onClick={toggleFilters} color={filtersOpen || hasActiveFilters ? 'primary' : 'default'}>
+        <IconButton
+          onClick={toggleFilters}
+          sx={{
+            color: filtersOpen || hasActiveFilters ? 'primary.main' : 'text.secondary',
+            bgcolor: filtersOpen || hasActiveFilters
+              ? (theme) =>
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(99, 102, 241, 0.16)'
+                    : 'rgba(99, 102, 241, 0.08)'
+              : 'transparent',
+            '&:hover': {
+              color: 'primary.main',
+              bgcolor: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? 'rgba(99, 102, 241, 0.16)'
+                  : 'rgba(99, 102, 241, 0.12)',
+            },
+          }}
+        >
           <Iconify icon={'ic:round-filter-list' as any} />
         </IconButton>
       </Stack>
@@ -140,39 +175,13 @@ export function TradesTable({
       <Scrollbar>
         <TableContainer sx={{ minWidth: 1100, position: 'relative' }}>
           <Table>
-            <TableHead
-              sx={{
-                position: 'sticky',
-                top: 0,
-                zIndex: 10,
-                bgcolor: 'background.paper',
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: '1px',
-                  bgcolor: 'divider',
-                  boxShadow: (theme) => `0 2px 4px ${theme.palette.action.hover}`,
-                },
-              }}
-            >
+            <TableHead>
               <TableRow>
                 {TABLE_HEAD.map((cell) => (
                   <TableCell
                     key={cell.id}
                     align={cell.align ?? 'left'}
-                    sx={{
-                      width: cell.width,
-                      bgcolor: 'background.paper',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                      fontSize: '0.75rem',
-                      letterSpacing: '0.5px',
-                      color: 'text.secondary',
-                      py: 2,
-                    }}
+                    sx={{ width: cell.width }}
                   >
                     {cell.label}
                   </TableCell>
@@ -183,20 +192,18 @@ export function TradesTable({
             <TableBody
               sx={{
                 '& .MuiTableRow-root': {
-                  // Zebra striping
                   '&:nth-of-type(even)': {
-                    bgcolor: (theme) => theme.palette.action.hover,
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(255, 255, 255, 0.02)'
+                        : 'rgba(0, 0, 0, 0.015)',
                   },
-                  // Enhanced hover
                   '&:hover': {
-                    bgcolor: (theme) => theme.palette.action.selected,
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(99, 102, 241, 0.08)'
+                        : 'rgba(99, 102, 241, 0.04)',
                   },
-                  // Smooth transitions
-                  transition: 'background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                },
-                // Better cell borders
-                '& .MuiTableCell-root': {
-                  borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
                 },
               }}
             >

@@ -21,10 +21,11 @@ const MuiTableRow: Components<Theme>['MuiTableRow'] = {
   // ▼▼▼▼▼▼▼▼ 🎨 STYLE ▼▼▼▼▼▼▼▼
   styleOverrides: {
     root: ({ theme }) => ({
+      transition: 'background-color 0.15s ease-in-out',
       [`&.${tableRowClasses.selected}`]: {
-        backgroundColor: varAlpha(theme.vars.palette.primary.darkChannel, 0.04),
+        backgroundColor: varAlpha(theme.vars.palette.primary.mainChannel, 0.08),
         '&:hover': {
-          backgroundColor: varAlpha(theme.vars.palette.primary.darkChannel, 0.08),
+          backgroundColor: varAlpha(theme.vars.palette.primary.mainChannel, 0.12),
         },
       },
       '&:last-of-type': {
@@ -39,18 +40,32 @@ const MuiTableRow: Components<Theme>['MuiTableRow'] = {
 const MuiTableCell: Components<Theme>['MuiTableCell'] = {
   // ▼▼▼▼▼▼▼▼ 🎨 STYLE ▼▼▼▼▼▼▼▼
   styleOverrides: {
-    root: {
-      borderBottomStyle: 'dashed',
-    },
+    root: ({ theme }) => ({
+      borderBottomStyle: 'solid',
+      borderBottomColor:
+        theme.palette.mode === 'dark'
+          ? 'rgba(255, 255, 255, 0.06)'
+          : 'rgba(0, 0, 0, 0.06)',
+      padding: theme.spacing(1.5, 2),
+    }),
     head: ({ theme }) => ({
-      fontSize: theme.typography.pxToRem(14),
+      fontSize: theme.typography.pxToRem(11),
       color: theme.vars.palette.text.secondary,
-      fontWeight: theme.typography.fontWeightSemiBold,
-      backgroundColor: theme.vars.palette.background.neutral,
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.75px',
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? theme.vars.palette.grey[900]
+          : theme.vars.palette.grey[50],
+      padding: theme.spacing(1.75, 2),
+      borderBottomColor: theme.vars.palette.divider,
     }),
     stickyHeader: ({ theme }) => ({
-      backgroundColor: theme.vars.palette.background.paper,
-      backgroundImage: `linear-gradient(to bottom, ${theme.vars.palette.background.neutral}, ${theme.vars.palette.background.neutral})`,
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? theme.vars.palette.grey[900]
+          : theme.vars.palette.grey[50],
     }),
     paddingCheckbox: ({ theme }) => ({
       paddingLeft: theme.spacing(1),
@@ -67,8 +82,11 @@ const MuiTablePagination: Components<Theme>['MuiTablePagination'] = {
   },
   // ▼▼▼▼▼▼▼▼ 🎨 STYLE ▼▼▼▼▼▼▼▼
   styleOverrides: {
-    root: { width: '100%' },
-    toolbar: { height: 64 },
+    root: ({ theme }) => ({
+      width: '100%',
+      borderTop: `1px solid ${theme.palette.divider}`,
+    }),
+    toolbar: { height: 56 },
     actions: { marginRight: 8 },
     select: {
       display: 'flex',
