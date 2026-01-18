@@ -239,101 +239,43 @@ export function TradesDetailsView() {
   const getDuration = () => {
     if (trade.status === 'OPEN') return null;
 
-    let durationMs = trade.duration;
+    // Backend returns duration in hours
+    const durationInHours = trade.duration;
 
-    // If duration is not provided or is 0, calculate it from entry and exit times
-    if ((!durationMs || durationMs === 0) && trade.exitDate && trade.exitTime) {
-      try {
-        // Extract time components from the time strings
-        const entryTime = new Date(trade.tradeTime);
-        const exitTime = new Date(trade.exitTime);
-        const entryDate = new Date(trade.tradeDate);
-        const exitDate = new Date(trade.exitDate);
+    if (!durationInHours || durationInHours <= 0) return null;
 
-        // Combine date and time properly
-        const entryDateTime = new Date(
-          entryDate.getFullYear(),
-          entryDate.getMonth(),
-          entryDate.getDate(),
-          entryTime.getHours(),
-          entryTime.getMinutes(),
-          entryTime.getSeconds()
-        );
-
-        const exitDateTime = new Date(
-          exitDate.getFullYear(),
-          exitDate.getMonth(),
-          exitDate.getDate(),
-          exitTime.getHours(),
-          exitTime.getMinutes(),
-          exitTime.getSeconds()
-        );
-
-        durationMs = exitDateTime.getTime() - entryDateTime.getTime();
-      } catch (err) {
-        console.error('Error calculating duration:', err);
-        return null;
-      }
-    }
-
-    if (!durationMs || durationMs <= 0) return null;
-
-    const seconds = Math.floor(durationMs / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
+    const hours = Math.floor(durationInHours);
+    const minutes = Math.round((durationInHours - hours) * 60);
     const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
 
-    if (days > 0) return `${days}d ${hours % 24}h`;
-    if (hours > 0) return `${hours}h ${minutes % 60}m`;
-    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
-    return `${seconds}s`;
+    if (days > 0) {
+      if (remainingHours > 0) {
+        return `${days}d ${remainingHours}h`;
+      }
+      return `${days}d`;
+    }
+    if (hours > 0) {
+      if (minutes > 0) {
+        return `${hours}h ${minutes}m`;
+      }
+      return `${hours}h`;
+    }
+    if (minutes > 0) return `${minutes}m`;
+    return '< 1m';
   };
 
   const getDurationType = () => {
     if (trade.status === 'OPEN') return '';
 
-    let durationMs = trade.duration;
+    // Backend returns duration in hours
+    const durationInHours = trade.duration;
 
-    // If duration is not provided or is 0, calculate it from entry and exit times
-    if ((!durationMs || durationMs === 0) && trade.exitDate && trade.exitTime) {
-      try {
-        const entryTime = new Date(trade.tradeTime);
-        const exitTime = new Date(trade.exitTime);
-        const entryDate = new Date(trade.tradeDate);
-        const exitDate = new Date(trade.exitDate);
+    if (!durationInHours || durationInHours <= 0) return '';
 
-        const entryDateTime = new Date(
-          entryDate.getFullYear(),
-          entryDate.getMonth(),
-          entryDate.getDate(),
-          entryTime.getHours(),
-          entryTime.getMinutes(),
-          entryTime.getSeconds()
-        );
-
-        const exitDateTime = new Date(
-          exitDate.getFullYear(),
-          exitDate.getMonth(),
-          exitDate.getDate(),
-          exitTime.getHours(),
-          exitTime.getMinutes(),
-          exitTime.getSeconds()
-        );
-
-        durationMs = exitDateTime.getTime() - entryDateTime.getTime();
-      } catch (err) {
-        console.error('Error calculating duration type:', err);
-        return '';
-      }
-    }
-
-    if (!durationMs || durationMs <= 0) return '';
-
-    const hours = Math.floor(durationMs / (1000 * 60 * 60));
-
-    if (hours < 1) return `${direction} Scalp`;
-    if (hours < 24) return `${direction} Intraday`;
-    if (hours < 168) return `${direction} Swing`;
+    if (durationInHours < 1) return `${direction} Scalp`;
+    if (durationInHours < 24) return `${direction} Intraday`;
+    if (durationInHours < 168) return `${direction} Swing`;
     return `${direction} Position`;
   };
 
