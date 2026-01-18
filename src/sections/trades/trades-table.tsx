@@ -34,6 +34,7 @@ const TABLE_HEAD = [
   { id: 'avgEntry', label: 'Avg Entry', width: 140 },
   { id: 'avgExit', label: 'Avg Exit', width: 140 },
   { id: 'quantity', label: 'Qty', width: 80 },
+  { id: 'duration', label: 'Duration', width: 100 },
   { id: 'profitLoss', label: 'P&L', width: 140 },
   { id: 'actions', label: '', width: 140, align: 'right' as const },
 ];

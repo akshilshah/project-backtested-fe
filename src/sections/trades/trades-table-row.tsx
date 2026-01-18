@@ -24,6 +24,32 @@ import { ProfitLossDisplay } from 'src/components/stats/profit-loss-display';
 
 // ----------------------------------------------------------------------
 
+function formatDuration(durationInHours: number | null | undefined): string {
+  if (!durationInHours || durationInHours <= 0) return '-';
+
+  const hours = Math.floor(durationInHours);
+  const minutes = Math.round((durationInHours - hours) * 60);
+  const days = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+
+  if (days > 0) {
+    if (remainingHours > 0) {
+      return `${days}d ${remainingHours}h`;
+    }
+    return `${days}d`;
+  }
+  if (hours > 0) {
+    if (minutes > 0) {
+      return `${hours}h ${minutes}m`;
+    }
+    return `${hours}h`;
+  }
+  if (minutes > 0) return `${minutes}m`;
+  return '< 1m';
+}
+
+// ----------------------------------------------------------------------
+
 type TradesTableRowProps = {
   row: Trade;
   onDelete: (id: number) => void;
@@ -108,6 +134,13 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
         {/* Quantity */}
         <TableCell>
           <Typography variant="body2">{row.quantity?.toFixed(4)}</Typography>
+        </TableCell>
+
+        {/* Duration */}
+        <TableCell>
+          <Typography variant="body2" sx={{ color: row.status === 'CLOSED' ? 'text.primary' : 'text.disabled' }}>
+            {row.status === 'CLOSED' ? formatDuration(row.duration) : '-'}
+          </Typography>
         </TableCell>
 
         {/* P&L */}
