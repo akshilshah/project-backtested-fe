@@ -124,6 +124,7 @@ export interface TradeAnalytics {
   averageProfitLoss: number;
   bestTrade: number;
   worstTrade: number;
+  totalFeesPaid: number;
   byStrategy: {
     strategyId: number;
     strategyName: string;

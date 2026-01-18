@@ -63,6 +63,19 @@ export function AnalyticsSummary({ analytics, loading }: AnalyticsSummaryProps) 
 
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <StatCard
+          title="Total Fees Paid"
+          value={analytics?.totalFeesPaid ?? 0}
+          icon="solar:dollar-minimalistic-bold-duotone"
+          iconColor="info.main"
+          loading={loading}
+          prefix="$"
+          decimals={2}
+          subtitle="Entry + exit commissions"
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <StatCard
           title="Average P&L"
           value={analytics?.averageProfitLoss ?? 0}
           icon="solar:graph-up-bold-duotone"
