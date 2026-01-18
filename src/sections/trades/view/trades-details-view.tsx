@@ -607,6 +607,23 @@ export function TradesDetailsView() {
                         <Grid size={{ xs: 6 }}>
                           <DetailItem label="TIME" value={fTime(trade.tradeTime)} />
                         </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <DetailItem
+                            label="ENTRY FEE"
+                            value={new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'USD',
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }).format((trade.entryFeePercentage / 100) * trade.avgEntry * trade.quantity)}
+                          />
+                        </Grid>
+                        <Grid size={{ xs: 6 }}>
+                          <DetailItem
+                            label="FEE %"
+                            value={`${trade.entryFeePercentage.toFixed(2)}%`}
+                          />
+                        </Grid>
                       </Grid>
                     </Box>
                   </Grid>
@@ -690,6 +707,31 @@ export function TradesDetailsView() {
                           </Grid>
                           <Grid size={{ xs: 6 }}>
                             <DetailItem label="TIME" value={trade.exitTime ? fTime(trade.exitTime) : '-'} />
+                          </Grid>
+                          <Grid size={{ xs: 6 }}>
+                            <DetailItem
+                              label="EXIT FEE"
+                              value={
+                                trade.exitFeePercentage !== null && trade.exitFeePercentage !== undefined
+                                  ? new Intl.NumberFormat('en-US', {
+                                      style: 'currency',
+                                      currency: 'USD',
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                    }).format((trade.exitFeePercentage / 100) * trade.avgExit * trade.quantity)
+                                  : '-'
+                              }
+                            />
+                          </Grid>
+                          <Grid size={{ xs: 6 }}>
+                            <DetailItem
+                              label="FEE %"
+                              value={
+                                trade.exitFeePercentage !== null && trade.exitFeePercentage !== undefined
+                                  ? `${trade.exitFeePercentage.toFixed(2)}%`
+                                  : '-'
+                              }
+                            />
                           </Grid>
                         </Grid>
                       </Box>
