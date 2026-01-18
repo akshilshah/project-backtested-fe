@@ -4,6 +4,7 @@ export interface Coin {
   id: number;
   symbol: string;
   name: string;
+  image?: string;
   organizationId: number;
   createdAt: string;
   updatedAt: string;

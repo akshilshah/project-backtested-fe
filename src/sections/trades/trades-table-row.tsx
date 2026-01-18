@@ -86,6 +86,7 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
           <CoinDisplay
             symbol={row.coin?.symbol ?? 'N/A'}
             name={row.coin?.name}
+            image={row.coin?.image}
             showName
             size="small"
           />

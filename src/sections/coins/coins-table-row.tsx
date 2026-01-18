@@ -5,6 +5,7 @@ import { memo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
 import TableRow from '@mui/material/TableRow';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
@@ -12,6 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import { fDateTime } from 'src/utils/format-time';
+import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';
@@ -58,25 +60,26 @@ export const CoinsTableRow = memo(function CoinsTableRow({ row, onDelete, onEdit
       <TableRow hover sx={{ cursor: 'pointer' }} onClick={handleRowClick}>
         <TableCell>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Box
+            <Avatar
+              src={row.image ? `${S3_ASSETS_BASE_URL}/${row.image}` : undefined}
+              alt={row.symbol}
               sx={{
                 width: 36,
                 height: 36,
                 borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 bgcolor: (theme) =>
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(99, 102, 241, 0.16)'
-                    : 'rgba(99, 102, 241, 0.1)',
+                  row.image
+                    ? 'transparent'
+                    : theme.palette.mode === 'dark'
+                      ? 'rgba(99, 102, 241, 0.16)'
+                      : 'rgba(99, 102, 241, 0.1)',
                 color: 'primary.main',
                 fontWeight: 600,
                 fontSize: '0.8125rem',
               }}
             >
-              {row.symbol?.slice(0, 2).toUpperCase() || '--'}
-            </Box>
+              {!row.image && (row.symbol?.slice(0, 2).toUpperCase() || '--')}
+            </Avatar>
             <Box>
               <Typography variant="subtitle2" noWrap>
                 {row.name}

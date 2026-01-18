@@ -5,11 +5,14 @@ import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 
+import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
+
 // ----------------------------------------------------------------------
 
 type CoinDisplayProps = {
   symbol?: string;
   name?: string;
+  image?: string;
   showName?: boolean;
   size?: 'small' | 'medium' | 'large';
   sx?: SxProps<Theme>;
@@ -18,6 +21,7 @@ type CoinDisplayProps = {
 export function CoinDisplay({
   symbol,
   name,
+  image,
   showName = false,
   size = 'medium',
   sx,
@@ -66,19 +70,23 @@ export function CoinDisplay({
     return colors[index];
   };
 
+  const imageUrl = image ? `${S3_ASSETS_BASE_URL}/${image}` : undefined;
+
   return (
     <Stack direction="row" alignItems="center" spacing={1} sx={sx}>
       <Avatar
+        src={imageUrl}
+        alt={symbol}
         sx={{
           width: avatarSize,
           height: avatarSize,
           fontSize: avatarSize * 0.4,
-          bgcolor: getAvatarColor(symbol || ''),
+          bgcolor: imageUrl ? 'transparent' : getAvatarColor(symbol || ''),
           color: 'white',
           fontWeight: 700,
         }}
       >
-        {symbol?.slice(0, 2).toUpperCase() || '--'}
+        {!imageUrl && (symbol?.slice(0, 2).toUpperCase() || '--')}
       </Avatar>
 
       <Box>

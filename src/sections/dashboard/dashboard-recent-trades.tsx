@@ -111,7 +111,7 @@ function RecentTradeItem({ trade }: RecentTradeItemProps) {
       }}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
-        {coin && <CoinDisplay symbol={coin.symbol} name={coin.name} showName />}
+        {coin && <CoinDisplay symbol={coin.symbol} name={coin.name} image={coin.image} showName />}
         <Box>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {strategy?.name ?? 'No strategy'}

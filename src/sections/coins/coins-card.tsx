@@ -4,12 +4,14 @@ import { memo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { type Theme } from '@mui/material/styles';
 
 import { fDateTime } from 'src/utils/format-time';
+import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 
 import { Iconify } from 'src/components/iconify';
 import { DeleteDialog } from 'src/components/form/confirm-dialog';
@@ -78,25 +80,26 @@ export const CoinsCard = memo(function CoinsCard({
         {/* Header: Avatar + Name + Actions */}
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Stack direction="row" alignItems="center" spacing={1.5}>
-            <Box
+            <Avatar
+              src={row.image ? `${S3_ASSETS_BASE_URL}/${row.image}` : undefined}
+              alt={row.symbol}
               sx={{
                 width: 44,
                 height: 44,
                 borderRadius: 1.5,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 bgcolor: (theme: Theme) =>
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(99, 102, 241, 0.16)'
-                    : 'rgba(99, 102, 241, 0.1)',
+                  row.image
+                    ? 'transparent'
+                    : theme.palette.mode === 'dark'
+                      ? 'rgba(99, 102, 241, 0.16)'
+                      : 'rgba(99, 102, 241, 0.1)',
                 color: 'primary.main',
                 fontWeight: 700,
                 fontSize: '0.875rem',
               }}
             >
-              {row.symbol?.slice(0, 2).toUpperCase() || '--'}
-            </Box>
+              {!row.image && (row.symbol?.slice(0, 2).toUpperCase() || '--')}
+            </Avatar>
             <Box>
               <Typography variant="subtitle1" fontWeight={600}>
                 {row.name}

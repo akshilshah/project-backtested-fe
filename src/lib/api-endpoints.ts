@@ -1,5 +1,7 @@
 // API Endpoints for Trading Management System
 
+export const S3_ASSETS_BASE_URL = 'https://backtested-assets.s3.ap-south-1.amazonaws.com';
+
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {

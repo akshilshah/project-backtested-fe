@@ -69,6 +69,7 @@ export const BacktestTradesTableRow = memo(function BacktestTradesTableRow({
           <CoinDisplay
             symbol={row.coin?.symbol ?? 'N/A'}
             name={row.coin?.name}
+            image={row.coin?.image}
             showName
             size="small"
           />

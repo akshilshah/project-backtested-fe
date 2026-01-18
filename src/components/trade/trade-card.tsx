@@ -79,7 +79,7 @@ export function TradeCard({
         {/* Header */}
         <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
           <Stack direction="row" alignItems="center" spacing={2}>
-            {coin && <CoinDisplay symbol={coin.symbol} name={coin.name} showName />}
+            {coin && <CoinDisplay symbol={coin.symbol} name={coin.name} image={coin.image} showName />}
             <TradeStatusBadge status={status} />
           </Stack>
 

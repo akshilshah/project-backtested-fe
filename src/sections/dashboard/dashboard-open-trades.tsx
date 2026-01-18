@@ -144,7 +144,7 @@ export function DashboardOpenTrades({ trades, loading, onExit }: DashboardOpenTr
                   <TableRow key={trade.id} hover>
                     <TableCell>
                       {trade.coin ? (
-                        <CoinDisplay symbol={trade.coin.symbol} name={trade.coin.name} showName />
+                        <CoinDisplay symbol={trade.coin.symbol} name={trade.coin.name} image={trade.coin.image} showName />
                       ) : (
                         '-'
                       )}
