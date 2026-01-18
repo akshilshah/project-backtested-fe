@@ -24,6 +24,9 @@ import { StrategiesTableToolbar } from './strategies-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', minWidth: 200 },
+  { id: 'entryRule', label: 'Entry Rule', minWidth: 180 },
+  { id: 'exitRule', label: 'Exit Rule', minWidth: 180 },
+  { id: 'stopLossRule', label: 'Stop Loss Rule', minWidth: 180 },
   { id: 'updatedAt', label: 'Updated', width: 180 },
   { id: 'actions', label: '', width: 80, align: 'right' as const },
 ];

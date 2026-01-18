@@ -4,6 +4,9 @@ export interface Strategy {
   id: number;
   name: string;
   description?: string;
+  entryRule?: string;
+  exitRule?: string;
+  stopLossRule?: string;
   notes?: string;
   rules?: Record<string, unknown>;
   organizationId: number;
@@ -16,12 +19,18 @@ export interface Strategy {
 export interface CreateStrategyRequest {
   name: string;
   description?: string;
+  entryRule?: string;
+  exitRule?: string;
+  stopLossRule?: string;
   rules?: Record<string, unknown>;
 }
 
 export interface UpdateStrategyRequest {
   name?: string;
   description?: string;
+  entryRule?: string;
+  exitRule?: string;
+  stopLossRule?: string;
   notes?: string;
   rules?: Record<string, unknown>;
 }

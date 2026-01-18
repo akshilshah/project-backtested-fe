@@ -20,6 +20,9 @@ import { RHFTextField } from 'src/components/hook-form/rhf-text-field';
 const StrategySchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be at most 100 characters'),
   description: z.string().max(500, 'Description must be at most 500 characters').optional(),
+  entryRule: z.string().max(2000, 'Entry rule must be at most 2000 characters').optional(),
+  exitRule: z.string().max(2000, 'Exit rule must be at most 2000 characters').optional(),
+  stopLossRule: z.string().max(2000, 'Stop loss rule must be at most 2000 characters').optional(),
 });
 
 type StrategyFormValues = z.infer<typeof StrategySchema>;
@@ -42,11 +45,17 @@ export function StrategyEditDialog({
   const defaultValues: StrategyFormValues = {
     name: '',
     description: '',
+    entryRule: '',
+    exitRule: '',
+    stopLossRule: '',
   };
 
   const currentValues: StrategyFormValues = {
     name: strategy?.name || '',
     description: strategy?.description || '',
+    entryRule: strategy?.entryRule || '',
+    exitRule: strategy?.exitRule || '',
+    stopLossRule: strategy?.stopLossRule || '',
   };
 
   const methods = useForm<StrategyFormValues>({
@@ -62,6 +71,9 @@ export function StrategyEditDialog({
     await onSubmit(strategy.id, {
       name: data.name,
       description: data.description || undefined,
+      entryRule: data.entryRule || undefined,
+      exitRule: data.exitRule || undefined,
+      stopLossRule: data.stopLossRule || undefined,
     });
   });
 
@@ -81,6 +93,30 @@ export function StrategyEditDialog({
               name="name"
               label="Strategy Name"
               placeholder="e.g., Breakout Strategy"
+            />
+
+            <RHFTextField
+              name="entryRule"
+              label="Entry Rule (Optional)"
+              placeholder="Define when to enter a trade..."
+              multiline
+              rows={2}
+            />
+
+            <RHFTextField
+              name="exitRule"
+              label="Exit Rule (Optional)"
+              placeholder="Define when to exit a trade..."
+              multiline
+              rows={2}
+            />
+
+            <RHFTextField
+              name="stopLossRule"
+              label="Stop Loss Rule (Optional)"
+              placeholder="Define stop loss conditions..."
+              multiline
+              rows={2}
             />
 
             <RHFTextField

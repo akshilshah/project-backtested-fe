@@ -141,6 +141,9 @@ export function StrategiesDetailsView() {
               <Stack spacing={2.5}>
                 <DetailRow label="Name" value={strategy.name} />
                 <DetailRow label="Description" value={strategy.description || 'No description'} />
+                <DetailRow label="Entry Rule" value={strategy.entryRule || 'Not defined'} />
+                <DetailRow label="Exit Rule" value={strategy.exitRule || 'Not defined'} />
+                <DetailRow label="Stop Loss Rule" value={strategy.stopLossRule || 'Not defined'} />
                 <DetailRow label="Created" value={fDateTime(strategy.createdAt)} />
                 <DetailRow label="Last Updated" value={fDateTime(strategy.updatedAt)} />
               </Stack>

@@ -17,6 +17,9 @@ import { FormActions } from 'src/components/form/form-actions';
 export const StrategySchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be at most 100 characters'),
   description: z.string().max(500, 'Description must be at most 500 characters').optional(),
+  entryRule: z.string().max(2000, 'Entry rule must be at most 2000 characters').optional(),
+  exitRule: z.string().max(2000, 'Exit rule must be at most 2000 characters').optional(),
+  stopLossRule: z.string().max(2000, 'Stop loss rule must be at most 2000 characters').optional(),
   rules: z.string().optional(),
 });
 
@@ -27,6 +30,9 @@ export type StrategyFormValues = z.infer<typeof StrategySchema>;
 type StrategyFormData = {
   name: string;
   description?: string;
+  entryRule?: string;
+  exitRule?: string;
+  stopLossRule?: string;
   rules?: Record<string, unknown>;
 };
 
@@ -49,6 +55,9 @@ export function StrategyForm({
     () => ({
       name: currentStrategy?.name || '',
       description: currentStrategy?.description || '',
+      entryRule: currentStrategy?.entryRule || '',
+      exitRule: currentStrategy?.exitRule || '',
+      stopLossRule: currentStrategy?.stopLossRule || '',
       rules: currentStrategy?.rules ? JSON.stringify(currentStrategy.rules, null, 2) : '',
     }),
     [currentStrategy]
@@ -78,6 +87,9 @@ export function StrategyForm({
       await onSubmit({
         name: data.name,
         description: data.description || undefined,
+        entryRule: data.entryRule || undefined,
+        exitRule: data.exitRule || undefined,
+        stopLossRule: data.stopLossRule || undefined,
         rules,
       });
     } catch (error) {
@@ -94,6 +106,33 @@ export function StrategyForm({
             label="Strategy Name"
             placeholder="e.g., Breakout Strategy"
             helperText="Give your strategy a descriptive name"
+          />
+
+          <Field.Text
+            name="entryRule"
+            label="Entry Rule"
+            placeholder="Define when to enter a trade..."
+            multiline
+            rows={3}
+            helperText="Optional: Describe the conditions for entering a trade"
+          />
+
+          <Field.Text
+            name="exitRule"
+            label="Exit Rule"
+            placeholder="Define when to exit a trade..."
+            multiline
+            rows={3}
+            helperText="Optional: Describe the conditions for exiting a trade"
+          />
+
+          <Field.Text
+            name="stopLossRule"
+            label="Stop Loss Rule"
+            placeholder="Define stop loss conditions..."
+            multiline
+            rows={3}
+            helperText="Optional: Describe the stop loss rules"
           />
 
           <Field.Text

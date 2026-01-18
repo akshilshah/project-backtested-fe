@@ -57,6 +57,24 @@ export const StrategiesTableRow = memo(function StrategiesTableRow({ row, onDele
         </TableCell>
 
         <TableCell>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+            {row.entryRule || '-'}
+          </Typography>
+        </TableCell>
+
+        <TableCell>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+            {row.exitRule || '-'}
+          </Typography>
+        </TableCell>
+
+        <TableCell>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+            {row.stopLossRule || '-'}
+          </Typography>
+        </TableCell>
+
+        <TableCell>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {fDateTime(row.updatedAt)}
           </Typography>
