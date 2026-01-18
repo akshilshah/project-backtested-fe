@@ -48,17 +48,18 @@ export function CoinDisplay({
   const { avatarSize, symbolVariant, nameVariant } = getSizeStyles();
 
   const getAvatarColor = (sym: string) => {
+    // Premium, muted color palette
     const colors = [
-      '#FF6B6B',
-      '#4ECDC4',
-      '#45B7D1',
-      '#96CEB4',
-      '#FFEAA7',
-      '#DDA0DD',
-      '#98D8C8',
-      '#F7DC6F',
-      '#BB8FCE',
-      '#85C1E9',
+      '#6366F1', // Indigo
+      '#8B5CF6', // Violet
+      '#EC4899', // Pink
+      '#F43F5E', // Rose
+      '#F59E0B', // Amber
+      '#10B981', // Emerald
+      '#14B8A6', // Teal
+      '#0EA5E9', // Sky
+      '#3B82F6', // Blue
+      '#A855F7', // Purple
     ];
     if (!sym) return colors[0];
     const index = sym.charCodeAt(0) % colors.length;

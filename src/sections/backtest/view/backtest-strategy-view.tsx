@@ -305,207 +305,300 @@ export function BacktestStrategyView() {
         </CardContent>
       </Card> */}
 
-      {/* Summary Cards - Expected Value Calculator */}
-      <Stack
-        spacing={3}
-        direction={{ xs: 'column', sm: 'row' }}
+      {/* Summary Cards - Premium Modern Design */}
+      <Box
         sx={{
+          display: 'grid',
+          gap: 2.5,
+          gridTemplateColumns: {
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(3, 1fr)',
+            lg: 'repeat(6, 1fr)',
+          },
           mb: 4,
-          '& > *': { flex: 1 },
         }}
       >
         {/* Total Trades */}
-        <Card>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: 'primary.lighter',
-                }}
-              >
-                <Iconify icon={'solar:chart-bold' as any} width={28} sx={{ color: 'primary.main' }} />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-                  Total Trades
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                  {summary.totalTrades}
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%)'
+                : 'linear-gradient(135deg, rgba(99, 102, 241, 0.04) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              borderColor: 'primary.main',
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) => `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(99, 102, 241, 0.15)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(99, 102, 241, 0.16)' : 'primary.lighter',
+              }}
+            >
+              <Iconify icon={'solar:chart-bold' as any} width={22} sx={{ color: 'primary.main' }} />
+            </Box>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                Total Trades
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.25 }}>
+                {summary.totalTrades}
+              </Typography>
+            </Box>
+          </Stack>
         </Card>
 
         {/* Average Winning R */}
-        <Card>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: 'success.lighter',
-                }}
-              >
-                <Iconify icon={'solar:graph-up-bold' as any} width={28} sx={{ color: 'success.main' }} />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-                  Average Winning R
-                </Typography>
-                <Typography variant="h4" sx={{ color: 'success.main', fontWeight: 700 }}>
-                  {summary.avgWinningR.toFixed(2)}
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              borderColor: 'success.main',
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) => `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(16, 185, 129, 0.15)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 185, 129, 0.16)' : 'success.lighter',
+              }}
+            >
+              <Iconify icon={'solar:graph-up-bold' as any} width={22} sx={{ color: 'success.main' }} />
+            </Box>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                Avg Win R
+              </Typography>
+              <Typography variant="h4" sx={{ color: 'success.main', fontWeight: 700, mt: 0.25 }}>
+                {summary.avgWinningR.toFixed(2)}
+              </Typography>
+            </Box>
+          </Stack>
         </Card>
 
         {/* Average Loss R */}
-        <Card>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: 'error.lighter',
-                }}
-              >
-                <Iconify icon={'solar:graph-down-bold' as any} width={28} sx={{ color: 'error.main' }} />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-                  Average Loss R
-                </Typography>
-                <Typography variant="h4" sx={{ color: 'error.main', fontWeight: 700 }}>
-                  {summary.avgLossR.toFixed(2)}
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(244, 63, 94, 0.02) 100%)'
+                : 'linear-gradient(135deg, rgba(244, 63, 94, 0.04) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              borderColor: 'error.main',
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) => `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(244, 63, 94, 0.15)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(244, 63, 94, 0.16)' : 'error.lighter',
+              }}
+            >
+              <Iconify icon={'solar:graph-down-bold' as any} width={22} sx={{ color: 'error.main' }} />
+            </Box>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                Avg Loss R
+              </Typography>
+              <Typography variant="h4" sx={{ color: 'error.main', fontWeight: 700, mt: 0.25 }}>
+                {summary.avgLossR.toFixed(2)}
+              </Typography>
+            </Box>
+          </Stack>
         </Card>
 
         {/* Win Percentage */}
-        <Card>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: 'success.lighter',
-                }}
-              >
-                <Iconify icon={'solar:shield-check-bold' as any} width={28} sx={{ color: 'success.main' }} />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-                  Win Percentage
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                  {(summary.winPercentage * 100).toFixed(0)}%
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              borderColor: 'success.main',
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) => `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(16, 185, 129, 0.15)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 185, 129, 0.16)' : 'success.lighter',
+              }}
+            >
+              <Iconify icon={'solar:shield-check-bold' as any} width={22} sx={{ color: 'success.main' }} />
+            </Box>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                Win Rate
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.25 }}>
+                {(summary.winPercentage * 100).toFixed(0)}%
+              </Typography>
+            </Box>
+          </Stack>
         </Card>
 
         {/* Loss Percentage */}
-        <Card>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: 'error.lighter',
-                }}
-              >
-                <Iconify icon={'solar:shield-minus-bold' as any} width={28} sx={{ color: 'error.main' }} />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 0.5 }}>
-                  Loss Percentage
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                  {(summary.lossPercentage * 100).toFixed(0)}%
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              theme.palette.mode === 'dark'
+                ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(244, 63, 94, 0.02) 100%)'
+                : 'linear-gradient(135deg, rgba(244, 63, 94, 0.04) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              borderColor: 'error.main',
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) => `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(244, 63, 94, 0.15)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(244, 63, 94, 0.16)' : 'error.lighter',
+              }}
+            >
+              <Iconify icon={'solar:shield-minus-bold' as any} width={22} sx={{ color: 'error.main' }} />
+            </Box>
+            <Box>
+              <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                Loss Rate
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.25 }}>
+                {(summary.lossPercentage * 100).toFixed(0)}%
+              </Typography>
+            </Box>
+          </Stack>
         </Card>
 
-        {/* Expected Value */}
-        <Card>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: summary.ev > 0 ? 'success.lighter' : 'error.lighter',
-                }}
-              >
+        {/* Expected Value - Highlight Card */}
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              summary.ev > 0
+                ? theme.palette.mode === 'dark'
+                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%)'
+                  : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 1) 100%)'
+                : theme.palette.mode === 'dark'
+                  ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.04) 100%)'
+                  : 'linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${summary.ev > 0 ? theme.palette.success.main : theme.palette.error.main}`,
+            borderWidth: '1.5px',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) =>
+                summary.ev > 0
+                  ? `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(16, 185, 129, 0.2)'}`
+                  : `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(244, 63, 94, 0.2)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) =>
+                  summary.ev > 0
+                    ? theme.palette.mode === 'dark' ? 'rgba(16, 185, 129, 0.2)' : 'success.lighter'
+                    : theme.palette.mode === 'dark' ? 'rgba(244, 63, 94, 0.2)' : 'error.lighter',
+              }}
+            >
+              <Iconify
+                icon={'solar:dollar-minimalistic-bold' as any}
+                width={22}
+                sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
+              />
+            </Box>
+            <Box>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                  Expected Value
+                </Typography>
                 <Iconify
-                  icon={'solar:dollar-minimalistic-bold' as any}
-                  width={28}
+                  icon={summary.ev > 0 ? ('solar:arrow-up-bold' as any) : ('solar:arrow-down-bold' as any)}
+                  width={12}
                   sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
                 />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 0.5 }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                    Expected Value
-                  </Typography>
-                  <Iconify
-                    icon={summary.ev > 0 ? 'solar:check-circle-bold' : 'solar:close-circle-bold'}
-                    width={14}
-                    sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
-                  />
-                </Stack>
-                <Typography
-                  variant="h4"
-                  sx={{
-                    color: summary.ev > 0 ? 'success.main' : 'error.main',
-                    fontWeight: 700,
-                  }}
-                >
-                  {summary.ev > 0 ? '+' : ''}
-                  {summary.ev.toFixed(2)}
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
+              </Stack>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: summary.ev > 0 ? 'success.main' : 'error.main',
+                  fontWeight: 700,
+                  mt: 0.25,
+                }}
+              >
+                {summary.ev > 0 ? '+' : ''}
+                {summary.ev.toFixed(2)}
+              </Typography>
+            </Box>
+          </Stack>
         </Card>
-      </Stack>
+      </Box>
 
       {/* Trades Table */}
       <BacktestTradesTable

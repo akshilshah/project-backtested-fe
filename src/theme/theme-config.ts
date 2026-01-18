@@ -42,73 +42,73 @@ export const themeConfig: ThemeConfig = {
     secondary: 'Barlow',
   },
   /** **************************************
-   * Palette
+   * Palette - Premium, muted fintech colors
    *************************************** */
   palette: {
-    // PRIMARY - Brand color, CTAs, highlights
+    // PRIMARY - Sophisticated slate blue for modern fintech
     primary: {
-      lighter: '#C8FAD6',
-      light: '#5BE49B',
-      main: '#00A76F',
-      dark: '#007867',
-      darker: '#004B50',
+      lighter: '#E0E7FF',
+      light: '#A5B4FC',
+      main: '#6366F1',
+      dark: '#4F46E5',
+      darker: '#3730A3',
       contrastText: '#FFFFFF',
     },
     secondary: {
-      lighter: '#EFD6FF',
-      light: '#C684FF',
-      main: '#8E33FF',
-      dark: '#5119B7',
-      darker: '#27097A',
+      lighter: '#F1F5F9',
+      light: '#CBD5E1',
+      main: '#64748B',
+      dark: '#475569',
+      darker: '#334155',
       contrastText: '#FFFFFF',
     },
     info: {
-      lighter: '#CAFDF5',
-      light: '#61F3F3',
-      main: '#00B8D9',
-      dark: '#006C9C',
-      darker: '#003768',
+      lighter: '#E0F2FE',
+      light: '#7DD3FC',
+      main: '#0EA5E9',
+      dark: '#0284C7',
+      darker: '#0369A1',
       contrastText: '#FFFFFF',
     },
-    // SUCCESS - profits, wins, positive movements (fintech green)
+    // SUCCESS - muted emerald for profits/wins
     success: {
-      lighter: '#D3FCD2',
-      light: '#77ED8B',
+      lighter: '#D1FAE5',
+      light: '#6EE7B7',
       main: '#10B981',
       dark: '#059669',
-      darker: '#065E49',
+      darker: '#047857',
       contrastText: '#FFFFFF',
     },
-    // WARNING - caution states
+    // WARNING - warm amber
     warning: {
-      lighter: '#FFF5CC',
-      light: '#FFD666',
-      main: '#FFAB00',
-      dark: '#B76E00',
-      darker: '#7A4100',
-      contrastText: '#1C252E',
+      lighter: '#FEF3C7',
+      light: '#FCD34D',
+      main: '#F59E0B',
+      dark: '#D97706',
+      darker: '#B45309',
+      contrastText: '#18181B',
     },
-    // ERROR - losses, dangers, negative movements (fintech red)
+    // ERROR - muted rose for losses
     error: {
-      lighter: '#FFE9D5',
-      light: '#FFAC82',
-      main: '#EF4444',
-      dark: '#DC2626',
-      darker: '#991B1B',
+      lighter: '#FFE4E6',
+      light: '#FDA4AF',
+      main: '#F43F5E',
+      dark: '#E11D48',
+      darker: '#BE123C',
       contrastText: '#FFFFFF',
     },
-    // GREY - enhanced contrast for better hierarchy
+    // GREY - refined slate greys for premium feel
     grey: {
-      50: '#FAFAFA',
-      100: '#F4F4F5',
-      200: '#E4E4E7',
-      300: '#D4D4D8',
-      400: '#A1A1AA',
-      500: '#71717A',
-      600: '#52525B',
-      700: '#3F3F46',
-      800: '#27272A',
-      900: '#18181B',
+      50: '#F8FAFC',
+      100: '#F1F5F9',
+      200: '#E2E8F0',
+      300: '#CBD5E1',
+      400: '#94A3B8',
+      500: '#64748B',
+      600: '#475569',
+      700: '#334155',
+      800: '#1E293B',
+      900: '#0F172A',
     },
     common: {
       black: '#000000',

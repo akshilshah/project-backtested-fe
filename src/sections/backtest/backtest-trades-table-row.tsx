@@ -80,10 +80,27 @@ export const BacktestTradesTableRow = memo(function BacktestTradesTableRow({
             label={row.direction}
             size="small"
             sx={{
-              bgcolor: row.direction === 'Long' ? 'success.lighter' : 'error.lighter',
-              color: row.direction === 'Long' ? 'success.dark' : 'error.dark',
-              fontWeight: 700,
+              bgcolor: (theme) =>
+                row.direction === 'Long'
+                  ? theme.palette.mode === 'dark'
+                    ? 'rgba(16, 185, 129, 0.16)'
+                    : 'rgba(16, 185, 129, 0.12)'
+                  : theme.palette.mode === 'dark'
+                    ? 'rgba(244, 63, 94, 0.16)'
+                    : 'rgba(244, 63, 94, 0.12)',
+              color: row.direction === 'Long' ? 'success.main' : 'error.main',
+              fontWeight: 600,
               fontSize: '0.6875rem',
+              border: (theme) =>
+                `1px solid ${row.direction === 'Long' ? theme.palette.success.main : theme.palette.error.main}`,
+              borderColor: (theme) =>
+                row.direction === 'Long'
+                  ? theme.palette.mode === 'dark'
+                    ? 'rgba(16, 185, 129, 0.4)'
+                    : 'rgba(16, 185, 129, 0.3)'
+                  : theme.palette.mode === 'dark'
+                    ? 'rgba(244, 63, 94, 0.4)'
+                    : 'rgba(244, 63, 94, 0.3)',
             }}
           />
         </TableCell>
@@ -114,18 +131,36 @@ export const BacktestTradesTableRow = memo(function BacktestTradesTableRow({
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
-              px: 1.5,
-              py: 0.5,
+              px: 1.25,
+              py: 0.375,
               borderRadius: 1,
-              bgcolor: row.rValue >= 0 ? 'success.lighter' : 'error.lighter',
+              bgcolor: (theme) =>
+                row.rValue >= 0
+                  ? theme.palette.mode === 'dark'
+                    ? 'rgba(16, 185, 129, 0.16)'
+                    : 'rgba(16, 185, 129, 0.1)'
+                  : theme.palette.mode === 'dark'
+                    ? 'rgba(244, 63, 94, 0.16)'
+                    : 'rgba(244, 63, 94, 0.1)',
+              border: (theme) =>
+                `1px solid ${
+                  row.rValue >= 0
+                    ? theme.palette.mode === 'dark'
+                      ? 'rgba(16, 185, 129, 0.3)'
+                      : 'rgba(16, 185, 129, 0.25)'
+                    : theme.palette.mode === 'dark'
+                      ? 'rgba(244, 63, 94, 0.3)'
+                      : 'rgba(244, 63, 94, 0.25)'
+                }`,
             }}
           >
             <Typography
               variant="body2"
               sx={{
-                fontWeight: 700,
+                fontWeight: 600,
                 fontVariantNumeric: 'tabular-nums',
-                color: row.rValue >= 0 ? 'success.dark' : 'error.dark',
+                color: row.rValue >= 0 ? 'success.main' : 'error.main',
+                fontSize: '0.8125rem',
               }}
             >
               {row.rValue >= 0 ? '+' : ''}
@@ -138,14 +173,40 @@ export const BacktestTradesTableRow = memo(function BacktestTradesTableRow({
         <TableCell align="right">
           <Stack direction="row" justifyContent="flex-end" spacing={0.5}>
             <Tooltip title="Edit">
-              <IconButton size="small" onClick={handleEdit}>
-                <Iconify icon={'solar:pen-bold' as any} width={20} />
+              <IconButton
+                size="small"
+                onClick={handleEdit}
+                sx={{
+                  color: 'text.secondary',
+                  '&:hover': {
+                    color: 'primary.main',
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(99, 102, 241, 0.12)'
+                        : 'rgba(99, 102, 241, 0.08)',
+                  },
+                }}
+              >
+                <Iconify icon={'solar:pen-bold' as any} width={18} />
               </IconButton>
             </Tooltip>
 
             <Tooltip title="Delete">
-              <IconButton size="small" color="error" onClick={handleOpenDelete}>
-                <Iconify icon={'solar:trash-bin-trash-bold' as any} width={20} />
+              <IconButton
+                size="small"
+                onClick={handleOpenDelete}
+                sx={{
+                  color: 'text.secondary',
+                  '&:hover': {
+                    color: 'error.main',
+                    bgcolor: (theme) =>
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(244, 63, 94, 0.12)'
+                        : 'rgba(244, 63, 94, 0.08)',
+                  },
+                }}
+              >
+                <Iconify icon={'solar:trash-bin-trash-bold' as any} width={18} />
               </IconButton>
             </Tooltip>
           </Stack>
