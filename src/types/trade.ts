@@ -129,6 +129,13 @@ export interface TradeAnalytics {
     winRate: number;
     profitLoss: number;
   }[];
+  byDuration: {
+    '0-30mins': number;
+    '30mins-24hours': number;
+    '1-7days': number;
+    '1-4weeks': number;
+    '4weeks+': number;
+  };
 }
 
 export interface TradeAnalyticsResponse {

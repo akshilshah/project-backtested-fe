@@ -20,6 +20,7 @@ import { AnalyticsCharts } from '../analytics-charts';
 import { AnalyticsFilters } from '../analytics-filters';
 import { AnalyticsSummary } from '../analytics-summary';
 import { AnalyticsByStrategy } from '../analytics-by-strategy';
+import { TradeDurationAnalysis } from '../trade-duration-analysis';
 
 // ----------------------------------------------------------------------
 
@@ -81,6 +82,9 @@ export function AnalyticsView() {
 
         {/* Charts */}
         <AnalyticsCharts analytics={analyticsData} loading={analyticsLoading} />
+
+        {/* Trade Duration Analysis */}
+        <TradeDurationAnalysis analytics={analyticsData} loading={analyticsLoading} />
 
         {/* Calendar and Strategy Performance */}
         <Grid container spacing={3}>
