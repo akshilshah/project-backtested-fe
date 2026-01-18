@@ -9,7 +9,6 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import CardContent from '@mui/material/CardContent';
 
 import { paths } from 'src/routes/paths';
 import { useParams } from 'src/routes/hooks';

@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
@@ -58,7 +57,6 @@ type TradesTableRowProps = {
 };
 
 export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onExit, deleting }: TradesTableRowProps) {
-  const theme = useTheme();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleOpenDelete = useCallback(() => {
