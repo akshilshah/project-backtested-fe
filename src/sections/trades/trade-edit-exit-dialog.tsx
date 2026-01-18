@@ -64,7 +64,7 @@ export function TradeEditExitDialog({
   const defaultValues: EditExitTradeFormValues = {
     avgExit: trade?.avgExit ?? '',
     exitDate: trade?.exitDate ? dayjs(trade.exitDate) : dayjs(),
-    exitTime: trade?.exitTime ? dayjs(trade.exitTime, 'HH:mm:ss') : dayjs(),
+    exitTime: trade?.exitTime ? dayjs(trade.exitTime) : dayjs(),
     notes: trade?.notes ?? '',
   };
 
@@ -83,7 +83,7 @@ export function TradeEditExitDialog({
       reset({
         avgExit: trade.avgExit ?? '',
         exitDate: trade.exitDate ? dayjs(trade.exitDate) : dayjs(),
-        exitTime: trade.exitTime ? dayjs(trade.exitTime, 'HH:mm:ss') : dayjs(),
+        exitTime: trade.exitTime ? dayjs(trade.exitTime) : dayjs(),
         notes: trade.notes ?? '',
       });
     }
