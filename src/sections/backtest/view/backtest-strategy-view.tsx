@@ -121,13 +121,15 @@ export function BacktestStrategyView() {
           // Update existing trade
           await BacktestService.update(editingTrade.id, data);
           toast.success('Backtest trade updated successfully');
+          setAddTradeDialogOpen(false);
+          setEditingTrade(null);
         } else {
           // Create new trade
           await BacktestService.create(data);
           toast.success('Backtest trade added successfully');
+          // Keep modal open for adding more trades
+          setEditingTrade(null);
         }
-        setAddTradeDialogOpen(false);
-        setEditingTrade(null);
         mutateTrades(); // Refresh trades list
         mutateAnalytics(); // Refresh analytics/summary cards
         mutateLastTrade(); // Refresh last trade for prefilling

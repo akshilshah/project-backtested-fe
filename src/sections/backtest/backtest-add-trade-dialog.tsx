@@ -277,8 +277,9 @@ export function BacktestAddTradeDialog({
     // Clear saved form data after successful submission (only for new trades)
     if (!editingTrade) {
       clearSavedData();
+      // Note: The useEffect hook will automatically reset the form with lastTrade data
+      // when lastTrade is updated by the parent component after mutateLastTrade()
     }
-    reset(defaultValues);
   });
 
   const handleClose = () => {
