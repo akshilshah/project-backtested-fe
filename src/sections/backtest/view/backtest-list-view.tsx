@@ -133,8 +133,9 @@ export function BacktestListView() {
                 <TableCell>Notes</TableCell>
                 <TableCell>Trades</TableCell>
                 <TableCell>Win Rate</TableCell>
-                <TableCell>Avg R</TableCell>
+                {/* <TableCell>Avg R</TableCell> */}
                 <TableCell>EV</TableCell>
+                <TableCell>D_to_100T</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -202,7 +203,7 @@ export function BacktestListView() {
                         {totalTrades > 0 ? `${(winRate * 100).toFixed(0)}%` : '—'}
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <Typography
                         variant="body2"
                         sx={{
@@ -212,7 +213,7 @@ export function BacktestListView() {
                       >
                         {totalTrades > 0 ? avgR.toFixed(2) : '—'}
                       </Typography>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Box
                         sx={{
@@ -242,6 +243,17 @@ export function BacktestListView() {
                           {totalTrades > 0 ? `${ev >= 0 ? '+' : ''}${ev.toFixed(2)}` : '—'}
                         </Typography>
                       </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: analytics?.daysTo100Trades ? 600 : 400,
+                          color: analytics?.daysTo100Trades ? 'text.primary' : 'text.disabled',
+                        }}
+                      >
+                        {analytics?.daysTo100Trades ? `${analytics.daysTo100Trades} days` : '—'}
+                      </Typography>
                     </TableCell>
                     <TableCell align="right" onClick={(e) => e.stopPropagation()}>
                       <Tooltip title="Edit Notes">

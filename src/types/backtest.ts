@@ -76,6 +76,7 @@ export interface BacktestAnalytics {
   ev: number;
   wins: number;
   losses: number;
+  daysTo100Trades: number | null;
 }
 
 export interface BacktestAnalyticsResponse {
