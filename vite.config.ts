@@ -64,8 +64,25 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf}'],
+        // Don't cache CloudFront assets during precache - let runtime caching handle it
+        navigateFallback: null,
         runtimeCaching: [
+          {
+            // Cache CloudFront/S3 assets (your domain)
+            urlPattern: /^https:\/\/backtested\.ioinfotech\.com\/assets\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'cloudfront-assets',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -106,9 +123,12 @@ export default defineConfig({
               cacheableResponse: {
                 statuses: [0, 200],
               },
+              networkTimeoutSeconds: 10,
             },
           },
         ],
+        // Clean up old caches
+        cleanupOutdatedCaches: true,
       },
       devOptions: {
         enabled: true,
