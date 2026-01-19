@@ -2,7 +2,7 @@ import type { Strategy, CreateStrategyRequest, UpdateStrategyRequest } from 'src
 
 import useSWR from 'swr';
 import { toast } from 'sonner';
-import { useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -31,26 +31,37 @@ export function StrategiesListView() {
   const [editStrategy, setEditStrategy] = useState<Strategy | null>(null);
   const [editLoading, setEditLoading] = useState(false);
 
-  // Fetch strategies data
-  const { data, isLoading, mutate } = useSWR(
-    ['strategies', page, rowsPerPage, searchValue],
-    () =>
-      StrategiesService.getAll({
-        page: page + 1,
-        limit: rowsPerPage,
-        search: searchValue || undefined,
-      }),
-    {
-      keepPreviousData: true,
-    }
-  );
+  // Fetch all strategies (no pagination or search on server)
+  const { data, isLoading, mutate } = useSWR(['strategies'], () => StrategiesService.getAll(), {
+    keepPreviousData: true,
+  });
 
-  const strategies = data?.strategies ?? [];
-  const totalCount = data?.pagination?.total ?? 0;
+  const allStrategies = data?.strategies ?? [];
+
+  // Client-side filtering
+  const filteredStrategies = useMemo(() => {
+    if (!searchValue.trim()) return allStrategies;
+
+    const search = searchValue.toLowerCase();
+    return allStrategies.filter(
+      (strategy) =>
+        strategy.name.toLowerCase().includes(search) ||
+        strategy.description?.toLowerCase().includes(search)
+    );
+  }, [allStrategies, searchValue]);
+
+  // Client-side pagination
+  const paginatedStrategies = useMemo(() => {
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return filteredStrategies.slice(startIndex, endIndex);
+  }, [filteredStrategies, page, rowsPerPage]);
+
+  const totalCount = filteredStrategies.length;
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchValue(value);
-    setPage(0);
+    setPage(0); // Reset to first page when searching
   }, []);
 
   const handlePageChange = useCallback((newPage: number) => {
@@ -155,7 +166,7 @@ export function StrategiesListView() {
       </Box>
 
       <StrategiesTable
-        data={strategies}
+        data={paginatedStrategies}
         loading={isLoading}
         totalCount={totalCount}
         page={page}
