@@ -694,12 +694,12 @@ export function TradesDetailsView() {
                           </Grid>
                           <Grid size={{ xs: 6 }}>
                             <DetailItem
-                              label="CHANGE"
-                              value={`${trade.avgExit >= trade.avgEntry ? '+' : ''}${(
-                                ((trade.avgExit - trade.avgEntry) / trade.avgEntry) *
-                                100
-                              ).toFixed(2)}%`}
-                              valueColor={trade.profitLoss && trade.profitLoss >= 0 ? 'success.main' : 'error.main'}
+                              label="LEVERAGE"
+                              value={
+                                trade.derived?.tradeValue && trade.amount
+                                  ? `${(trade.derived.tradeValue / trade.amount).toFixed(2)}x`
+                                  : '-'
+                              }
                             />
                           </Grid>
                           <Grid size={{ xs: 6 }}>

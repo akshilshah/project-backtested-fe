@@ -46,6 +46,9 @@ export function StatCard({
 }: StatCardProps) {
   const theme = useTheme();
 
+  // Auto-set suffix based on format
+  const displaySuffix = suffix || (format === 'percent' ? '%' : undefined);
+
   const _formatValue = () => {
     if (typeof value === 'string') return value;
 
@@ -127,9 +130,9 @@ export function StatCard({
             <Typography variant="h4">{value}</Typography>
           )}
 
-          {suffix && (
+          {displaySuffix && (
             <Typography variant="body1" component="span" sx={{ color: 'text.secondary' }}>
-              {suffix}
+              {displaySuffix}
             </Typography>
           )}
         </Box>
