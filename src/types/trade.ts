@@ -9,6 +9,7 @@ export interface Trade {
     id: number;
     symbol: string;
     name: string;
+    image?: string;
   };
   strategyId: number;
   strategy?: {

@@ -21,7 +21,7 @@ export interface CreateCoinRequest {
 export interface UpdateCoinRequest {
   symbol?: string;
   name?: string;
-  image?: string;
+  image?: string | null;
 }
 
 export interface CoinResponse {

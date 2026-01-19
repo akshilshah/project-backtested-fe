@@ -7,6 +7,7 @@ export interface BacktestTrade {
     id: number;
     symbol: string;
     name: string;
+    image?: string;
   };
   strategyId: number;
   strategy?: {

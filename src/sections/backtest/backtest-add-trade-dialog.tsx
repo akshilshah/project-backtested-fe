@@ -12,6 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
@@ -21,6 +22,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
 import { CoinsService } from 'src/services/coins.service';
+import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 
 import { Form, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
@@ -310,6 +312,40 @@ export function BacktestAddTradeDialog({
               }}
               getOptionLabel={(option: Coin) => `${option.symbol} - ${option.name}`}
               isOptionEqualToValue={(option: Coin, value: Coin) => option.id === value.id}
+              renderOption={(props, option: Coin) => (
+                <Box component="li" {...props} key={option.id}>
+                  <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <Avatar
+                      src={option.image ? `${S3_ASSETS_BASE_URL}/${option.image}` : undefined}
+                      alt={option.symbol}
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 0.75,
+                        bgcolor: (theme) =>
+                          option.image
+                            ? 'transparent'
+                            : theme.palette.mode === 'dark'
+                              ? 'rgba(99, 102, 241, 0.16)'
+                              : 'rgba(99, 102, 241, 0.1)',
+                        color: 'primary.main',
+                        fontWeight: 600,
+                        fontSize: '0.7rem',
+                      }}
+                    >
+                      {!option.image && option.symbol.slice(0, 2)}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="body2" fontWeight={600}>
+                        {option.symbol}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {option.name}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+              )}
             />
 
             {/* Date and Time */}

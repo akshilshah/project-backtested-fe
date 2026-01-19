@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react';
 
 import { useState } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -27,6 +27,7 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
   const { control } = useFormContext();
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [imageLoadError, setImageLoadError] = useState(false);
 
   const handleFileChange = async (
     e: ChangeEvent<HTMLInputElement>,
@@ -48,6 +49,7 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
     }
 
     setUploadError(null);
+    setImageLoadError(false);
     setUploading(true);
 
     try {
@@ -64,7 +66,10 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
       });
 
       if (response.data.metadata?.name) {
-        onChange(response.data.metadata.name);
+        const imageKey = response.data.metadata.name;
+        const imageUrl = `${S3_ASSETS_BASE_URL}/${imageKey}`;
+        console.log('Image uploaded successfully:', { imageKey, imageUrl });
+        onChange(imageKey);
       }
     } catch (error) {
       console.error('Upload failed:', error);
@@ -92,6 +97,17 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
             {/* Preview */}
             <Avatar
               src={value ? `${S3_ASSETS_BASE_URL}/${value}` : undefined}
+              slotProps={{
+                img: {
+                  onError: () => {
+                    console.error('Failed to load image:', `${S3_ASSETS_BASE_URL}/${value}`);
+                    setImageLoadError(true);
+                  },
+                  onLoad: () => {
+                    setImageLoadError(false);
+                  },
+                },
+              }}
               sx={{
                 width: 80,
                 height: 80,
@@ -103,7 +119,7 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
                 border: (theme) => `2px dashed ${theme.palette.divider}`,
               }}
             >
-              {!value && <Iconify icon="solar:camera-bold" width={32} sx={{ opacity: 0.3 }} />}
+              {!value && <Iconify icon="solar:camera-add-bold" width={32} sx={{ opacity: 0.3 }} />}
             </Avatar>
 
             {/* Upload Button */}
@@ -116,7 +132,7 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
                   uploading ? (
                     <CircularProgress size={18} />
                   ) : (
-                    <Iconify icon="solar:upload-bold" />
+                    <Iconify icon={"solar:upload-bold" as any} />
                   )
                 }
               >
@@ -143,9 +159,13 @@ export function RHFImageUpload({ name, label, helperText }: RHFImageUploadProps)
             </Stack>
           </Stack>
 
-          {(helperText || uploadError || error?.message) && (
-            <FormHelperText error={!!(uploadError || error?.message)} sx={{ mt: 1 }}>
-              {uploadError || error?.message || helperText}
+          {(helperText || uploadError || error?.message || imageLoadError) && (
+            <FormHelperText error={!!(uploadError || error?.message || imageLoadError)} sx={{ mt: 1 }}>
+              {uploadError ||
+                error?.message ||
+                (imageLoadError
+                  ? 'Failed to load image. The S3 bucket may not be publicly accessible or CORS is not configured.'
+                  : helperText)}
             </FormHelperText>
           )}
         </Box>

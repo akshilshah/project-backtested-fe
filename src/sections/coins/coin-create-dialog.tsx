@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 
 import { Form } from 'src/components/hook-form';
 import { RHFTextField } from 'src/components/hook-form/rhf-text-field';
+import { RHFImageUpload } from 'src/components/hook-form/rhf-image-upload';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +29,7 @@ const CoinSchema = z.object({
     .string()
     .min(1, 'Name is required')
     .max(100, 'Name must be at most 100 characters'),
+  image: z.string().optional(),
 });
 
 type CoinFormValues = z.infer<typeof CoinSchema>;
@@ -48,6 +50,7 @@ export function CoinCreateDialog({
   const defaultValues: CoinFormValues = {
     symbol: '',
     name: '',
+    image: '',
   };
 
   const methods = useForm<CoinFormValues>({
@@ -61,6 +64,7 @@ export function CoinCreateDialog({
     await onSubmit({
       symbol: data.symbol.toUpperCase(),
       name: data.name,
+      image: data.image || undefined,
     });
     reset(defaultValues);
   });
@@ -77,6 +81,12 @@ export function CoinCreateDialog({
       <Form methods={methods} onSubmit={handleFormSubmit}>
         <DialogContent dividers>
           <Stack spacing={3}>
+            <RHFImageUpload
+              name="image"
+              label="Coin Logo"
+              helperText="Upload an image (JPG, PNG, max 5MB)"
+            />
+
             <RHFTextField
               name="symbol"
               label="Symbol"

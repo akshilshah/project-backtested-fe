@@ -2,7 +2,7 @@ import type { Coin, CreateCoinRequest, UpdateCoinRequest } from 'src/types/coin'
 
 import useSWR from 'swr';
 import { toast } from 'sonner';
-import { useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -29,26 +29,36 @@ export function CoinsListView() {
   const [editCoin, setEditCoin] = useState<Coin | null>(null);
   const [editLoading, setEditLoading] = useState(false);
 
-  // Fetch coins data
-  const { data, isLoading, mutate } = useSWR(
-    ['coins', page, rowsPerPage, searchValue],
-    () =>
-      CoinsService.getAll({
-        page: page + 1,
-        limit: rowsPerPage,
-        search: searchValue || undefined,
-      }),
-    {
-      keepPreviousData: true,
-    }
-  );
+  // Fetch all coins (no pagination or search on server)
+  const { data, isLoading, mutate } = useSWR(['coins'], () => CoinsService.getAll(), {
+    keepPreviousData: true,
+  });
 
-  const coins = data?.coins ?? [];
-  const totalCount = data?.pagination?.total ?? 0;
+  const allCoins = data?.coins ?? [];
+
+  // Client-side filtering
+  const filteredCoins = useMemo(() => {
+    if (!searchValue.trim()) return allCoins;
+
+    const search = searchValue.toLowerCase();
+    return allCoins.filter(
+      (coin) =>
+        coin.symbol.toLowerCase().includes(search) || coin.name.toLowerCase().includes(search)
+    );
+  }, [allCoins, searchValue]);
+
+  // Client-side pagination
+  const paginatedCoins = useMemo(() => {
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return filteredCoins.slice(startIndex, endIndex);
+  }, [filteredCoins, page, rowsPerPage]);
+
+  const totalCount = filteredCoins.length;
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchValue(value);
-    setPage(0);
+    setPage(0); // Reset to first page when searching
   }, []);
 
   const handlePageChange = useCallback((newPage: number) => {
@@ -145,7 +155,7 @@ export function CoinsListView() {
       </Box>
 
       <CoinsTable
-        data={coins}
+        data={paginatedCoins}
         loading={isLoading}
         totalCount={totalCount}
         page={page}

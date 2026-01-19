@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Typography from '@mui/material/Typography';
@@ -21,6 +22,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useTheme, type Theme } from '@mui/material/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 import { TradesService } from 'src/services/trades.service';
 
 import { Form } from 'src/components/hook-form';
@@ -323,24 +325,21 @@ export function TradeExitDialog({
             >
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
                 <Stack direction="row" alignItems="center" spacing={1.5}>
-                  <Box
+                  <Avatar
+                    src={trade.coin?.image ? `${S3_ASSETS_BASE_URL}/${trade.coin.image}` : undefined}
+                    alt={trade.coin?.symbol}
                     sx={{
                       width: 36,
                       height: 36,
                       borderRadius: 1.5,
-                      bgcolor: 'primary.main',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      bgcolor: trade.coin?.image ? 'transparent' : 'primary.main',
+                      color: 'white',
+                      fontWeight: 700,
+                      fontSize: '0.7rem',
                     }}
                   >
-                    <Typography
-                      variant="caption"
-                      sx={{ color: 'white', fontWeight: 700, fontSize: '0.7rem' }}
-                    >
-                      {trade.coin?.symbol?.slice(0, 3) ?? 'N/A'}
-                    </Typography>
-                  </Box>
+                    {!trade.coin?.image && (trade.coin?.symbol?.slice(0, 3) ?? 'N/A')}
+                  </Avatar>
                   <Box>
                     <Typography variant="subtitle2" fontWeight={600}>
                       {trade.coin?.symbol ?? 'N/A'}
