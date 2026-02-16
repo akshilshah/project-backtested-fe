@@ -1,5 +1,5 @@
-import type { Strategy } from 'src/types/strategy';
 import type { BacktestAnalytics } from 'src/types/backtest';
+import type { Strategy, CreateStrategyRequest } from 'src/types/strategy';
 
 import useSWR from 'swr';
 import { toast } from 'sonner';
@@ -33,6 +33,8 @@ import { Iconify } from 'src/components/iconify';
 import { PageHeader } from 'src/components/page/page-header';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { PageContainer } from 'src/components/page/page-container';
+
+import { StrategyCreateDialog } from 'src/sections/strategies/strategy-create-dialog';
 
 import { BacktestNotesDialog } from '../backtest-notes-dialog';
 import { BacktestStrategyCard } from '../backtest-strategy-card';
@@ -139,6 +141,8 @@ export function BacktestListView() {
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
   const [editingStrategy, setEditingStrategy] = useState<Strategy | null>(null);
   const [updatingNotes, setUpdatingNotes] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
 
   // Fetch all strategies
   const { data, isLoading, mutate } = useSWR('strategies-all', () =>
@@ -212,7 +216,22 @@ export function BacktestListView() {
   );
 
   const handleCreateStrategy = () => {
-    router.push(paths.dashboard.strategies.new);
+    setCreateOpen(true);
+  };
+
+  const handleCreateSubmit = async (formData: CreateStrategyRequest) => {
+    try {
+      setCreateLoading(true);
+      await StrategiesService.create(formData);
+      toast.success('Strategy created successfully');
+      mutate();
+      setCreateOpen(false);
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Failed to create strategy';
+      toast.error(message);
+    } finally {
+      setCreateLoading(false);
+    }
   };
 
   if (isLoading && !isMobile) {
@@ -224,6 +243,15 @@ export function BacktestListView() {
       <PageHeader
         title="Backtest"
         subtitle="Analyze your trading strategies with historical data"
+        action={
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="solar:add-circle-bold" />}
+            onClick={handleCreateStrategy}
+          >
+            New Strategy
+          </Button>
+        }
       />
 
       {/* Mobile Card View */}
@@ -458,6 +486,13 @@ export function BacktestListView() {
         onConfirm={handleSaveNotes}
         currentNotes={editingStrategy?.notes || ''}
         loading={updatingNotes}
+      />
+
+      <StrategyCreateDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onSubmit={handleCreateSubmit}
+        loading={createLoading}
       />
     </PageContainer>
   );
