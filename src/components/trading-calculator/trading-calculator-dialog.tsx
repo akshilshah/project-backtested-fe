@@ -31,6 +31,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { CoinsService } from 'src/services/coins.service';
 import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
+import { StrategiesService } from 'src/services/strategies.service';
 
 import { Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
@@ -38,6 +39,7 @@ import { RHFAutocomplete } from 'src/components/hook-form/rhf-autocomplete';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
 
 import { CoinCreateDialog } from 'src/sections/coins/coin-create-dialog';
+import { StrategyCreateDialog } from 'src/sections/strategies/strategy-create-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +61,7 @@ type TradingCalculatorDialogProps = {
   strategiesLoading?: boolean;
   onTakeTrade?: (data: CreateTradeRequest) => Promise<void>;
   onCoinCreated?: (coin: Coin) => void;
+  onStrategyCreated?: (strategy: Strategy) => void;
   currentTrade?: Trade;
   isEditMode?: boolean;
 };
@@ -227,6 +230,7 @@ export function TradingCalculatorDialog({
   strategiesLoading = false,
   onTakeTrade,
   onCoinCreated,
+  onStrategyCreated,
   currentTrade,
   isEditMode = false,
 }: TradingCalculatorDialogProps) {
@@ -244,6 +248,8 @@ export function TradingCalculatorDialog({
   const [loading, setLoading] = useState(false);
   const [coinCreateOpen, setCoinCreateOpen] = useState(false);
   const [coinCreateLoading, setCoinCreateLoading] = useState(false);
+  const [strategyCreateOpen, setStrategyCreateOpen] = useState(false);
+  const [strategyCreateLoading, setStrategyCreateLoading] = useState(false);
 
   const handleCreateCoin = async (data: { symbol: string; name: string; image?: string }) => {
     try {
@@ -258,6 +264,22 @@ export function TradingCalculatorDialog({
       toast.error(message);
     } finally {
       setCoinCreateLoading(false);
+    }
+  };
+
+  const handleCreateStrategy = async (data: { name: string; description?: string; entryRule?: string; exitRule?: string; stopLossRule?: string }) => {
+    try {
+      setStrategyCreateLoading(true);
+      const newStrategy = await StrategiesService.create(data);
+      toast.success(`${newStrategy.name} added successfully`);
+      setStrategyCreateOpen(false);
+      onStrategyCreated?.(newStrategy);
+      setValue('strategyId', newStrategy.id, { shouldValidate: true });
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Failed to create strategy';
+      toast.error(message);
+    } finally {
+      setStrategyCreateLoading(false);
     }
   };
 
@@ -699,6 +721,21 @@ export function TradingCalculatorDialog({
                           option.id === value.id
                         }
                         slotProps={{ textField: { size: isMobile ? 'small' : 'medium' } }}
+                        noOptionsText={
+                          <Stack alignItems="center" spacing={1} sx={{ py: 1 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              No strategies found
+                            </Typography>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              startIcon={<Iconify icon="solar:add-circle-bold" />}
+                              onClick={() => setStrategyCreateOpen(true)}
+                            >
+                              Add strategy
+                            </Button>
+                          </Stack>
+                        }
                       />
                     </Grid>
                     <Grid size={{ xs: 6, sm: 3 }}>
@@ -834,6 +871,13 @@ export function TradingCalculatorDialog({
         onClose={() => setCoinCreateOpen(false)}
         onSubmit={handleCreateCoin}
         loading={coinCreateLoading}
+      />
+
+      <StrategyCreateDialog
+        open={strategyCreateOpen}
+        onClose={() => setStrategyCreateOpen(false)}
+        onSubmit={handleCreateStrategy}
+        loading={strategyCreateLoading}
       />
     </Dialog>
   );

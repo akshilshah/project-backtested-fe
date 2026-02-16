@@ -79,7 +79,7 @@ export function DashboardLayout({
   const { data: coinsData, isLoading: coinsLoading, mutate: mutateCoins } = useSWR('/api/coins', () =>
     CoinsService.getAll()
   );
-  const { data: strategiesData, isLoading: strategiesLoading } = useSWR(
+  const { data: strategiesData, isLoading: strategiesLoading, mutate: mutateStrategies } = useSWR(
     '/api/strategies',
     () => StrategiesService.getAll()
   );
@@ -264,6 +264,7 @@ export function DashboardLayout({
         strategiesLoading={strategiesLoading}
         onTakeTrade={handleTakeTrade}
         onCoinCreated={() => mutateCoins()}
+        onStrategyCreated={() => mutateStrategies()}
       />
     </>
   );

@@ -63,7 +63,7 @@ export function TradesDetailsView() {
   );
 
   // Fetch strategies for dropdown
-  const { data: strategiesData, isLoading: strategiesLoading } = useSWR('strategies-all', () =>
+  const { data: strategiesData, isLoading: strategiesLoading, mutate: mutateStrategies } = useSWR('strategies-all', () =>
     StrategiesService.getAll({ limit: 100 })
   );
 
@@ -884,6 +884,7 @@ export function TradesDetailsView() {
         strategiesLoading={strategiesLoading}
         onTakeTrade={handleUpdateTrade}
         onCoinCreated={() => mutateCoins()}
+        onStrategyCreated={() => mutateStrategies()}
         currentTrade={trade}
         isEditMode
       />
