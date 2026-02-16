@@ -76,7 +76,7 @@ export function DashboardLayout({
   const navData = slotProps?.nav?.data ?? dashboardNavData;
 
   // Fetch coins and strategies for trading calculator
-  const { data: coinsData, isLoading: coinsLoading } = useSWR('/api/coins', () =>
+  const { data: coinsData, isLoading: coinsLoading, mutate: mutateCoins } = useSWR('/api/coins', () =>
     CoinsService.getAll()
   );
   const { data: strategiesData, isLoading: strategiesLoading } = useSWR(
@@ -263,6 +263,7 @@ export function DashboardLayout({
         coinsLoading={coinsLoading}
         strategiesLoading={strategiesLoading}
         onTakeTrade={handleTakeTrade}
+        onCoinCreated={() => mutateCoins()}
       />
     </>
   );

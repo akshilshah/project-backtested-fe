@@ -4,6 +4,7 @@ import type { Trade, CreateTradeRequest } from 'src/types/trade';
 
 import { z } from 'zod';
 import dayjs from 'dayjs';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect, useCallback } from 'react';
@@ -28,12 +29,15 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+import { CoinsService } from 'src/services/coins.service';
 import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 
 import { Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
 import { RHFAutocomplete } from 'src/components/hook-form/rhf-autocomplete';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
+
+import { CoinCreateDialog } from 'src/sections/coins/coin-create-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -54,6 +58,7 @@ type TradingCalculatorDialogProps = {
   coinsLoading?: boolean;
   strategiesLoading?: boolean;
   onTakeTrade?: (data: CreateTradeRequest) => Promise<void>;
+  onCoinCreated?: (coin: Coin) => void;
   currentTrade?: Trade;
   isEditMode?: boolean;
 };
@@ -221,6 +226,7 @@ export function TradingCalculatorDialog({
   coinsLoading = false,
   strategiesLoading = false,
   onTakeTrade,
+  onCoinCreated,
   currentTrade,
   isEditMode = false,
 }: TradingCalculatorDialogProps) {
@@ -236,6 +242,24 @@ export function TradingCalculatorDialog({
   const [entryFeePercentage, setEntryFeePercentage] = useState<string>('0.02');
   const [showTradeForm, setShowTradeForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [coinCreateOpen, setCoinCreateOpen] = useState(false);
+  const [coinCreateLoading, setCoinCreateLoading] = useState(false);
+
+  const handleCreateCoin = async (data: { symbol: string; name: string; image?: string }) => {
+    try {
+      setCoinCreateLoading(true);
+      const newCoin = await CoinsService.create(data);
+      toast.success(`${newCoin.symbol} added successfully`);
+      setCoinCreateOpen(false);
+      onCoinCreated?.(newCoin);
+      setValue('coinId', newCoin.id, { shouldValidate: true });
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Failed to create coin';
+      toast.error(message);
+    } finally {
+      setCoinCreateLoading(false);
+    }
+  };
 
   const defaultValues: TradeFormValues = {
     coinId: currentTrade?.coinId || 0,
@@ -608,6 +632,21 @@ export function TradingCalculatorDialog({
                         getOptionLabel={(option: Coin) => `${option.symbol} - ${option.name}`}
                         isOptionEqualToValue={(option: Coin, value: Coin) => option.id === value.id}
                         slotProps={{ textField: { size: isMobile ? 'small' : 'medium' } }}
+                        noOptionsText={
+                          <Stack alignItems="center" spacing={1} sx={{ py: 1 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              No coins found
+                            </Typography>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              startIcon={<Iconify icon="solar:add-circle-bold" />}
+                              onClick={() => setCoinCreateOpen(true)}
+                            >
+                              Add coin
+                            </Button>
+                          </Stack>
+                        }
                         renderOption={(props, option: Coin) => (
                           <Box component="li" {...props} key={option.id}>
                             <Stack direction="row" alignItems="center" spacing={1.5}>
@@ -789,6 +828,13 @@ export function TradingCalculatorDialog({
           )}
         </DialogActions>
       </Form>
+
+      <CoinCreateDialog
+        open={coinCreateOpen}
+        onClose={() => setCoinCreateOpen(false)}
+        onSubmit={handleCreateCoin}
+        loading={coinCreateLoading}
+      />
     </Dialog>
   );
 }

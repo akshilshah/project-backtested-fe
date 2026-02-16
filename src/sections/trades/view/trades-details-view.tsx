@@ -58,7 +58,7 @@ export function TradesDetailsView() {
   } = useSWR(id ? ['trade', id] : null, () => TradesService.getById(id!));
 
   // Fetch coins for dropdown
-  const { data: coinsData, isLoading: coinsLoading } = useSWR('coins-all', () =>
+  const { data: coinsData, isLoading: coinsLoading, mutate: mutateCoins } = useSWR('coins-all', () =>
     CoinsService.getAll({ limit: 100 })
   );
 
@@ -883,6 +883,7 @@ export function TradesDetailsView() {
         coinsLoading={coinsLoading}
         strategiesLoading={strategiesLoading}
         onTakeTrade={handleUpdateTrade}
+        onCoinCreated={() => mutateCoins()}
         currentTrade={trade}
         isEditMode
       />

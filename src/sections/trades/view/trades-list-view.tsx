@@ -49,7 +49,7 @@ export function TradesListView() {
   );
 
   // Fetch coins for filter dropdown
-  const { data: coinsData, isLoading: coinsLoading } = useSWR('coins-all', () =>
+  const { data: coinsData, isLoading: coinsLoading, mutate: mutateCoins } = useSWR('coins-all', () =>
     CoinsService.getAll({ limit: 100 })
   );
 
@@ -211,6 +211,7 @@ export function TradesListView() {
         open={createOpen}
         onClose={handleCloseCreate}
         onTakeTrade={handleCreateSubmit}
+        onCoinCreated={() => mutateCoins()}
         coins={coins}
         strategies={strategies}
         coinsLoading={coinsLoading}

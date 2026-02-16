@@ -23,8 +23,8 @@ const CoinSchema = z.object({
     .string()
     .min(1, 'Symbol is required')
     .max(10, 'Symbol must be at most 10 characters')
-    .regex(/^[A-Z0-9]+$/, 'Symbol must be uppercase letters and numbers only')
-    .transform((val) => val.toUpperCase()),
+    .transform((val) => val.toUpperCase())
+    .pipe(z.string().regex(/^[A-Z0-9]+$/, 'Symbol must be uppercase letters and numbers only')),
   name: z
     .string()
     .min(1, 'Name is required')
