@@ -261,7 +261,7 @@ export function BacktestStrategyView() {
     <PageContainer maxWidth="xl">
       <PageHeader
         title={strategy.name}
-        subtitle="Backtest analysis"
+        subtitle="Strategy"
         backHref={paths.dashboard.backtest.root}
         action={
           <Button
