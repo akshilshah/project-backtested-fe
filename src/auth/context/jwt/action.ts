@@ -7,16 +7,16 @@ import { JWT_STORAGE_KEY } from './constant';
 
 // ----------------------------------------------------------------------
 
-export type SignInParams = LoginRequest;
+export type SignInParams = LoginRequest & { rememberMe?: boolean };
 
 export type SignUpParams = SignupRequest;
 
 /** **************************************
  * Sign in
  *************************************** */
-export const signInWithPassword = async ({ email, password }: SignInParams): Promise<void> => {
+export const signInWithPassword = async ({ email, password, rememberMe }: SignInParams): Promise<void> => {
   try {
-    const params = { email, password };
+    const params = { email, password, rememberMe: !!rememberMe };
 
     const res = await axios.post(endpoints.auth.login, params);
 
@@ -29,7 +29,7 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
     // Remove "Bearer " prefix if present
     const accessToken = rawToken.replace(/^Bearer\s+/i, '');
 
-    setSession(accessToken);
+    setSession(accessToken, rememberMe);
   } catch (error) {
     console.error('Error during sign in:', error);
     throw error;

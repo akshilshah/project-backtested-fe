@@ -2,7 +2,7 @@ import { paths } from 'src/routes/paths';
 
 import axios from 'src/lib/axios';
 
-import { JWT_STORAGE_KEY } from './constant';
+import { JWT_STORAGE_KEY, REMEMBER_ME_KEY } from './constant';
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +59,8 @@ export function tokenExpired(exp: number) {
     try {
       alert('Token expired!');
       sessionStorage.removeItem(JWT_STORAGE_KEY);
+      localStorage.removeItem(JWT_STORAGE_KEY);
+      localStorage.removeItem(REMEMBER_ME_KEY);
       window.location.href = paths.auth.jwt.signIn;
     } catch (error) {
       console.error('Error during token expiration:', error);
@@ -69,14 +71,28 @@ export function tokenExpired(exp: number) {
 
 // ----------------------------------------------------------------------
 
-export async function setSession(accessToken: string | null) {
+export function getStoredToken(): string | null {
+  return localStorage.getItem(JWT_STORAGE_KEY) || sessionStorage.getItem(JWT_STORAGE_KEY);
+}
+
+// ----------------------------------------------------------------------
+
+export async function setSession(accessToken: string | null, rememberMe?: boolean) {
   try {
     if (accessToken) {
-      sessionStorage.setItem(JWT_STORAGE_KEY, accessToken);
+      if (rememberMe) {
+        localStorage.setItem(JWT_STORAGE_KEY, accessToken);
+        localStorage.setItem(REMEMBER_ME_KEY, 'true');
+        sessionStorage.removeItem(JWT_STORAGE_KEY);
+      } else {
+        sessionStorage.setItem(JWT_STORAGE_KEY, accessToken);
+        localStorage.removeItem(JWT_STORAGE_KEY);
+        localStorage.removeItem(REMEMBER_ME_KEY);
+      }
 
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-      const decodedToken = jwtDecode(accessToken); // ~3 days by minimals server
+      const decodedToken = jwtDecode(accessToken);
 
       if (decodedToken && 'exp' in decodedToken) {
         tokenExpired(decodedToken.exp);
@@ -85,6 +101,8 @@ export async function setSession(accessToken: string | null) {
       }
     } else {
       sessionStorage.removeItem(JWT_STORAGE_KEY);
+      localStorage.removeItem(JWT_STORAGE_KEY);
+      localStorage.removeItem(REMEMBER_ME_KEY);
       delete axios.defaults.headers.common.Authorization;
     }
   } catch (error) {

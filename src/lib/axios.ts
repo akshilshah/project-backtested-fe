@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import { CONFIG } from 'src/global-config';
 
-import { JWT_STORAGE_KEY } from 'src/auth/context/jwt/constant';
+import { JWT_STORAGE_KEY, REMEMBER_ME_KEY } from 'src/auth/context/jwt/constant';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ const axiosInstance = axios.create({
 
 // Add token to requests
 axiosInstance.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem(JWT_STORAGE_KEY);
+  const token = localStorage.getItem(JWT_STORAGE_KEY) || sessionStorage.getItem(JWT_STORAGE_KEY);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -34,6 +34,8 @@ axiosInstance.interceptors.response.use(
     // Handle 401 Unauthorized - redirect to login
     if (status === 401) {
       sessionStorage.removeItem(JWT_STORAGE_KEY);
+      localStorage.removeItem(JWT_STORAGE_KEY);
+      localStorage.removeItem(REMEMBER_ME_KEY);
       toast.error('Session expired. Please login again.');
 
       // Redirect to login page

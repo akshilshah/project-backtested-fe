@@ -8,8 +8,10 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -33,6 +35,7 @@ export const SignInSchema = z.object({
     .string()
     .min(1, { message: 'Password is required!' })
     .min(6, { message: 'Password must be at least 6 characters!' }),
+  rememberMe: z.boolean(),
 });
 
 // ----------------------------------------------------------------------
@@ -49,6 +52,7 @@ export function JwtSignInView() {
   const defaultValues: SignInSchemaType = {
     email: '',
     password: '',
+    rememberMe: false,
   };
 
   const methods = useForm({
@@ -63,7 +67,7 @@ export function JwtSignInView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signInWithPassword({ email: data.email, password: data.password });
+      await signInWithPassword({ email: data.email, password: data.password, rememberMe: data.rememberMe });
       await checkUserSession?.();
 
       router.refresh();
@@ -110,6 +114,16 @@ export function JwtSignInView() {
           }}
         />
       </Box>
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={methods.watch('rememberMe')}
+            onChange={(e) => methods.setValue('rememberMe', e.target.checked)}
+          />
+        }
+        label="Remember me"
+      />
 
       <Button
         fullWidth

@@ -5,9 +5,9 @@ import { useMemo, useEffect, useCallback } from 'react';
 
 import axios, { endpoints } from 'src/lib/axios';
 
-import { JWT_STORAGE_KEY } from './constant';
+import { REMEMBER_ME_KEY } from './constant';
 import { AuthContext } from '../auth-context';
-import { setSession, isValidToken } from './utils';
+import { setSession, isValidToken, getStoredToken } from './utils';
 
 // ----------------------------------------------------------------------
 
@@ -20,10 +20,11 @@ export function AuthProvider({ children }: Props) {
 
   const checkUserSession = useCallback(async () => {
     try {
-      const accessToken = sessionStorage.getItem(JWT_STORAGE_KEY);
+      const accessToken = getStoredToken();
+      const rememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
 
       if (accessToken && isValidToken(accessToken)) {
-        setSession(accessToken);
+        setSession(accessToken, rememberMe);
 
         const res = await axios.get(endpoints.auth.profile);
 
