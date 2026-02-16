@@ -359,6 +359,77 @@ export function BacktestStrategyView() {
           </Stack>
         </Card>
 
+        {/* Expected Value - Highlight Card */}
+        <Card
+          sx={{
+            p: 2.5,
+            background: (theme) =>
+              summary.ev > 0
+                ? theme.palette.mode === 'dark'
+                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%)'
+                  : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 1) 100%)'
+                : theme.palette.mode === 'dark'
+                  ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.04) 100%)'
+                  : 'linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(255, 255, 255, 1) 100%)',
+            border: (theme) => `1px solid ${summary.ev > 0 ? theme.palette.success.main : theme.palette.error.main}`,
+            borderWidth: '1.5px',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: (theme) =>
+                summary.ev > 0
+                  ? `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(16, 185, 129, 0.2)'}`
+                  : `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(244, 63, 94, 0.2)'}`,
+            },
+          }}
+        >
+          <Stack spacing={1.5}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) =>
+                  summary.ev > 0
+                    ? theme.palette.mode === 'dark' ? 'rgba(16, 185, 129, 0.2)' : 'success.lighter'
+                    : theme.palette.mode === 'dark' ? 'rgba(244, 63, 94, 0.2)' : 'error.lighter',
+              }}
+            >
+              <Iconify
+                icon={'solar:dollar-minimalistic-bold' as any}
+                width={22}
+                sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
+              />
+            </Box>
+            <Box>
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
+                  Expected Value
+                </Typography>
+                <Iconify
+                  icon={summary.ev > 0 ? ('solar:arrow-up-bold' as any) : ('solar:arrow-down-bold' as any)}
+                  width={12}
+                  sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
+                />
+              </Stack>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: summary.ev > 0 ? 'success.main' : 'error.main',
+                  fontWeight: 700,
+                  mt: 0.25,
+                }}
+              >
+                {summary.ev > 0 ? '+' : ''}
+                {summary.ev.toFixed(2)}
+              </Typography>
+            </Box>
+          </Stack>
+        </Card>
+
         {/* Average Winning R */}
         <Card
           sx={{
@@ -522,77 +593,6 @@ export function BacktestStrategyView() {
               </Typography>
               <Typography variant="h4" sx={{ fontWeight: 700, mt: 0.25 }}>
                 {(summary.lossPercentage * 100).toFixed(0)}%
-              </Typography>
-            </Box>
-          </Stack>
-        </Card>
-
-        {/* Expected Value - Highlight Card */}
-        <Card
-          sx={{
-            p: 2.5,
-            background: (theme) =>
-              summary.ev > 0
-                ? theme.palette.mode === 'dark'
-                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%)'
-                  : 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 1) 100%)'
-                : theme.palette.mode === 'dark'
-                  ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.04) 100%)'
-                  : 'linear-gradient(135deg, rgba(244, 63, 94, 0.08) 0%, rgba(255, 255, 255, 1) 100%)',
-            border: (theme) => `1px solid ${summary.ev > 0 ? theme.palette.success.main : theme.palette.error.main}`,
-            borderWidth: '1.5px',
-            transition: 'all 0.2s ease-in-out',
-            '&:hover': {
-              transform: 'translateY(-2px)',
-              boxShadow: (theme) =>
-                summary.ev > 0
-                  ? `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(16, 185, 129, 0.2)'}`
-                  : `0 8px 24px -4px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(244, 63, 94, 0.2)'}`,
-            },
-          }}
-        >
-          <Stack spacing={1.5}>
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: 1.5,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                bgcolor: (theme) =>
-                  summary.ev > 0
-                    ? theme.palette.mode === 'dark' ? 'rgba(16, 185, 129, 0.2)' : 'success.lighter'
-                    : theme.palette.mode === 'dark' ? 'rgba(244, 63, 94, 0.2)' : 'error.lighter',
-              }}
-            >
-              <Iconify
-                icon={'solar:dollar-minimalistic-bold' as any}
-                width={22}
-                sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
-              />
-            </Box>
-            <Box>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.65rem', letterSpacing: 1 }}>
-                  Expected Value
-                </Typography>
-                <Iconify
-                  icon={summary.ev > 0 ? ('solar:arrow-up-bold' as any) : ('solar:arrow-down-bold' as any)}
-                  width={12}
-                  sx={{ color: summary.ev > 0 ? 'success.main' : 'error.main' }}
-                />
-              </Stack>
-              <Typography
-                variant="h4"
-                sx={{
-                  color: summary.ev > 0 ? 'success.main' : 'error.main',
-                  fontWeight: 700,
-                  mt: 0.25,
-                }}
-              >
-                {summary.ev > 0 ? '+' : ''}
-                {summary.ev.toFixed(2)}
               </Typography>
             </Box>
           </Stack>
