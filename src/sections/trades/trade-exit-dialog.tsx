@@ -140,6 +140,20 @@ function StyledInput({
 // ----------------------------------------------------------------------
 
 const ExitTradeSchema = z.object({
+  avgEntry: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Entry price is required')
+    .refine(
+      (val) => !isNaN(Number(val)) && Number(val) > 0,
+      'Entry price must be a positive number'
+    ),
+  quantity: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Quantity is required')
+    .refine(
+      (val) => !isNaN(Number(val)) && Number(val) > 0,
+      'Quantity must be a positive number'
+    ),
   avgExit: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Exit price is required')
@@ -162,6 +176,8 @@ type TradeExitDialogProps = {
   trade: Trade | null;
   onClose: () => void;
   onConfirm: (data: {
+    avgEntry: number;
+    quantity: number;
     avgExit: number;
     exitDate: string;
     exitTime: string;
@@ -185,6 +201,8 @@ export function TradeExitDialog({
   const [previewLoading, setPreviewLoading] = useState(false);
 
   const defaultValues: ExitTradeFormValues = {
+    avgEntry: trade?.avgEntry ?? '',
+    quantity: trade?.quantity ?? '',
     avgExit: '',
     exitDate: dayjs(),
     exitTime: dayjs(),
@@ -195,6 +213,15 @@ export function TradeExitDialog({
   const methods = useForm<ExitTradeFormValues>({
     resolver: zodResolver(ExitTradeSchema),
     defaultValues,
+    values: {
+      avgEntry: trade?.avgEntry ?? '',
+      quantity: trade?.quantity ?? '',
+      avgExit: '',
+      exitDate: dayjs(),
+      exitTime: dayjs(),
+      exitFeePercentage: 0.05,
+      notes: '',
+    },
   });
 
   const { handleSubmit, watch, reset } = methods;
@@ -235,6 +262,8 @@ export function TradeExitDialog({
     const exitTime = dayjs(data.exitTime).format('HH:mm:ss');
 
     await onConfirm({
+      avgEntry: Number(data.avgEntry),
+      quantity: Number(data.quantity),
       avgExit: Number(data.avgExit),
       exitDate,
       exitTime,
@@ -371,11 +400,54 @@ export function TradeExitDialog({
                 spacing={1}
                 sx={{ flexWrap: 'wrap', gap: 1, '& > *': { mb: { xs: 0, sm: 0 } } }}
               >
-                <InfoCard label="Entry" value={formatPrice(trade.avgEntry)} />
-                <InfoCard label="Qty" value={trade.quantity?.toFixed(4) ?? '-'} />
                 <InfoCard label="Stop Loss" value={formatPrice(trade.stopLoss)} />
               </Stack>
             </Box>
+
+            {/* Entry Price & Quantity Row */}
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <StyledInput label="Entry Price" icon="solar:tag-price-bold">
+                  <RHFTextField
+                    name="avgEntry"
+                    placeholder="Entry price"
+                    type="number"
+                    size={isMobile ? 'small' : 'medium'}
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                              $
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      },
+                      htmlInput: {
+                        step: '0.00000001',
+                        min: '0',
+                      },
+                    }}
+                  />
+                </StyledInput>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <StyledInput label="Quantity" icon="solar:hashtag-bold">
+                  <RHFTextField
+                    name="quantity"
+                    placeholder="Quantity"
+                    type="number"
+                    size={isMobile ? 'small' : 'medium'}
+                    slotProps={{
+                      htmlInput: {
+                        step: '0.00000001',
+                        min: '0',
+                      },
+                    }}
+                  />
+                </StyledInput>
+              </Grid>
+            </Grid>
 
             {/* Exit Price & Fee Row */}
             <Grid container spacing={2}>

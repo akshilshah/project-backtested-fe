@@ -104,12 +104,28 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmExit = useCallback(
-    async (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => {
-      if (!id) return;
+    async (data: { avgEntry: number; quantity: number; avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => {
+      if (!id || !trade) return;
 
       try {
         setExitLoading(true);
-        await TradesService.exit(id, data);
+
+        // Update entry details if changed
+        const entryChanged = data.avgEntry !== trade.avgEntry || data.quantity !== trade.quantity;
+        if (entryChanged) {
+          await TradesService.update(id, {
+            avgEntry: data.avgEntry,
+            quantity: data.quantity,
+          });
+        }
+
+        await TradesService.exit(id, {
+          avgExit: data.avgExit,
+          exitDate: data.exitDate,
+          exitTime: data.exitTime,
+          exitFeePercentage: data.exitFeePercentage,
+          notes: data.notes,
+        });
         toast.success('Trade closed successfully');
         mutate();
         setExitDialogOpen(false);
@@ -120,7 +136,7 @@ export function TradesDetailsView() {
         setExitLoading(false);
       }
     },
-    [id, mutate]
+    [id, trade, mutate]
   );
 
   const handleOpenEdit = useCallback(() => {
