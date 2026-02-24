@@ -124,13 +124,8 @@ export function TradesDetailsView() {
   );
 
   const handleOpenEdit = useCallback(() => {
-    // For closed trades, only allow editing notes
-    if (trade?.status === 'CLOSED') {
-      setNotesDialogOpen(true);
-    } else {
-      setCalculatorOpen(true);
-    }
-  }, [trade?.status]);
+    setCalculatorOpen(true);
+  }, []);
 
   const handleCloseCalculator = useCallback(() => {
     setCalculatorOpen(false);
@@ -347,19 +342,38 @@ export function TradesDetailsView() {
               <Button
                 variant="outlined"
                 color="inherit"
-                onClick={handleOpenEdit}
-                startIcon={<Iconify icon="solar:pen-bold" />}
+                onClick={() => setNotesDialogOpen(true)}
+                startIcon={<Iconify icon={'solar:document-text-bold' as any} />}
               >
-                {isOpen ? 'Edit' : 'Edit Notes'}
+                {trade.notes ? 'Edit Notes' : 'Add Notes'}
               </Button>
-              {isOpen && (
+              {isOpen ? (
+                <>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={handleOpenEdit}
+                    startIcon={<Iconify icon="solar:pen-bold" />}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={handleOpenExit}
+                    startIcon={<Iconify icon={'solar:logout-2-bold' as any} />}
+                  >
+                    Exit Trade
+                  </Button>
+                </>
+              ) : (
                 <Button
-                  variant="contained"
-                  color="warning"
-                  onClick={handleOpenExit}
-                  startIcon={<Iconify icon={'solar:logout-2-bold' as any} />}
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleOpenEditExit}
+                  startIcon={<Iconify icon="solar:pen-bold" />}
                 >
-                  Exit Trade
+                  Edit Exit
                 </Button>
               )}
               <Button
@@ -820,30 +834,40 @@ export function TradesDetailsView() {
                 </Box>
 
                 {/* Notes */}
-                {trade.notes && (
-                  <>
-                    <Divider />
-                    <Box>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: 'text.secondary',
-                          display: 'block',
-                          mb: 1.5,
-                          textTransform: 'uppercase',
-                          fontWeight: 600,
-                          fontSize: '0.6875rem',
-                          letterSpacing: '0.8px',
-                        }}
-                      >
-                        TRADE NOTES
-                      </Typography>
-                      <Typography variant="body2" sx={{ lineHeight: 1.8, fontStyle: 'italic', color: 'text.secondary' }}>
-                        &ldquo;{trade.notes}&rdquo;
-                      </Typography>
-                    </Box>
-                  </>
-                )}
+                <Divider />
+                <Box>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                      display: 'block',
+                      mb: 1.5,
+                      textTransform: 'uppercase',
+                      fontWeight: 600,
+                      fontSize: '0.6875rem',
+                      letterSpacing: '0.8px',
+                    }}
+                  >
+                    TRADE NOTES
+                  </Typography>
+                  {trade.notes ? (
+                    <Typography variant="body2" sx={{ lineHeight: 1.8, fontStyle: 'italic', color: 'text.secondary' }}>
+                      &ldquo;{trade.notes}&rdquo;
+                    </Typography>
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      onClick={() => setNotesDialogOpen(true)}
+                      sx={{
+                        color: 'text.disabled',
+                        cursor: 'pointer',
+                        '&:hover': { color: 'text.secondary' },
+                      }}
+                    >
+                      Click to add notes...
+                    </Typography>
+                  )}
+                </Box>
               </Stack>
             </CardContent>
           </Card>
