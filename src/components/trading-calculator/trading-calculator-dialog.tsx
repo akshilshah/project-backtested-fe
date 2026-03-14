@@ -287,7 +287,7 @@ export function TradingCalculatorDialog({
     coinId: currentTrade?.coinId || 0,
     strategyId: currentTrade?.strategyId || 0,
     tradeDate: currentTrade?.tradeDate ? dayjs(currentTrade.tradeDate) : dayjs(),
-    tradeTime: currentTrade?.tradeTime ? dayjs(`2000-01-01 ${currentTrade.tradeTime}`) : dayjs(),
+    tradeTime: currentTrade?.tradeTime ? dayjs(currentTrade.tradeTime) : dayjs(),
   };
 
   const methods = useForm<TradeFormValues>({
@@ -305,8 +305,12 @@ export function TradingCalculatorDialog({
       setEntryOrderType(currentTrade.entryOrderType);
       setEntryFeePercentage(currentTrade.entryFeePercentage.toString());
       setShowTradeForm(true);
+      methods.setValue('coinId', currentTrade.coinId || 0);
+      methods.setValue('strategyId', currentTrade.strategyId || 0);
+      methods.setValue('tradeDate', currentTrade.tradeDate ? dayjs(currentTrade.tradeDate) : dayjs());
+      methods.setValue('tradeTime', currentTrade.tradeTime ? dayjs(currentTrade.tradeTime) : dayjs());
     }
-  }, [currentTrade, isEditMode]);
+  }, [currentTrade, isEditMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update entry fee when order type changes
   const handleOrderTypeChange = (newOrderType: 'MARKET' | 'LIMIT') => {
@@ -376,7 +380,10 @@ export function TradingCalculatorDialog({
     try {
       setLoading(true);
       const tradeDate = dayjs(data.tradeDate).format('YYYY-MM-DD');
-      const tradeTime = dayjs(data.tradeTime).format('HH:mm:ss');
+      const parsedTime = dayjs(data.tradeTime);
+      const tradeTime = parsedTime.isValid()
+        ? parsedTime.format('HH:mm:ss')
+        : (currentTrade?.tradeTime ?? dayjs().format('HH:mm:ss'));
       const quantity = calculateQuantity();
 
       await onTakeTrade({
