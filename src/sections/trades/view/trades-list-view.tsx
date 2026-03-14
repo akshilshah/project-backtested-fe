@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
@@ -18,6 +19,7 @@ import { TradingCalculatorDialog } from 'src/components/trading-calculator';
 
 import { TradesTable } from '../trades-table';
 import { TradeExitDialog } from '../trade-exit-dialog';
+import { TradeQuickAddDialog } from '../trade-quick-add-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +33,7 @@ export function TradesListView() {
   const [exitTrade, setExitTrade] = useState<Trade | null>(null);
   const [exitLoading, setExitLoading] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
 
   // Fetch trades data
   const { data: tradesData, isLoading: tradesLoading, mutate: mutateTrades } = useSWR(
@@ -166,13 +169,23 @@ export function TradesListView() {
     <PageContainer maxWidth={false}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h4">Trades</Typography>
-        <Button
-          variant="contained"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-          onClick={handleOpenCreate}
-        >
-          Add
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            startIcon={<Iconify icon={"solar:bolt-bold" as any} />}
+            onClick={() => setQuickAddOpen(true)}
+          >
+            Quick Add
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+            onClick={handleOpenCreate}
+          >
+            Add
+          </Button>
+        </Stack>
       </Box>
 
       <TradesTable
@@ -205,6 +218,14 @@ export function TradesListView() {
         onClose={handleCloseExit}
         onConfirm={handleConfirmExit}
         loading={exitLoading}
+      />
+
+      <TradeQuickAddDialog
+        open={quickAddOpen}
+        onClose={() => setQuickAddOpen(false)}
+        onAdded={mutateTrades}
+        coins={coins}
+        strategies={strategies}
       />
 
       <TradingCalculatorDialog
