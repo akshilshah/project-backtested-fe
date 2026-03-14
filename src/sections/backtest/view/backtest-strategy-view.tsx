@@ -52,6 +52,11 @@ export function BacktestStrategyView() {
     mutate: mutateStrategy,
   } = useSWR(id ? ['strategy', id] : null, () => StrategiesService.getById(id!));
 
+  // Fetch all strategies to reliably get the strategy name (getById has response shape issues)
+  const { data: allStrategiesData } = useSWR('strategies-all', () =>
+    StrategiesService.getAll({ limit: 100 })
+  );
+
   // Fetch backtest trades for this strategy
   const {
     data: tradesData,
@@ -245,6 +250,14 @@ export function BacktestStrategyView() {
   // Get the most recently created trade for prefilling (from separate API call)
   const lastTrade = lastTradeData?.backtestTrades?.[0] || null;
 
+  // Derive strategy name — primary from strategy object (now fixed), fallback to trades data
+  const strategyName =
+    allStrategiesData?.strategies?.find((s) => s.id === Number(id))?.name ||
+    strategy?.name ||
+    tradesData?.backtestTrades?.[0]?.strategy?.name ||
+    lastTradeData?.backtestTrades?.[0]?.strategy?.name ||
+    '';
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -260,7 +273,7 @@ export function BacktestStrategyView() {
   return (
     <PageContainer maxWidth="xl">
       <PageHeader
-        title={strategy.name}
+        title={strategyName}
         backHref={paths.dashboard.backtest.root}
         action={
           <Button

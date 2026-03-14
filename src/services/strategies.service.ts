@@ -18,8 +18,9 @@ export class StrategiesService {
   }
 
   static async getById(id: string | number): Promise<Strategy> {
-    const response = await axios.get<StrategyResponse>(endpoints.strategies.details(String(id)));
-    return response.data.data;
+    const response = await axios.get<any>(endpoints.strategies.details(String(id)));
+    // Handle both response shapes: { success, data: Strategy } and { data: { success, data: Strategy } }
+    return response.data?.data?.data ?? response.data?.data;
   }
 
   static async create(data: CreateStrategyRequest): Promise<Strategy> {
