@@ -35,6 +35,7 @@ export interface Trade {
   avgExit?: number;
   profitLoss?: number;
   profitLossPercentage?: number;
+  realisedPnl?: number;
   duration?: number;
   organizationId: number;
   createdAt: string;
@@ -76,6 +77,7 @@ export interface UpdateTradeRequest {
   entryOrderType?: 'MARKET' | 'LIMIT';
   entryFeePercentage?: number;
   exitFeePercentage?: number;
+  realisedPnl?: number | null;
   notes?: string;
 }
 

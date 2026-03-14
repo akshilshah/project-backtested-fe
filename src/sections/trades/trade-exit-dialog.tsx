@@ -166,6 +166,13 @@ const ExitTradeSchema = z.object({
   exitFeePercentage: z
     .union([z.string(), z.number()])
     .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, 'Exit fee must be a positive number'),
+  realisedPnl: z
+    .union([z.string(), z.number()])
+    .optional()
+    .refine(
+      (val) => val === undefined || val === '' || (!isNaN(Number(val))),
+      'Realised P&L must be a valid number'
+    ),
   notes: z.string().optional(),
 });
 
@@ -182,6 +189,7 @@ type TradeExitDialogProps = {
     exitDate: string;
     exitTime: string;
     exitFeePercentage: number;
+    realisedPnl?: number;
     notes?: string;
   }) => Promise<void>;
   loading?: boolean;
@@ -207,21 +215,13 @@ export function TradeExitDialog({
     exitDate: dayjs(),
     exitTime: dayjs(),
     exitFeePercentage: 0.05,
+    realisedPnl: '',
     notes: '',
   };
 
   const methods = useForm<ExitTradeFormValues>({
     resolver: zodResolver(ExitTradeSchema),
     defaultValues,
-    values: {
-      avgEntry: trade?.avgEntry ?? '',
-      quantity: trade?.quantity ?? '',
-      avgExit: '',
-      exitDate: dayjs(),
-      exitTime: dayjs(),
-      exitFeePercentage: 0.05,
-      notes: '',
-    },
   });
 
   const { handleSubmit, watch, reset } = methods;
@@ -268,6 +268,7 @@ export function TradeExitDialog({
       exitDate,
       exitTime,
       exitFeePercentage: Number(data.exitFeePercentage),
+      realisedPnl: data.realisedPnl !== undefined && data.realisedPnl !== '' ? Number(data.realisedPnl) : undefined,
       notes: data.notes || undefined,
     });
 
@@ -526,6 +527,30 @@ export function TradeExitDialog({
                 </StyledInput>
               </Grid>
             </Grid>
+
+            {/* Realised P&L */}
+            <StyledInput label="Realised P&L (from platform)" icon="solar:wallet-money-bold">
+              <RHFTextField
+                name="realisedPnl"
+                placeholder="Enter actual P&L from exchange"
+                type="number"
+                size={isMobile ? 'small' : 'medium'}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          $
+                        </Typography>
+                      </InputAdornment>
+                    ),
+                  },
+                  htmlInput: {
+                    step: '0.01',
+                  },
+                }}
+              />
+            </StyledInput>
 
             {/* Notes */}
             <StyledInput label="Notes" icon="solar:document-text-bold">

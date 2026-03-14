@@ -104,7 +104,7 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmExit = useCallback(
-    async (data: { avgEntry: number; quantity: number; avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => {
+    async (data: { avgEntry: number; quantity: number; avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; realisedPnl?: number; notes?: string }) => {
       if (!id || !trade) return;
 
       try {
@@ -126,6 +126,12 @@ export function TradesDetailsView() {
           exitFeePercentage: data.exitFeePercentage,
           notes: data.notes,
         });
+
+        // Save realised P&L if provided
+        if (data.realisedPnl !== undefined) {
+          await TradesService.update(id, { realisedPnl: data.realisedPnl });
+        }
+
         toast.success('Trade closed successfully');
         mutate();
         setExitDialogOpen(false);
@@ -406,65 +412,135 @@ export function TradesDetailsView() {
 
       {/* Metrics Section */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        {/* P/L Card - Only for closed trades */}
+        {/* Unrealised PnL - Only for closed trades */}
         {trade.status === 'CLOSED' && trade.profitLoss !== undefined && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card
               sx={{
                 height: '100%',
                 boxShadow: 'none',
-                border: '2px solid',
-                borderColor: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
+                border: '1px solid',
+                borderColor: 'divider',
                 borderRadius: 2,
               }}
             >
               <CardContent sx={{ p: 2.5 }}>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
-                  <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8 }}>
-                    PROFIT/LOSS
-                  </Typography>
-                  <Iconify
-                    icon={(trade.profitLoss >= 0 ? 'solar:graph-up-bold' : 'solar:graph-down-bold') as any}
-                    width={20}
-                    sx={{ color: trade.profitLoss >= 0 ? 'success.main' : 'error.main' }}
-                  />
-                </Stack>
                 <Typography
-                  variant="h4"
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
+                >
+                  UNREALISED P&L
+                </Typography>
+                <Typography
+                  variant="h5"
                   sx={{
                     fontWeight: 700,
                     color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
                     mb: 0.5,
                   }}
                 >
-                  {trade.profitLoss >= 0 ? '' : '-'}
+                  {trade.profitLoss >= 0 ? '+' : '-'}
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD',
                   }).format(Math.abs(trade.profitLoss))}
                 </Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  {trade.profitLossPercentage !== undefined && (
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontWeight: 600,
-                        color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
-                      }}
-                    >
-                      {trade.profitLoss >= 0 ? '' : '-'}{Math.abs(trade.profitLossPercentage).toFixed(2)}%
-                    </Typography>
-                  )}
-                  {trade.derived?.commission && (
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                      Net:{' '}
-                      {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                      }).format(trade.profitLoss - trade.derived.commission)}
-                    </Typography>
-                  )}
-                </Stack>
+                {trade.profitLossPercentage !== undefined && (
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 600,
+                      color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
+                    }}
+                  >
+                    {trade.profitLoss >= 0 ? '+' : '-'}{Math.abs(trade.profitLossPercentage).toFixed(2)}%
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
+
+        {/* Realised PnL - Read-only, only for closed trades */}
+        {trade.status === 'CLOSED' && trade.realisedPnl != null && (
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card
+              sx={{
+                height: '100%',
+                boxShadow: 'none',
+                border: '1px solid',
+                borderColor: trade.realisedPnl >= 0 ? 'success.main' : 'error.main',
+                borderRadius: 2,
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
+                >
+                  REALISED P&L
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: trade.realisedPnl >= 0 ? 'success.main' : 'error.main',
+                  }}
+                >
+                  {trade.realisedPnl >= 0 ? '+' : '-'}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }).format(Math.abs(trade.realisedPnl))}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
+
+        {/* Funding Fee - Calculated difference, only when both values exist */}
+        {trade.status === 'CLOSED' && trade.profitLoss !== undefined && trade.realisedPnl != null && (
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Card
+              sx={{
+                height: '100%',
+                boxShadow: 'none',
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
+                >
+                  FUNDING FEE
+                </Typography>
+                {(() => {
+                  const fundingFee = trade.profitLoss! - trade.realisedPnl!;
+                  return (
+                    <>
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          color: fundingFee > 0 ? 'error.main' : fundingFee < 0 ? 'success.main' : 'text.primary',
+                          mb: 0.5,
+                        }}
+                      >
+                        {fundingFee > 0 ? '-' : fundingFee < 0 ? '+' : ''}
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                        }).format(Math.abs(fundingFee))}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        {fundingFee > 0 ? 'Paid' : fundingFee < 0 ? 'Received' : 'No funding'}
+                      </Typography>
+                    </>
+                  );
+                })()}
               </CardContent>
             </Card>
           </Grid>
