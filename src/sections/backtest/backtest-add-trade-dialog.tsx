@@ -386,7 +386,7 @@ export function BacktestAddTradeDialog({
               />
               <RHFTextField
                 name="sl"
-                label="Stop Loss (SL 70)"
+                label="Stop Loss"
                 type="number"
                 placeholder="0.00"
                 slotProps={{

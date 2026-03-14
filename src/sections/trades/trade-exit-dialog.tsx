@@ -226,6 +226,22 @@ export function TradeExitDialog({
 
   const { handleSubmit, watch, reset } = methods;
 
+  // Reset form with current trade values when dialog opens
+  useEffect(() => {
+    if (open && trade) {
+      reset({
+        avgEntry: trade.avgEntry ?? '',
+        quantity: trade.quantity ?? '',
+        avgExit: '',
+        exitDate: dayjs(),
+        exitTime: dayjs(),
+        exitFeePercentage: 0.05,
+        realisedPnl: '',
+        notes: '',
+      });
+    }
+  }, [open, trade, reset]);
+
   const avgExitValue = watch('avgExit');
   const exitFeePercentageValue = watch('exitFeePercentage');
 
