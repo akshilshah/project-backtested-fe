@@ -21,7 +21,7 @@ import { CoinCreateDialog } from '../coin-create-dialog';
 
 export function CoinsListView() {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   const [searchValue, setSearchValue] = useState('');
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [createOpen, setCreateOpen] = useState(false);

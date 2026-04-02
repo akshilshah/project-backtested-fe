@@ -90,11 +90,11 @@ export function DataTable<T>({
   onSelectAllRows,
   // Pagination
   page = 0,
-  rowsPerPage = 10,
+  rowsPerPage = 100,
   totalCount,
   onPageChange,
   onRowsPerPageChange,
-  rowsPerPageOptions = [5, 10, 25, 50],
+  rowsPerPageOptions = [5, 10, 25, 50, 100],
   // Search
   searchValue,
   onSearchChange,
@@ -298,7 +298,7 @@ export function useTable(initialState?: {
   const [orderBy, setOrderBy] = useState(initialState?.orderBy ?? '');
   const [order, setOrder] = useState<Order>(initialState?.order ?? 'asc');
   const [page, setPage] = useState(initialState?.page ?? 0);
-  const [rowsPerPage, setRowsPerPage] = useState(initialState?.rowsPerPage ?? 10);
+  const [rowsPerPage, setRowsPerPage] = useState(initialState?.rowsPerPage ?? 100);
   const [selected, setSelected] = useState<string[]>(initialState?.selected ?? []);
 
   const onSort = useCallback(

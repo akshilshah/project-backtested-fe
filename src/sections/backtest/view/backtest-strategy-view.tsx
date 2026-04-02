@@ -40,7 +40,7 @@ export function BacktestStrategyView() {
 
   // Table state
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
   const [searchValue, setSearchValue] = useState('');
   const [directionFilter, setDirectionFilter] = useState<Direction | 'ALL'>('ALL');
   const [filters, setFilters] = useState<BacktestFilters>({});
