@@ -549,7 +549,6 @@ export function TradeExitDialog({
               <RHFTextField
                 name="realisedPnl"
                 placeholder="Enter actual P&L from exchange"
-                type="number"
                 size={isMobile ? 'small' : 'medium'}
                 slotProps={{
                   input: {
@@ -562,7 +561,7 @@ export function TradeExitDialog({
                     ),
                   },
                   htmlInput: {
-                    step: '0.01',
+                    inputMode: 'decimal',
                   },
                 }}
               />
