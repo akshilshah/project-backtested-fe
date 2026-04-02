@@ -494,7 +494,7 @@ export function TradeEditExitDialog({
                     ),
                   },
                   htmlInput: {
-                    step: '0.01',
+                    step: '0.0001',
                   },
                 }}
               />

@@ -595,6 +595,7 @@ export function TradeExitDialog({
                   },
                   htmlInput: {
                     inputMode: 'decimal',
+                    step: '0.0001',
                   },
                 }}
               />
