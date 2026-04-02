@@ -208,7 +208,7 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmEditExit = useCallback(
-    async (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; notes?: string }) => {
+    async (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; realisedPnl?: number; notes?: string }) => {
       if (!id) return;
 
       try {

@@ -150,6 +150,13 @@ const EditExitTradeSchema = z.object({
   exitFeePercentage: z
     .union([z.string(), z.number()])
     .refine((val) => !isNaN(Number(val)) && Number(val) >= 0, 'Exit fee must be a positive number'),
+  realisedPnl: z
+    .union([z.string(), z.number()])
+    .optional()
+    .refine(
+      (val) => val === undefined || val === '' || !isNaN(Number(val)),
+      'Realised P&L must be a number'
+    ),
   notes: z.string().optional(),
 });
 
@@ -164,6 +171,7 @@ type TradeEditExitDialogProps = {
     exitDate: string;
     exitTime: string;
     exitFeePercentage: number;
+    realisedPnl?: number;
     notes?: string;
   }) => Promise<void>;
   loading?: boolean;
@@ -188,6 +196,7 @@ export function TradeEditExitDialog({
     exitDate: trade?.exitDate ? dayjs(trade.exitDate) : dayjs(),
     exitTime: trade?.exitTime ? dayjs(trade.exitTime) : dayjs(),
     exitFeePercentage: trade?.exitFeePercentage ?? 0.05,
+    realisedPnl: trade?.realisedPnl ?? '',
     notes: trade?.notes ?? '',
   };
 
@@ -209,6 +218,7 @@ export function TradeEditExitDialog({
         exitDate: trade.exitDate ? dayjs(trade.exitDate) : dayjs(),
         exitTime: trade.exitTime ? dayjs(trade.exitTime) : dayjs(),
         exitFeePercentage: trade.exitFeePercentage ?? 0.05,
+        realisedPnl: trade.realisedPnl ?? '',
         notes: trade.notes ?? '',
       });
     }
@@ -251,6 +261,7 @@ export function TradeEditExitDialog({
       exitDate,
       exitTime,
       exitFeePercentage: Number(data.exitFeePercentage),
+      realisedPnl: data.realisedPnl !== undefined && data.realisedPnl !== '' ? Number(data.realisedPnl) : undefined,
       notes: data.notes || undefined,
     });
   });
@@ -464,6 +475,30 @@ export function TradeEditExitDialog({
                 </StyledInput>
               </Grid>
             </Grid>
+
+            {/* Realised P&L */}
+            <StyledInput label="Realised P&L (from platform)" icon="solar:wallet-money-bold">
+              <RHFTextField
+                name="realisedPnl"
+                placeholder="Enter realised P&L from platform"
+                type="number"
+                size={isMobile ? 'small' : 'medium'}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                          $
+                        </Typography>
+                      </InputAdornment>
+                    ),
+                  },
+                  htmlInput: {
+                    step: '0.01',
+                  },
+                }}
+              />
+            </StyledInput>
 
             {/* Notes */}
             <StyledInput label="Notes" icon="solar:document-text-bold">
