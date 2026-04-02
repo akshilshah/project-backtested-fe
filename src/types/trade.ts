@@ -46,6 +46,7 @@ export interface Trade {
     direction: 'Long' | 'Short';
     tradeValue: number;
     commission: number;
+    realisedProfitLoss?: number;
   };
 }
 
@@ -86,6 +87,7 @@ export interface ExitTradeRequest {
   exitTime: string;
   avgExit: number;
   exitFeePercentage: number;
+  realisedPnl?: number;
   notes?: string;
 }
 

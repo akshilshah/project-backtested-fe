@@ -201,12 +201,8 @@ export function TradeQuickAddDialog({
         exitDate,
         exitTime,
         exitFeePercentage: Number(data.exitFeePercentage),
+        realisedPnl: data.realisedPnl !== undefined && data.realisedPnl !== '' ? Number(data.realisedPnl) : undefined,
       });
-
-      // Step 3: Save realised P&L if provided
-      if (data.realisedPnl !== undefined && data.realisedPnl !== '') {
-        await TradesService.update(created.id, { realisedPnl: Number(data.realisedPnl) });
-      }
 
       toast.success('Trade added successfully');
       onAdded();

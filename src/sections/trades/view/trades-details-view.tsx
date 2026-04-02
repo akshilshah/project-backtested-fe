@@ -124,13 +124,9 @@ export function TradesDetailsView() {
           exitDate: data.exitDate,
           exitTime: data.exitTime,
           exitFeePercentage: data.exitFeePercentage,
+          realisedPnl: data.realisedPnl,
           notes: data.notes,
         });
-
-        // Save realised P&L if provided
-        if (data.realisedPnl !== undefined) {
-          await TradesService.update(id, { realisedPnl: data.realisedPnl });
-        }
 
         toast.success('Trade closed successfully');
         mutate();
@@ -412,56 +408,7 @@ export function TradesDetailsView() {
 
       {/* Metrics Section */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        {/* Unrealised PnL - Only for closed trades */}
-        {trade.status === 'CLOSED' && trade.profitLoss !== undefined && (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card
-              sx={{
-                height: '100%',
-                boxShadow: 'none',
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 2,
-              }}
-            >
-              <CardContent sx={{ p: 2.5 }}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: 0.8, display: 'block', mb: 1.5 }}
-                >
-                  UNREALISED P&L
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: 700,
-                    color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
-                    mb: 0.5,
-                  }}
-                >
-                  {trade.profitLoss >= 0 ? '+' : '-'}
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  }).format(Math.abs(trade.profitLoss))}
-                </Typography>
-                {trade.profitLossPercentage !== undefined && (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 600,
-                      color: trade.profitLoss >= 0 ? 'success.main' : 'error.main',
-                    }}
-                  >
-                    {trade.profitLoss >= 0 ? '+' : '-'}{Math.abs(trade.profitLossPercentage).toFixed(2)}%
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        )}
-
-        {/* Realised PnL - Read-only, only for closed trades */}
+        {/* Realised PnL (from platform) - Only for closed trades */}
         {trade.status === 'CLOSED' && trade.realisedPnl != null && (
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card
@@ -485,6 +432,7 @@ export function TradesDetailsView() {
                   sx={{
                     fontWeight: 700,
                     color: trade.realisedPnl >= 0 ? 'success.main' : 'error.main',
+                    mb: 0.5,
                   }}
                 >
                   {trade.realisedPnl >= 0 ? '+' : '-'}
