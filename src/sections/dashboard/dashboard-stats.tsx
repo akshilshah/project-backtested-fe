@@ -13,8 +13,8 @@ type DashboardStatsProps = {
 
 export function DashboardStats({ analytics, loading }: DashboardStatsProps) {
   return (
-    <Grid container spacing={3}>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+    <Grid container spacing={{ xs: 1.5, sm: 3 }}>
+      <Grid size={{ xs: 6, sm: 6, md: 3 }}>
         <StatCard
           title="Total Trades"
           value={analytics?.totalTrades ?? 0}
@@ -25,7 +25,7 @@ export function DashboardStats({ analytics, loading }: DashboardStatsProps) {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid size={{ xs: 6, sm: 6, md: 3 }}>
         <StatCard
           title="Open Positions"
           value={analytics?.openTrades ?? 0}
@@ -36,7 +36,7 @@ export function DashboardStats({ analytics, loading }: DashboardStatsProps) {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid size={{ xs: 6, sm: 6, md: 3 }}>
         <StatCard
           title="Total P&L"
           value={analytics?.totalProfitLoss ?? 0}
@@ -51,7 +51,7 @@ export function DashboardStats({ analytics, loading }: DashboardStatsProps) {
         />
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid size={{ xs: 6, sm: 6, md: 3 }}>
         <StatCard
           title="Win Rate"
           value={analytics?.winRate ?? 0}

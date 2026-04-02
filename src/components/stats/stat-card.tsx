@@ -85,7 +85,7 @@ export function StatCard({
   return (
     <Card
       sx={{
-        p: 3,
+        p: { xs: 2, sm: 3 },
         transition: 'all 0.2s ease-in-out',
         '&:hover': {
           transform: 'translateY(-4px)',
@@ -125,9 +125,9 @@ export function StatCard({
           )}
 
           {typeof value === 'number' ? (
-            <AnimateCountUp to={value} toFixed={decimals} sx={{ typography: 'h4' }} />
+            <AnimateCountUp to={value} toFixed={decimals} sx={{ typography: { xs: 'h5', sm: 'h4' } }} />
           ) : (
-            <Typography variant="h4">{value}</Typography>
+            <Typography sx={{ typography: { xs: 'h5', sm: 'h4' } }}>{value}</Typography>
           )}
 
           {displaySuffix && (
