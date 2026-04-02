@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -224,7 +225,7 @@ export function TradeExitDialog({
     defaultValues,
   });
 
-  const { handleSubmit, watch, reset } = methods;
+  const { handleSubmit, watch, reset, setValue, getValues } = methods;
 
   // Reset form with current trade values when dialog opens
   useEffect(() => {
@@ -244,6 +245,7 @@ export function TradeExitDialog({
 
   const avgExitValue = watch('avgExit');
   const exitFeePercentageValue = watch('exitFeePercentage');
+  const realisedPnlValue = watch('realisedPnl');
 
   // Fetch P&L preview from API when avgExit or exitFeePercentage changes
   useEffect(() => {
@@ -272,6 +274,19 @@ export function TradeExitDialog({
     const timeoutId = setTimeout(fetchPreview, 500);
     return () => clearTimeout(timeoutId);
   }, [trade, avgExitValue, exitFeePercentageValue]);
+
+  // Auto-match realisedPnl sign to estimated P&L direction
+  useEffect(() => {
+    if (!plPreview) return;
+    if (realisedPnlValue === undefined || realisedPnlValue === '') return;
+    const num = Number(realisedPnlValue);
+    if (isNaN(num) || num === 0) return;
+    const shouldBeNegative = plPreview.profitLoss < 0;
+    const isNegative = num < 0;
+    if (shouldBeNegative !== isNegative) {
+      setValue('realisedPnl', String(-num));
+    }
+  }, [plPreview, realisedPnlValue, setValue]);
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const exitDate = dayjs(data.exitDate).format('YYYY-MM-DD');
@@ -557,6 +572,24 @@ export function TradeExitDialog({
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                           $
                         </Typography>
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          onClick={() => {
+                            const current = getValues('realisedPnl');
+                            if (current === undefined || current === '') return;
+                            const num = Number(current);
+                            if (!isNaN(num)) {
+                              setValue('realisedPnl', String(-num));
+                            }
+                          }}
+                          sx={{ fontSize: 14, fontWeight: 700, minWidth: 32 }}
+                        >
+                          +/−
+                        </IconButton>
                       </InputAdornment>
                     ),
                   },
