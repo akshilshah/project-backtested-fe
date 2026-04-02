@@ -126,6 +126,7 @@ export interface TradeAnalytics {
   closedTrades: number;
   winRate: number;
   totalProfitLoss: number;
+  totalRealisedPnl: number;
   averageProfitLoss: number;
   bestTrade: number;
   worstTrade: number;

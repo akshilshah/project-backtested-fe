@@ -49,15 +49,15 @@ export function AnalyticsSummary({ analytics, loading }: AnalyticsSummaryProps) 
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <StatCard
           title="Total P&L"
-          value={analytics?.totalProfitLoss ?? 0}
+          value={analytics?.totalRealisedPnl ?? 0}
           icon="solar:wallet-money-bold-duotone"
           iconColor={
-            (analytics?.totalProfitLoss ?? 0) >= 0 ? 'success.main' : 'error.main'
+            (analytics?.totalRealisedPnl ?? 0) >= 0 ? 'success.main' : 'error.main'
           }
           loading={loading}
           prefix="$"
           decimals={2}
-          subtitle="Realized profit/loss"
+          subtitle="Realised P&L from platform"
         />
       </Grid>
 
