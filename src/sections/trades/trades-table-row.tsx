@@ -144,10 +144,9 @@ export const TradesTableRow = memo(function TradesTableRow({ row, onDelete, onEx
 
         {/* P&L */}
         <TableCell>
-          {row.status === 'CLOSED' && row.profitLoss !== undefined ? (
+          {row.status === 'CLOSED' && row.realisedPnl != null ? (
             <ProfitLossDisplay
-              value={row.profitLoss}
-              percentage={row.profitLossPercentage}
+              value={row.realisedPnl}
               size="small"
               showIcon
             />
