@@ -453,11 +453,10 @@ export function TradeQuickAddDialog({
               <RHFTextField
                 name="realisedPnl"
                 label="Realised P&L (from exchange)"
-                type="number"
                 size="small"
                 slotProps={{
                   input: { startAdornment: <InputAdornment position="start">$</InputAdornment> },
-                  htmlInput: { step: '0.01' },
+                  htmlInput: { inputMode: 'decimal' },
                 }}
               />
               <RHFTextField
