@@ -3,7 +3,7 @@ import type { Trade, PreviewExitResponse } from 'src/types/trade';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
@@ -245,7 +245,15 @@ export function TradeExitDialog({
 
   const avgExitValue = watch('avgExit');
   const exitFeePercentageValue = watch('exitFeePercentage');
-  const realisedPnlValue = watch('realisedPnl');
+
+  // Clear realisedPnl when exit price changes
+  const prevExitPrice = useRef(avgExitValue);
+  useEffect(() => {
+    if (prevExitPrice.current !== avgExitValue) {
+      prevExitPrice.current = avgExitValue;
+      setValue('realisedPnl', '');
+    }
+  }, [avgExitValue, setValue]);
 
   // Fetch P&L preview from API when avgExit or exitFeePercentage changes
   useEffect(() => {
@@ -275,18 +283,23 @@ export function TradeExitDialog({
     return () => clearTimeout(timeoutId);
   }, [trade, avgExitValue, exitFeePercentageValue]);
 
-  // Auto-match realisedPnl sign to estimated P&L direction
+  // Auto-apply correct sign to realisedPnl based on trade direction
+  const realisedPnlValue = watch('realisedPnl');
   useEffect(() => {
-    if (!plPreview) return;
+    if (!trade || !avgExitValue) return;
     if (realisedPnlValue === undefined || realisedPnlValue === '') return;
     const num = Number(realisedPnlValue);
     if (isNaN(num) || num === 0) return;
-    const shouldBeNegative = plPreview.profitLoss < 0;
+    const exitPrice = Number(avgExitValue);
+    if (isNaN(exitPrice) || exitPrice <= 0) return;
+    const isLong = trade.avgEntry < (trade.stopLoss ?? 0) ? false : true;
+    const isLoss = isLong ? exitPrice < trade.avgEntry : exitPrice > trade.avgEntry;
+    const shouldBeNegative = isLoss;
     const isNegative = num < 0;
     if (shouldBeNegative !== isNegative) {
-      setValue('realisedPnl', String(-num));
+      setValue('realisedPnl', String(shouldBeNegative ? -Math.abs(num) : Math.abs(num)));
     }
-  }, [plPreview, realisedPnlValue, setValue]);
+  }, [trade, avgExitValue, realisedPnlValue, setValue]);
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const exitDate = dayjs(data.exitDate).format('YYYY-MM-DD');
