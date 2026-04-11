@@ -15,6 +15,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -111,7 +112,7 @@ export function TradeQuickAddDialog({
     defaultValues,
   });
 
-  const { handleSubmit, watch, reset, setValue } = methods;
+  const { handleSubmit, watch, reset, setValue, getValues } = methods;
 
   const entryPriceValue = watch('entryPrice');
   const stopLossValue = watch('stopLoss');
@@ -119,9 +120,29 @@ export function TradeQuickAddDialog({
   const quantityValue = watch('quantity');
   const coinIdValue = watch('coinId');
   const strategyIdValue = watch('strategyId');
+  const realisedPnlValue = watch('realisedPnl');
 
   const selectedCoin = coins.find((c) => c.id === Number(coinIdValue)) ?? null;
   const selectedStrategy = strategies.find((s) => s.id === Number(strategyIdValue)) ?? null;
+
+  // Auto-apply correct sign to realisedPnl based on trade direction
+  useEffect(() => {
+    if (!entryPriceValue || !exitPriceValue || !stopLossValue) return;
+    if (realisedPnlValue === undefined || realisedPnlValue === '') return;
+    const num = Number(realisedPnlValue);
+    if (isNaN(num) || num === 0) return;
+    const entry = Number(entryPriceValue);
+    const exit = Number(exitPriceValue);
+    const sl = Number(stopLossValue);
+    if (isNaN(entry) || isNaN(exit) || isNaN(sl) || entry <= 0 || exit <= 0) return;
+    const isLong = entry >= sl;
+    const isLoss = isLong ? exit < entry : exit > entry;
+    const shouldBeNegative = isLoss;
+    const isNegative = num < 0;
+    if (shouldBeNegative !== isNegative) {
+      setValue('realisedPnl', String(shouldBeNegative ? -Math.abs(num) : Math.abs(num)));
+    }
+  }, [entryPriceValue, exitPriceValue, stopLossValue, realisedPnlValue, setValue]);
 
   // Reset form when dialog opens
   useEffect(() => {
@@ -455,7 +476,27 @@ export function TradeQuickAddDialog({
                 label="Realised P&L (from exchange)"
                 size="small"
                 slotProps={{
-                  input: { startAdornment: <InputAdornment position="start">$</InputAdornment> },
+                  input: {
+                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          onClick={() => {
+                            const current = getValues('realisedPnl');
+                            if (current === undefined || current === '') return;
+                            const num = Number(current);
+                            if (!isNaN(num)) {
+                              setValue('realisedPnl', String(-num));
+                            }
+                          }}
+                          sx={{ fontSize: 14, fontWeight: 700, minWidth: 32 }}
+                        >
+                          +/−
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
                   htmlInput: { inputMode: 'decimal' },
                 }}
               />
