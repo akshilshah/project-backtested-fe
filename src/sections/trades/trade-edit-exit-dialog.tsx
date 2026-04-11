@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -205,7 +206,7 @@ export function TradeEditExitDialog({
     defaultValues,
   });
 
-  const { handleSubmit, watch, reset } = methods;
+  const { handleSubmit, watch, reset, setValue, getValues } = methods;
 
   const avgExitValue = watch('avgExit');
   const exitFeePercentageValue = watch('exitFeePercentage');
@@ -480,8 +481,7 @@ export function TradeEditExitDialog({
             <StyledInput label="Realised P&L (from platform)" icon="solar:wallet-money-bold">
               <RHFTextField
                 name="realisedPnl"
-                placeholder="Enter realised P&L from platform"
-                type="number"
+                placeholder="Enter actual P&L from exchange"
                 size={isMobile ? 'small' : 'medium'}
                 slotProps={{
                   input: {
@@ -492,9 +492,27 @@ export function TradeEditExitDialog({
                         </Typography>
                       </InputAdornment>
                     ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          onClick={() => {
+                            const current = getValues('realisedPnl');
+                            if (current === undefined || current === '') return;
+                            const num = Number(current);
+                            if (!isNaN(num)) {
+                              setValue('realisedPnl', String(-num));
+                            }
+                          }}
+                          sx={{ fontSize: 14, fontWeight: 700, minWidth: 32 }}
+                        >
+                          +/−
+                        </IconButton>
+                      </InputAdornment>
+                    ),
                   },
                   htmlInput: {
-                    step: '0.0001',
+                    inputMode: 'decimal',
                   },
                 }}
               />
