@@ -241,7 +241,7 @@ export function TradingCalculatorDialog({
   const [entry, setEntry] = useState<string>('');
   const [stopLoss, setStopLoss] = useState<string>('');
   const [account, setAccount] = useState<string>('');
-  const [stopLossPercentage, setStopLossPercentage] = useState<string>('1.8');
+  const [stopLossPercentage, setStopLossPercentage] = useState<string>('');
   const [entryOrderType, setEntryOrderType] = useState<'MARKET' | 'LIMIT'>('LIMIT');
   const [entryFeePercentage, setEntryFeePercentage] = useState<string>('0.02');
   const [showTradeForm, setShowTradeForm] = useState(false);
@@ -406,7 +406,7 @@ export function TradingCalculatorDialog({
       setEntry('');
       setStopLoss('');
       setAccount('');
-      setStopLossPercentage('1.8');
+      setStopLossPercentage('');
       setEntryOrderType('LIMIT');
       setEntryFeePercentage('0.02');
     } catch (error) {
