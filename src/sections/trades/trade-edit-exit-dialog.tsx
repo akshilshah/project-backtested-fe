@@ -1,3 +1,4 @@
+import type { Strategy } from 'src/types/strategy';
 import type { Trade, PreviewExitResponse } from 'src/types/trade';
 
 import { z } from 'zod';
@@ -26,8 +27,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { S3_ASSETS_BASE_URL } from 'src/lib/api-endpoints';
 import { TradesService } from 'src/services/trades.service';
 
-import { Form } from 'src/components/hook-form';
 import { Iconify } from 'src/components/iconify';
+import { Form, RHFAutocomplete } from 'src/components/hook-form';
 import { RHFTextField } from 'src/components/hook-form/rhf-text-field';
 import { RHFDatePicker, RHFTimePicker } from 'src/components/hook-form/rhf-date-picker';
 
@@ -139,6 +140,14 @@ function StyledInput({
 // ----------------------------------------------------------------------
 
 const EditExitTradeSchema = z.object({
+  strategyId: z.number().min(1, 'Strategy is required'),
+  stopLoss: z
+    .union([z.string(), z.number()])
+    .refine((val) => val !== '' && val !== null && val !== undefined, 'Stop loss is required')
+    .refine(
+      (val) => !isNaN(Number(val)) && Number(val) > 0,
+      'Stop loss must be a positive number'
+    ),
   avgExit: z
     .union([z.string(), z.number()])
     .refine((val) => val !== '' && val !== null && val !== undefined, 'Exit price is required')
@@ -166,8 +175,11 @@ type EditExitTradeFormValues = z.infer<typeof EditExitTradeSchema>;
 type TradeEditExitDialogProps = {
   open: boolean;
   trade: Trade | null;
+  strategies: Strategy[];
   onClose: () => void;
   onConfirm: (data: {
+    strategyId: number;
+    stopLoss: number;
     avgExit: number;
     exitDate: string;
     exitTime: string;
@@ -181,6 +193,7 @@ type TradeEditExitDialogProps = {
 export function TradeEditExitDialog({
   open,
   trade,
+  strategies,
   onClose,
   onConfirm,
   loading = false,
@@ -193,6 +206,8 @@ export function TradeEditExitDialog({
 
   // Pre-fill with existing exit data
   const defaultValues: EditExitTradeFormValues = {
+    strategyId: trade?.strategyId ?? 0,
+    stopLoss: trade?.stopLoss ?? '',
     avgExit: trade?.avgExit ?? '',
     exitDate: trade?.exitDate ? dayjs(trade.exitDate) : dayjs(),
     exitTime: trade?.exitTime ? dayjs(trade.exitTime) : dayjs(),
@@ -210,6 +225,10 @@ export function TradeEditExitDialog({
 
   const avgExitValue = watch('avgExit');
   const exitFeePercentageValue = watch('exitFeePercentage');
+  const stopLossValue = watch('stopLoss');
+  const strategyIdValue = watch('strategyId');
+
+  const selectedStrategy = strategies.find((s) => s.id === Number(strategyIdValue)) ?? null;
 
   // Clear realisedPnl when exit price changes
   const prevExitPrice = useRef(avgExitValue);
@@ -224,6 +243,8 @@ export function TradeEditExitDialog({
   useEffect(() => {
     if (open && trade) {
       reset({
+        strategyId: trade.strategyId ?? 0,
+        stopLoss: trade.stopLoss ?? '',
         avgExit: trade.avgExit ?? '',
         exitDate: trade.exitDate ? dayjs(trade.exitDate) : dayjs(),
         exitTime: trade.exitTime ? dayjs(trade.exitTime) : dayjs(),
@@ -272,20 +293,24 @@ export function TradeEditExitDialog({
     if (isNaN(num) || num === 0) return;
     const exitPrice = Number(avgExitValue);
     if (isNaN(exitPrice) || exitPrice <= 0) return;
-    const isLong = trade.avgEntry < (trade.stopLoss ?? 0) ? false : true;
+    const sl = Number(stopLossValue);
+    const effectiveSl = !isNaN(sl) && sl > 0 ? sl : (trade.stopLoss ?? 0);
+    const isLong = trade.avgEntry < effectiveSl ? false : true;
     const isLoss = isLong ? exitPrice < trade.avgEntry : exitPrice > trade.avgEntry;
     const shouldBeNegative = isLoss;
     const isNegative = num < 0;
     if (shouldBeNegative !== isNegative) {
       setValue('realisedPnl', String(shouldBeNegative ? -Math.abs(num) : Math.abs(num)));
     }
-  }, [trade, avgExitValue, realisedPnlValue, setValue]);
+  }, [trade, avgExitValue, realisedPnlValue, stopLossValue, setValue]);
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const exitDate = dayjs(data.exitDate).format('YYYY-MM-DD');
     const exitTime = dayjs(data.exitTime).format('HH:mm:ss');
 
     await onConfirm({
+      strategyId: Number(data.strategyId),
+      stopLoss: Number(data.stopLoss),
       avgExit: Number(data.avgExit),
       exitDate,
       exitTime,
@@ -368,50 +393,28 @@ export function TradeEditExitDialog({
                   `1px solid ${t.palette.mode === 'dark' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(99, 102, 241, 0.15)'}`,
               }}
             >
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mb: 2 }}
-              >
-                <Stack direction="row" alignItems="center" spacing={1.5}>
-                  <Avatar
-                    src={trade.coin?.image ? `${S3_ASSETS_BASE_URL}/${trade.coin.image}` : undefined}
-                    alt={trade.coin?.symbol}
-                    sx={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 1.5,
-                      bgcolor: trade.coin?.image ? 'transparent' : 'primary.main',
-                      color: 'white',
-                      fontWeight: 700,
-                      fontSize: '0.7rem',
-                    }}
-                  >
-                    {!trade.coin?.image && (trade.coin?.symbol?.slice(0, 3) ?? 'N/A')}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {trade.coin?.symbol ?? 'N/A'}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                      {trade.coin?.name}
-                    </Typography>
-                  </Box>
-                </Stack>
-                <Box
+              <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2 }}>
+                <Avatar
+                  src={trade.coin?.image ? `${S3_ASSETS_BASE_URL}/${trade.coin.image}` : undefined}
+                  alt={trade.coin?.symbol}
                   sx={{
-                    px: 1.5,
-                    py: 0.5,
-                    borderRadius: 1,
-                    bgcolor: (t: Theme) =>
-                      t.palette.mode === 'dark'
-                        ? 'rgba(255, 255, 255, 0.08)'
-                        : 'rgba(0, 0, 0, 0.04)',
+                    width: 36,
+                    height: 36,
+                    borderRadius: 1.5,
+                    bgcolor: trade.coin?.image ? 'transparent' : 'primary.main',
+                    color: 'white',
+                    fontWeight: 700,
+                    fontSize: '0.7rem',
                   }}
                 >
-                  <Typography variant="caption" fontWeight={500} sx={{ color: 'text.secondary' }}>
-                    {trade.strategy?.name}
+                  {!trade.coin?.image && (trade.coin?.symbol?.slice(0, 3) ?? 'N/A')}
+                </Avatar>
+                <Box>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    {trade.coin?.symbol ?? 'N/A'}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    {trade.coin?.name}
                   </Typography>
                 </Box>
               </Stack>
@@ -423,9 +426,57 @@ export function TradeEditExitDialog({
               >
                 <InfoCard label="Entry" value={formatPrice(trade.avgEntry)} />
                 <InfoCard label="Qty" value={trade.quantity?.toFixed(4) ?? '-'} />
-                <InfoCard label="Stop Loss" value={formatPrice(trade.stopLoss)} />
               </Stack>
             </Box>
+
+            {/* Strategy & Stop Loss Row */}
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 7 }}>
+                <StyledInput label="Strategy" icon="solar:target-bold">
+                  <RHFAutocomplete
+                    name="strategyId"
+                    placeholder="Select strategy"
+                    options={strategies}
+                    value={selectedStrategy}
+                    onChange={(_: any, newValue: Strategy | null) => {
+                      setValue('strategyId', newValue?.id ?? 0, { shouldValidate: true });
+                    }}
+                    getOptionLabel={(option: Strategy) => option.name}
+                    isOptionEqualToValue={(option: Strategy, value: Strategy) =>
+                      option.id === value.id
+                    }
+                    slotProps={{
+                      textField: { size: isMobile ? 'small' : 'medium' },
+                    }}
+                  />
+                </StyledInput>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 5 }}>
+                <StyledInput label="Stop Loss" icon="solar:shield-warning-bold">
+                  <RHFTextField
+                    name="stopLoss"
+                    placeholder="Enter stop loss"
+                    type="number"
+                    size={isMobile ? 'small' : 'medium'}
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                              $
+                            </Typography>
+                          </InputAdornment>
+                        ),
+                      },
+                      htmlInput: {
+                        step: '0.00000001',
+                        min: '0',
+                      },
+                    }}
+                  />
+                </StyledInput>
+              </Grid>
+            </Grid>
 
             {/* Exit Price & Fee Row */}
             <Grid container spacing={2}>

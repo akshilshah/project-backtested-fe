@@ -208,12 +208,42 @@ export function TradesDetailsView() {
   }, []);
 
   const handleConfirmEditExit = useCallback(
-    async (data: { avgExit: number; exitDate: string; exitTime: string; exitFeePercentage: number; realisedPnl?: number; notes?: string }) => {
-      if (!id) return;
+    async (data: {
+      strategyId: number;
+      stopLoss: number;
+      avgExit: number;
+      exitDate: string;
+      exitTime: string;
+      exitFeePercentage: number;
+      realisedPnl?: number;
+      notes?: string;
+    }) => {
+      if (!id || !trade) return;
 
       try {
         setEditExitLoading(true);
-        await TradesService.updateExit(id, data);
+
+        const strategyChanged = data.strategyId !== trade.strategyId;
+        const stopLossChanged = data.stopLoss !== trade.stopLoss;
+        if (strategyChanged || stopLossChanged) {
+          const updatePayload: { strategyId?: number; stopLoss?: number; stopLossPercentage?: number } = {};
+          if (strategyChanged) updatePayload.strategyId = data.strategyId;
+          if (stopLossChanged) {
+            updatePayload.stopLoss = data.stopLoss;
+            updatePayload.stopLossPercentage =
+              Math.abs((trade.avgEntry - data.stopLoss) / trade.avgEntry) * 100;
+          }
+          await TradesService.update(id, updatePayload);
+        }
+
+        await TradesService.updateExit(id, {
+          avgExit: data.avgExit,
+          exitDate: data.exitDate,
+          exitTime: data.exitTime,
+          exitFeePercentage: data.exitFeePercentage,
+          realisedPnl: data.realisedPnl,
+          notes: data.notes,
+        });
         toast.success('Exit details updated successfully');
         mutate();
         setEditExitDialogOpen(false);
@@ -224,7 +254,7 @@ export function TradesDetailsView() {
         setEditExitLoading(false);
       }
     },
-    [id, mutate]
+    [id, trade, mutate]
   );
 
   if (isLoading) {
@@ -956,6 +986,7 @@ export function TradesDetailsView() {
       <TradeEditExitDialog
         open={editExitDialogOpen}
         trade={trade}
+        strategies={strategies}
         onClose={handleCloseEditExit}
         onConfirm={handleConfirmEditExit}
         loading={editExitLoading}
