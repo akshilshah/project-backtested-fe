@@ -1,7 +1,7 @@
 # Graph Report - /Users/akshil/Work/projects/project-backtested/frontend  (2026-04-24)
 
 ## Corpus Check
-- 475 files · ~515,963 words
+- 475 files · ~596,353 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -420,16 +420,16 @@
 10. `isType()` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `FormSocials()` --calls--> `isArray()`  [INFERRED]
-  /Users/akshil/Work/projects/project-backtested/frontend/src/auth/components/form-socials.tsx → /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js
-- `SignUpTerms()` --calls--> `isArray()`  [INFERRED]
-  /Users/akshil/Work/projects/project-backtested/frontend/src/auth/components/sign-up-terms.tsx → /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js
-- `FormReturnLink()` --calls--> `isArray()`  [INFERRED]
-  /Users/akshil/Work/projects/project-backtested/frontend/src/auth/components/form-return-link.tsx → /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js
-- `PresetsOptions()` --calls--> `isArray()`  [INFERRED]
-  /Users/akshil/Work/projects/project-backtested/frontend/src/components/settings/drawer/presets-options.tsx → /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js
-- `LoadingScreen()` --calls--> `isArray()`  [INFERRED]
-  /Users/akshil/Work/projects/project-backtested/frontend/src/components/loading-screen/loading-screen.tsx → /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js
+- `isArray()` --calls--> `FormSocials()`  [INFERRED]
+  /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js → /Users/akshil/Work/projects/project-backtested/frontend/src/auth/components/form-socials.tsx
+- `isArray()` --calls--> `SignUpTerms()`  [INFERRED]
+  /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js → /Users/akshil/Work/projects/project-backtested/frontend/src/auth/components/sign-up-terms.tsx
+- `isArray()` --calls--> `FormReturnLink()`  [INFERRED]
+  /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js → /Users/akshil/Work/projects/project-backtested/frontend/src/auth/components/form-return-link.tsx
+- `isArray()` --calls--> `PresetsOptions()`  [INFERRED]
+  /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js → /Users/akshil/Work/projects/project-backtested/frontend/src/components/settings/drawer/presets-options.tsx
+- `isArray()` --calls--> `LoadingScreen()`  [INFERRED]
+  /Users/akshil/Work/projects/project-backtested/frontend/dev-dist/workbox-21a80088.js → /Users/akshil/Work/projects/project-backtested/frontend/src/components/loading-screen/loading-screen.tsx
 
 ## Communities
 
@@ -2701,9 +2701,11 @@ Nodes (0):
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `isArray()` connect `Community 2` to `Community 1`, `Community 10`, `Community 4`, `Community 7`?**
-  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+- **Why does `NavToggleButton()` connect `Community 7` to `Community 2`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **Why does `GuestGuard()` connect `Community 5` to `Community 0`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Are the 24 inferred relationships involving `isArray()` (e.g. with `FormSocials()` and `SignUpTerms()`) actually correct?**
   _`isArray()` has 24 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Community 0` be split into smaller, more focused modules?**
@@ -2712,5 +2714,3 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.03 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.04 - nodes in this community are weakly interconnected._
-- **Should `Community 3` be split into smaller, more focused modules?**
-  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
