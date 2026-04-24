@@ -2701,11 +2701,9 @@ Nodes (0):
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `isArray()` connect `Community 2` to `Community 1`, `Community 10`, `Community 4`, `Community 7`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **Why does `NavToggleButton()` connect `Community 7` to `Community 2`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _High betweenness centrality (0.049) - this node is a cross-community bridge._
 - **Why does `GuestGuard()` connect `Community 5` to `Community 0`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Are the 24 inferred relationships involving `isArray()` (e.g. with `FormSocials()` and `SignUpTerms()`) actually correct?**
   _`isArray()` has 24 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Community 0` be split into smaller, more focused modules?**
@@ -2714,3 +2712,5 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.03 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.04 - nodes in this community are weakly interconnected._
+- **Should `Community 3` be split into smaller, more focused modules?**
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
